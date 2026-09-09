@@ -36,6 +36,29 @@ replace_exact(
     '        quota(usage.get("monthly"), "monthly", "本月额度", 0),',
 )
 
+# Credits/credits is a product-specific unit. Translate only its generic
+# qualifier and unrelated count suffixes.
+replace_exact(
+    "src-tauri/src/providers/copilot/mod.rs",
+    '                "Org Credits",',
+    '                "组织 Credits",',
+)
+replace_exact(
+    "src-tauri/src/providers/copilot/mapper.rs",
+    '                label: "Org Credits".into(),',
+    '                label: "组织 Credits".into(),',
+)
+replace_exact(
+    "src-tauri/src/providers/codex/mod.rs",
+    '                Some("resets"),',
+    '                Some("次"),',
+)
+replace_exact(
+    "src/test/appFixtures.ts",
+    "          tray: { shortLabel: 'R', suffix: 'resets' },",
+    "          tray: { shortLabel: 'R', suffix: '次' },",
+)
+
 # These are generic model-breakdown categories. Keep actual model and product
 # names unchanged, but do not expose English fallback category names.
 replace_exact(
