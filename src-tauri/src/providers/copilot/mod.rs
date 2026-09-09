@@ -63,7 +63,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "copilot.orgCredits",
-                "Org Credits",
+                "组织 Credits",
                 "orgCredits",
                 true,
                 MetricSection::OnDemand,

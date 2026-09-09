@@ -478,7 +478,7 @@ fn aggregate_into(
                 date,
                 tokens.total_tokens(),
                 cost,
-                model_name.unwrap_or("Unattributed"),
+                model_name.unwrap_or("未归类"),
             );
         } else if tokens.total_tokens() > 0 {
             if let Some(model) = model_name {

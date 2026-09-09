@@ -233,11 +233,7 @@ fn aggregate_into(
             continue;
         }
         let model = event.model.trim();
-        let display_model = if model.is_empty() {
-            "Unattributed"
-        } else {
-            model
-        };
+        let display_model = if model.is_empty() { "未归类" } else { model };
         if let Some(cost) = event.carried_cost.filter(|cost| *cost > 0.0) {
             accumulator.add_exact(date, event.reported_total_tokens, cost, display_model);
             contributed = true;

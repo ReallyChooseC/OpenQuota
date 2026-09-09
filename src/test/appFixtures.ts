@@ -119,7 +119,7 @@ export const providerCatalog: ProviderCatalog = {
         {
           ...quota('codex.rateLimitResets', '额度重置次数', 'rateLimitResets'),
           source: { kind: 'value', sourceId: 'rateLimitResets' },
-          tray: { shortLabel: 'R', suffix: 'resets' },
+          tray: { shortLabel: 'R', suffix: '次' },
         },
         usage('codex.today', '今天', 'today'),
         usage('codex.yesterday', '昨天', 'yesterday'),

@@ -79,10 +79,10 @@ pub fn request_fallback(
     }
     let plan = plan_name.unwrap_or_default().trim().to_ascii_lowercase();
     if facts.plan_usage_unusable() && plan == "enterprise" {
-        return Some("Enterprise usage data unavailable. Try again later.");
+        return Some("Enterprise 套餐用量数据暂时不可用，请稍后重试。");
     }
     if facts.plan_usage_unusable() && plan == "team" {
-        return Some("Team request-based usage data unavailable. Try again later.");
+        return Some("Team 套餐的按请求用量数据暂时不可用，请稍后重试。");
     }
     if facts.plan_usage_unusable()
         && facts.total_percent_used.is_none()
@@ -503,7 +503,7 @@ pub fn usage_history(
         match row.estimated_cost_usd {
             Some(cost) => {
                 let family = if row.model.trim().is_empty() {
-                    "Unattributed".to_owned()
+                    "未归类".to_owned()
                 } else {
                     pricing.display_family(row.model.trim())
                 };

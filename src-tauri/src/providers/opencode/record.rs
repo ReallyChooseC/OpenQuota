@@ -138,7 +138,7 @@ pub(super) fn parse_message(
                 .and_then(timestamp_from_value)
         })
         .or_else(|| value.get("time_created").and_then(timestamp_from_value))?;
-    let model = model_id(value).unwrap_or_else(|| "Unattributed".into());
+    let model = model_id(value).unwrap_or_else(|| "未归类".into());
     Some(ParsedMessage {
         session_id,
         message_id,
@@ -243,7 +243,7 @@ fn estimate_cost(
     model: &str,
     tokens: TokenBreakdown,
 ) -> Option<f64> {
-    if tokens.total_tokens() == 0 || model == "Unattributed" {
+    if tokens.total_tokens() == 0 || model == "未归类" {
         return None;
     }
     pricing

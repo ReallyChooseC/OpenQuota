@@ -96,7 +96,7 @@ pub(crate) fn definition() -> ProviderDefinition {
                 MetricSection::OnDemand,
                 false,
                 "R",
-                Some("resets"),
+                Some("次"),
             ),
             MetricDefinition::usage(
                 "codex.today",

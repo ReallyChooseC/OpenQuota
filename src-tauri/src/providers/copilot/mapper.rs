@@ -145,7 +145,7 @@ pub(super) fn map_org_usage(body: &Value) -> Option<Vec<ValueMetric>> {
         vec![
             ValueMetric {
                 id: "orgCredits".into(),
-                label: "Org Credits".into(),
+                label: "组织 Credits".into(),
                 values: vec![MetricValue {
                     number: credits,
                     kind: MetricValueKind::Count,
