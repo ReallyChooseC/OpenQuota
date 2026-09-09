@@ -18,7 +18,7 @@ describe('ValueMetric', () => {
         label: '额外用量',
         values: [
           { number: 1200, kind: 'dollars', estimated: false },
-          { number: 30000, kind: 'count', label: '点数', estimated: false },
+          { number: 30000, kind: 'count', label: 'credits', estimated: false },
         ],
         expiriesAt: [],
       },
@@ -27,9 +27,9 @@ describe('ValueMetric', () => {
       timeFormat: 'twentyFourHour',
     });
 
-    expect(screen.getByText('$1.2K · 30K 点数')).toHaveAttribute(
+    expect(screen.getByText('$1.2K · 30K credits')).toHaveAttribute(
       'data-tooltip',
-      '$1,200.00 · 30,000 点数',
+      '$1,200.00 · 30,000 credits',
     );
   });
 
@@ -41,7 +41,7 @@ describe('ValueMetric', () => {
         label: '额外用量',
         values: [
           { number: 4, kind: 'dollars', estimated: true },
-          { number: 100, kind: 'count', label: '点数', estimated: false },
+          { number: 100, kind: 'count', label: 'credits', estimated: false },
         ],
         expiriesAt: [],
       },

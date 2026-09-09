@@ -33,7 +33,7 @@ pub(super) fn map_usage(body: &Value) -> Result<CopilotMappedUsage, CopilotError
     let mut quotas = Vec::new();
     let mut value_metrics = Vec::new();
     let credits =
-        premium.and_then(|value| snapshot_quota("premium", "点数", "credits", value, resets_at));
+        premium.and_then(|value| snapshot_quota("premium", "Credits", "credits", value, resets_at));
     if let Some(credits) = credits {
         quotas.push(credits);
         if let Some(extra) = premium.and_then(overage_metric) {
@@ -145,11 +145,11 @@ pub(super) fn map_org_usage(body: &Value) -> Option<Vec<ValueMetric>> {
         vec![
             ValueMetric {
                 id: "orgCredits".into(),
-                label: "组织点数".into(),
+                label: "Org Credits".into(),
                 values: vec![MetricValue {
                     number: credits,
                     kind: MetricValueKind::Count,
-                    label: Some("点数".into()),
+                    label: Some("credits".into()),
                     estimated: false,
                 }],
                 expiries_at: Vec::new(),
@@ -209,7 +209,6 @@ fn snapshot_quota(
             Some(limit),
             Some(
                 match unit {
-                    "credits" => "点数",
                     "requests" => "次请求",
                     value => value,
                 }
@@ -249,7 +248,7 @@ fn overage_metric(value: &Value) -> Option<ValueMetric> {
         values: vec![MetricValue {
             number: count,
             kind: MetricValueKind::Count,
-            label: Some("点数".into()),
+            label: Some("credits".into()),
             estimated: false,
         }],
         expiries_at: Vec::new(),
@@ -278,7 +277,6 @@ fn legacy_quota(
         limit_value: Some(total),
         unit: Some(
             match unit {
-                "credits" => "点数",
                 "requests" => "次请求",
                 value => value,
             }
@@ -408,7 +406,7 @@ mod tests {
         assert_eq!(credits.used_value, Some(177.0));
         assert_eq!(credits.limit_value, Some(300.0));
         assert_eq!(credits.format, QuotaFormat::Count);
-        assert_eq!(credits.unit.as_deref(), Some("点数"));
+        assert_eq!(credits.unit.as_deref(), Some("credits"));
         assert_eq!(credits.period_seconds, MONTHLY_PERIOD_SECONDS);
         assert_eq!(
             credits.resets_at,
@@ -527,7 +525,7 @@ mod tests {
             .iter()
             .find(|metric| metric.id == "extra")
             .unwrap();
-        assert_eq!(extra.values[0].label.as_deref(), Some("点数"));
+        assert_eq!(extra.values[0].label.as_deref(), Some("credits"));
         assert!(!extra.values[0].estimated);
 
         let placeholder = map_usage(&json!({
@@ -687,7 +685,7 @@ mod tests {
         assert_eq!(metrics[0].id, "orgCredits");
         assert_eq!(metrics[0].values[0].number, 150.5);
         assert_eq!(metrics[0].values[0].kind, MetricValueKind::Count);
-        assert_eq!(metrics[0].values[0].label.as_deref(), Some("点数"));
+        assert_eq!(metrics[0].values[0].label.as_deref(), Some("credits"));
         assert_eq!(metrics[1].values[0].number, 1.75);
         assert_eq!(metrics[1].values[0].kind, MetricValueKind::Dollars);
         assert!(metrics

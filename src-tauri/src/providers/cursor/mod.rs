@@ -91,7 +91,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "cursor.credits",
-                "点数",
+                "Credits",
                 "credits",
                 false,
                 MetricSection::OnDemand,

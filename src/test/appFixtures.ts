@@ -148,10 +148,10 @@ export const providerCatalog: ProviderCatalog = {
       localUsageSourceNote: null,
       links: [
         { label: '活动记录', url: 'https://openrouter.ai/activity' },
-        { label: '点数', url: 'https://openrouter.ai/settings/credits' },
+        { label: 'Credits', url: 'https://openrouter.ai/settings/credits' },
       ],
       metrics: [
-        quota('openrouter.credits', '点数', 'credits'),
+        quota('openrouter.credits', 'Credits', 'credits'),
         value('openrouter.balance', '余额', 'balance'),
         value('openrouter.today', '今天', 'today'),
         value('openrouter.week', '本周', 'week'),
@@ -212,7 +212,7 @@ export const codexState: ProviderViewState = {
         label: '额外用量',
         values: [
           { number: 32.84, kind: 'dollars', estimated: true },
-          { number: 821, kind: 'count', label: '点数', estimated: false },
+          { number: 821, kind: 'count', label: 'credits', estimated: false },
         ],
         expiriesAt: [],
       },

@@ -34,12 +34,12 @@ pub(crate) fn definition() -> ProviderDefinition {
         local_usage_source_note: None,
         links: vec![
             ProviderLink::new("活动记录", "https://openrouter.ai/activity"),
-            ProviderLink::new("点数", "https://openrouter.ai/settings/credits"),
+            ProviderLink::new("Credits", "https://openrouter.ai/settings/credits"),
         ],
         metrics: vec![
             MetricDefinition::quota(
                 "openrouter.credits",
-                "点数",
+                "Credits",
                 "credits",
                 false,
                 true,

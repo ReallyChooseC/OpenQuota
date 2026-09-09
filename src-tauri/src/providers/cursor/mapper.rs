@@ -204,7 +204,7 @@ pub fn map_live_usage(
         }
     }
     if let Some(remaining) = credits_remaining(credit_grants, stripe_balance_cents) {
-        value_metrics.push(dollar_value("credits", "点数", remaining / 100.0));
+        value_metrics.push(dollar_value("credits", "Credits", remaining / 100.0));
     }
 
     Ok(CursorMappedUsage {

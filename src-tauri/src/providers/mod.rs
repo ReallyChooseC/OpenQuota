@@ -261,7 +261,7 @@ mod tests {
             [
                 ("活动记录".into(), "https://openrouter.ai/activity".into()),
                 (
-                    "点数".into(),
+                    "Credits".into(),
                     "https://openrouter.ai/settings/credits".into()
                 ),
             ]

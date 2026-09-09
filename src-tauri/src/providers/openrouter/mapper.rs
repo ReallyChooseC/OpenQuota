@@ -26,7 +26,7 @@ pub fn map_credits(data: &serde_json::Map<String, Value>) -> CreditsMetrics {
     let used = total_usage.max(0.0);
     let total = number(data.get("total_credits")).unwrap_or(0.0).max(0.0);
     CreditsMetrics {
-        quota: (total > 0.0).then(|| dollars_quota("credits", "点数", used, total)),
+        quota: (total > 0.0).then(|| dollars_quota("credits", "Credits", used, total)),
         balance: Some(dollars_value("balance", "余额", (total - used).max(0.0))),
     }
 }
