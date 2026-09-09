@@ -23,7 +23,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
         shell: bash
         run: |
-          gh api "repos/$GH_REPO/actions/jobs/102448708625/logs" > previous-windows.log
+          gh api --allow-escape-sequences "repos/$GH_REPO/actions/jobs/102448708625/logs" > previous-windows.log
           python - <<'PY'
           import re
           from pathlib import Path
