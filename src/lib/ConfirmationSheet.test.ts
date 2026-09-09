@@ -9,7 +9,7 @@ function show(pending = false) {
   const onCancel = vi.fn();
   render(ConfirmationSheet, {
     title: '重置所有自定义设置？',
-    message: 'This restores every provider layout.',
+    message: 'This 恢复所有服务商指标 layout.',
     confirmLabel: '全部重置',
     pending,
     onConfirm,

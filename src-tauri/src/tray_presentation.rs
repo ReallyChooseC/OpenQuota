@@ -266,7 +266,7 @@ fn tray_metric(
                             UsageDisplay::Used => "已用",
                             UsageDisplay::Left => "剩余",
                         };
-                        let unit = quota.unit.as_deref().unwrap_or("requests");
+                        let unit = quota.unit.as_deref().unwrap_or("次请求");
                         return TrayMetric {
                             value: format!("{value:.0}"),
                             detail: format!("{} {value:.0} {unit} {word}", quota.label),
@@ -705,9 +705,9 @@ mod tests {
             super::tray_metric(definition, &snapshot, crate::models::UsageDisplay::Used).unwrap();
 
         assert_eq!(left.value, "75");
-        assert_eq!(left.detail, "Requests 75 searches left");
+        assert_eq!(left.detail, "请求数 75 searches 剩余");
         assert_eq!(used.value, "25");
-        assert_eq!(used.detail, "Requests 25 searches used");
+        assert_eq!(used.detail, "请求数 25 searches 已用");
         assert_eq!(
             left.gauge,
             Some(TrayGauge {
@@ -814,7 +814,7 @@ mod tests {
         )
         .unwrap();
         assert_eq!(metric.value, "$33 · 821 credits");
-        assert_eq!(metric.detail, "Extra Usage $32.84 · 821 credits");
+        assert_eq!(metric.detail, "额外用量 $32.84 · 821 credits");
         assert_eq!(metric.gauge, None);
     }
 
@@ -851,7 +851,7 @@ mod tests {
             super::tray_metric(&definition, &snapshot, crate::models::UsageDisplay::Left).unwrap();
 
         assert_eq!(metric.value, "2500 cap");
-        assert_eq!(metric.detail, "Extra Usage 2500 cap");
+        assert_eq!(metric.detail, "额外用量 2500 cap");
         assert_eq!(metric.gauge, None);
         assert!(bar_fractions(&[TrayGroup {
             provider_id: "grok".into(),

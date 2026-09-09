@@ -16,7 +16,7 @@ describe('ProviderLinks', () => {
     });
 
     expect(container.querySelector('.provider-links')).toHaveStyle('--provider-link-columns: 3');
-    await fireEvent.click(screen.getByRole('button', { name: 'Docs, opens in browser' }));
+    await fireEvent.click(screen.getByRole('button', { name: 'Docs，在浏览器中打开' }));
     expect(onOpen).toHaveBeenCalledWith(2);
   });
 });

@@ -89,7 +89,10 @@ describe('quota pacing presentation', () => {
 
   it('shows the rounded spare copy and projected-use tooltip when close', () => {
     show(quota(46));
-    expect(screen.getByText('~8% spare')).toHaveAttribute('data-tooltip', '重置时预计已用约 92%');
+    expect(screen.getByText('预计剩余约 8%')).toHaveAttribute(
+      'data-tooltip',
+      '重置时预计已用约 92%',
+    );
   });
 
   it('frames the even-pace tick in the selected remaining mode', () => {

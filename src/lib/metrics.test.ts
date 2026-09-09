@@ -33,7 +33,7 @@ describe('provider catalog index', () => {
     expect(catalog.displayName('future-provider')).toBe('future-provider');
     expect(catalog.metric('future-provider.session')).toBeUndefined();
     expect(catalog.localUsageSourceNote('future-provider')).toBe(
-      'From your future-provider usage history',
+      '来自你的 future-provider 用量历史',
     );
   });
 
@@ -56,12 +56,12 @@ describe('provider catalog index', () => {
     const provider = structuredClone(providerCatalog.providers[1]);
     expect(
       () => new ProviderCatalogIndex({ providers: [provider, structuredClone(provider)] }),
-    ).toThrow('Duplicate provider definition: codex');
+    ).toThrow('服务商定义重复：codex');
 
     const duplicateMetric = structuredClone(provider);
     duplicateMetric.metrics.push(structuredClone(duplicateMetric.metrics[0]));
     expect(() => new ProviderCatalogIndex({ providers: [duplicateMetric] })).toThrow(
-      'Duplicate metric definition: codex.session',
+      '指标定义重复：codex.session',
     );
   });
 });

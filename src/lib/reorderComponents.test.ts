@@ -108,7 +108,7 @@ describe('pointer reorder integrations', () => {
       reducedMotion: false,
     });
 
-    const input = screen.getByRole('textbox', { name: 'Name for Claude' });
+    const input = screen.getByRole('textbox', { name: 'Claude 的名称' });
     expect(input).toHaveAttribute('placeholder', 'Claude');
     await fireEvent.input(input, { target: { value: 'Personal' } });
     await fireEvent.blur(input);
@@ -132,7 +132,7 @@ describe('pointer reorder integrations', () => {
       reducedMotion: false,
     });
 
-    const input = screen.getByRole('textbox', { name: 'Name for Claude' });
+    const input = screen.getByRole('textbox', { name: 'Claude 的名称' });
     await fireEvent.input(input, { target: { value: 'Discard me' } });
     await fireEvent.keyDown(input, { key: 'Escape' });
 
@@ -160,7 +160,7 @@ describe('pointer reorder integrations', () => {
       reducedMotion: false,
     });
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Pin Today' }));
+    await fireEvent.click(screen.getByRole('button', { name: '置顶 今天' }));
     const starred = onChange.mock.calls.at(-1)![0] as AppSettings;
     const starredToday = starred.providers
       .find((provider) => provider.id === 'codex')!
@@ -170,7 +170,7 @@ describe('pointer reorder integrations', () => {
 
     onChange.mockClear();
     await rerender({ settings: starred });
-    await fireEvent.click(screen.getByRole('checkbox', { name: 'Show Session' }));
+    await fireEvent.click(screen.getByRole('checkbox', { name: '显示 当前周期' }));
     const hidden = onChange.mock.calls.at(-1)![0] as AppSettings;
     const hiddenSession = hidden.providers
       .find((provider) => provider.id === 'codex')!
@@ -192,7 +192,7 @@ describe('pointer reorder integrations', () => {
       reducedMotion: false,
     });
 
-    const button = screen.getByRole('button', { name: 'Pin Today' });
+    const button = screen.getByRole('button', { name: '置顶 今天' });
     const animate = vi.fn();
     Object.defineProperty(button, 'animate', { configurable: true, value: animate });
     await fireEvent.click(button);
@@ -244,7 +244,7 @@ describe('pointer reorder integrations', () => {
       reducedMotion: false,
     });
 
-    const handle = screen.getByRole('button', { name: 'Move Codex' });
+    const handle = screen.getByRole('button', { name: '移动 Codex' });
     handle.focus();
     await fireEvent.keyDown(handle, { key: 'ArrowDown', altKey: true });
 

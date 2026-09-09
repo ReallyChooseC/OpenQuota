@@ -28,12 +28,12 @@ describe('UsageMetric model detail', () => {
       },
     });
 
-    const reading = screen.getByRole('button', { name: '$0.04 · 2K tokens' });
+    const reading = screen.getByRole('button', { name: '$0.04 · 2K Token' });
     await fireEvent.mouseEnter(reading);
-    expect(screen.queryByRole('tooltip', { name: 'Today model usage' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('tooltip', { name: '今天 模型用量' })).not.toBeInTheDocument();
     await vi.advanceTimersByTimeAsync(400);
 
-    const detail = screen.getByRole('tooltip', { name: 'Today model usage' });
+    const detail = screen.getByRole('tooltip', { name: '今天 模型用量' });
     expect(detail).toHaveTextContent('gpt-5.4');
     expect(detail).toHaveTextContent('gpt-5.3-codex');
     expect(detail).toHaveTextContent('75%');
@@ -73,8 +73,8 @@ describe('UsageMetric model detail', () => {
       },
     });
 
-    const reading = screen.getByRole('button', { name: '$0.03 · 500 tokens' });
-    expect(reading).toHaveAttribute('data-tooltip', '$0.03\n500 tokens\n本地估算，可能存在偏差');
+    const reading = screen.getByRole('button', { name: '$0.03 · 500 Token' });
+    expect(reading).toHaveAttribute('data-tooltip', '$0.03\n500 Token\n本地估算，可能存在偏差');
     expect(reading).not.toHaveTextContent('~');
     expect(screen.getByLabelText('此时段使用了价格未知的模型')).toBeVisible();
   });
@@ -92,9 +92,9 @@ describe('UsageMetric model detail', () => {
       },
     });
 
-    expect(screen.getByRole('button', { name: '$2.1K · 1.5B tokens' })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: '$2.1K · 1.5B Token' })).toHaveAttribute(
       'data-tooltip',
-      '$2,059.07\n1,506,025,363 tokens\n本地估算，可能存在偏差',
+      '$2,059.07\n1,506,025,363 Token\n本地估算，可能存在偏差',
     );
   });
 
@@ -114,7 +114,7 @@ describe('UsageMetric model detail', () => {
       },
     });
 
-    expect(screen.getByRole('button', { name: '$0.03 · 500 tokens' })).not.toHaveAttribute(
+    expect(screen.getByRole('button', { name: '$0.03 · 500 Token' })).not.toHaveAttribute(
       'data-tooltip',
     );
   });

@@ -77,7 +77,7 @@ describe('OpenQuota update lifecycle', () => {
     await fireEvent.click(screen.getByRole('button', { name: '设置' }));
     await fireEvent.click(screen.getByRole('button', { name: '检查更新…' }));
     await waitFor(() => expect(mocks.invoke).toHaveBeenCalledWith('check_for_updates'));
-    expect(await screen.findByText('OpenQuota 0.1.0 is up to date.')).toBeInTheDocument();
+    expect(await screen.findByText('OpenQuota 0.1.0 已是最新版本。')).toBeInTheDocument();
     expect(document.querySelector('.settings-update-status')).toBeNull();
     expect(mocks.invoke).toHaveBeenCalledWith(
       'save_app_settings',
@@ -131,7 +131,7 @@ describe('OpenQuota update lifecycle', () => {
     await fireEvent.click(screen.getByLabelText('打开选项'));
     await fireEvent.click(screen.getByRole('button', { name: '检查更新…' }));
     expect(await screen.findByRole('region', { name: '有可用更新' })).toHaveTextContent(
-      'OpenQuota 0.2.0 is ready to download.',
+      'OpenQuota 0.2.0 已可下载。',
     );
     expect(screen.getByText('New release')).toBeInTheDocument();
     await fireEvent.click(screen.getByRole('button', { name: '忽略' }));

@@ -79,16 +79,16 @@ describe('native visual contract', () => {
 
     await fireEvent.mouseEnter(chart);
     await vi.advanceTimersByTimeAsync(399);
-    expect(screen.queryByText('peak 42K tokens')).not.toBeInTheDocument();
+    expect(screen.queryByText('峰值 42K Token')).not.toBeInTheDocument();
     await vi.advanceTimersByTimeAsync(1);
-    expect(screen.getByText('peak 42K tokens')).toBeInTheDocument();
+    expect(screen.getByText('峰值 42K Token')).toBeInTheDocument();
     expect(screen.getByText('根据本地 Codex 日志估算')).toBeInTheDocument();
 
     await fireEvent.mouseLeave(chart);
     await vi.advanceTimersByTimeAsync(179);
-    expect(screen.getByText('peak 42K tokens')).toBeInTheDocument();
+    expect(screen.getByText('峰值 42K Token')).toBeInTheDocument();
     await vi.advanceTimersByTimeAsync(1);
-    expect(screen.queryByText('peak 42K tokens')).not.toBeInTheDocument();
+    expect(screen.queryByText('峰值 42K Token')).not.toBeInTheDocument();
   });
 
   it('reveals an exact day value when a detail bar is hovered', async () => {
@@ -103,7 +103,7 @@ describe('native visual contract', () => {
     await vi.advanceTimersByTimeAsync(400);
     const bars = container.querySelectorAll<HTMLElement>('.trend-detail__bars i');
     await fireEvent.mouseEnter(bars[bars.length - 1]);
-    expect(screen.getByText(/· 42K tokens$/)).toBeInTheDocument();
+    expect(screen.getByText(/· 42K Token$/)).toBeInTheDocument();
     expect(container.querySelectorAll('.trend-detail__bars i.muted')).toHaveLength(30);
   });
 });

@@ -73,9 +73,9 @@ describe('ValueMetric', () => {
     const trigger = screen.getByRole('button', { name: '额度重置次数: 2 available' });
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     await fireEvent.click(trigger);
-    expect(screen.getByRole('dialog', { name: '额度重置次数 details' })).toBeVisible();
-    expect(screen.getByText('1h 30m')).toBeInTheDocument();
-    expect(screen.getByText('3h')).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: '额度重置次数 详情' })).toBeVisible();
+    expect(screen.getByText('1小时 30分钟')).toBeInTheDocument();
+    expect(screen.getByText('3小时')).toBeInTheDocument();
 
     rerender({
       label: '额度重置次数',
@@ -89,7 +89,8 @@ describe('ValueMetric', () => {
       resetDisplay: 'countdown',
       timeFormat: 'twentyFourHour',
     });
-    expect(screen.getAllByText('3 available')).toHaveLength(2);
+    expect(screen.getByText('3 available')).toBeInTheDocument();
+    expect(screen.getByText('可用 3 次')).toBeInTheDocument();
     expect(screen.getByText('无法获取到期时间')).toBeInTheDocument();
   });
 
@@ -109,7 +110,7 @@ describe('ValueMetric', () => {
     });
 
     await fireEvent.click(screen.getByRole('button', { name: '额度重置次数: 1 available' }));
-    await fireEvent.click(screen.getByRole('button', { name: /重置额度 expiring/ }));
+    await fireEvent.click(screen.getByRole('button', { name: /使用将于.*到期的重置次数/ }));
     expect(mocks.invoke).not.toHaveBeenCalled();
     expect(screen.getByRole('group', { name: '使用这次额度重置？' })).toHaveAccessibleDescription(
       '立即重置用量限制。此操作无法撤销。',
@@ -147,14 +148,14 @@ describe('ValueMetric', () => {
       trigger.focus();
       await fireEvent.click(trigger);
 
-      const use = screen.getByRole('button', { name: /重置额度 expiring/ });
+      const use = screen.getByRole('button', { name: /使用将于.*到期的重置次数/ });
       use.focus();
       await fireEvent.click(use);
       await vi.advanceTimersByTimeAsync(181);
 
       expect(screen.getByText('使用这次额度重置？')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: '取消' })).toHaveFocus();
-      expect(screen.getByRole('dialog', { name: '额度重置次数 details' })).toBeVisible();
+      expect(screen.getByRole('dialog', { name: '额度重置次数 详情' })).toBeVisible();
       expect(mocks.invoke).not.toHaveBeenCalled();
     } finally {
       vi.useRealTimers();
@@ -181,13 +182,13 @@ describe('ValueMetric', () => {
       expect(screen.queryByLabelText('Drag 额度重置次数 panel')).not.toBeInTheDocument();
       expect(screen.queryByRole('button', { name: 'Close 额度重置次数' })).not.toBeInTheDocument();
 
-      const use = screen.getByRole('button', { name: /重置额度 expiring/ });
+      const use = screen.getByRole('button', { name: /使用将于.*到期的重置次数/ });
       await fireEvent.click(use);
       let cancel = screen.getByRole('button', { name: '取消' });
       await vi.waitFor(() => expect(cancel).toHaveFocus());
       await fireEvent.click(cancel);
       expect(screen.queryByText('使用这次额度重置？')).not.toBeInTheDocument();
-      let restoredUse = screen.getByRole('button', { name: /重置额度 expiring/ });
+      let restoredUse = screen.getByRole('button', { name: /使用将于.*到期的重置次数/ });
       await vi.waitFor(() => expect(restoredUse).toHaveFocus());
 
       await fireEvent.click(restoredUse);
@@ -195,25 +196,21 @@ describe('ValueMetric', () => {
       await vi.waitFor(() => expect(cancel).toHaveFocus());
       await fireEvent.keyDown(cancel, { key: 'Escape' });
       expect(screen.queryByText('使用这次额度重置？')).not.toBeInTheDocument();
-      const dialog = screen.getByRole('dialog', { name: '额度重置次数 details' });
+      const dialog = screen.getByRole('dialog', { name: '额度重置次数 详情' });
       expect(dialog).toBeVisible();
-      restoredUse = screen.getByRole('button', { name: /重置额度 expiring/ });
+      restoredUse = screen.getByRole('button', { name: /使用将于.*到期的重置次数/ });
       await vi.waitFor(() => expect(restoredUse).toHaveFocus());
       await fireEvent.mouseLeave(dialog);
       await vi.advanceTimersByTimeAsync(181);
       expect(dialog).toBeVisible();
 
       await fireEvent.keyDown(restoredUse, { key: 'Escape' });
-      expect(
-        screen.queryByRole('dialog', { name: '额度重置次数 details' }),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('dialog', { name: '额度重置次数 详情' })).not.toBeInTheDocument();
       await vi.waitFor(() =>
         expect(screen.getByRole('button', { name: '额度重置次数: 1 available' })).toHaveFocus(),
       );
       await vi.advanceTimersByTimeAsync(351);
-      expect(
-        screen.queryByRole('dialog', { name: '额度重置次数 details' }),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('dialog', { name: '额度重置次数 详情' })).not.toBeInTheDocument();
     } finally {
       vi.useRealTimers();
     }

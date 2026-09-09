@@ -218,7 +218,7 @@ mod tests {
         )))
         .unwrap();
 
-        assert_eq!(mapped.status_metrics[0].text, "2500 cap");
+        assert_eq!(mapped.status_metrics[0].text, "上限 2500");
         assert_eq!(mapped.status_metrics[0].tone, StatusTone::Positive);
     }
 

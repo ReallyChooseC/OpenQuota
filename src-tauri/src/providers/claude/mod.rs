@@ -855,14 +855,11 @@ mod tests {
     fn rate_limit_notice_distinguishes_empty_and_stale_live_usage() {
         let empty = rate_limit_notice(301, false);
         assert_eq!(empty.title, "实时用量查询已暂停");
-        assert_eq!(empty.message, "Retrying in about 6 minutes");
+        assert_eq!(empty.message, "约 6 分钟后重试");
         assert_eq!(empty.tone, ProviderNoticeTone::Warning);
 
         let stale = rate_limit_notice(60, true);
-        assert_eq!(
-            stale.message,
-            "Showing the last successful limits · Retrying in about 1 minute"
-        );
+        assert_eq!(stale.message, "显示上次成功获取的额度 · 约 1 分钟后重试");
     }
 
     #[test]

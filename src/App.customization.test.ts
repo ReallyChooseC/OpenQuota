@@ -79,7 +79,7 @@ describe('OpenQuota customization persistence and reorder', () => {
     await fireEvent.click(screen.getByRole('button', { name: '重置所有自定义设置' }));
 
     const dialog = screen.getByRole('alertdialog', { name: '重置所有自定义设置？' });
-    expect(dialog).toHaveTextContent('restores every provider');
+    expect(dialog).toHaveTextContent('恢复所有服务商指标');
     expect(browserConfirm).not.toHaveBeenCalled();
     expect(mocks.invoke).not.toHaveBeenCalledWith('reset_customization');
 
@@ -102,7 +102,7 @@ describe('OpenQuota customization persistence and reorder', () => {
     await screen.findByText('Plus');
     await fireEvent.click(screen.getByLabelText('打开选项'));
     await fireEvent.click(screen.getByRole('button', { name: '自定义' }));
-    const toggle = screen.getByRole('checkbox', { name: 'Enable codex' });
+    const toggle = screen.getByRole('checkbox', { name: '启用 codex' });
     await fireEvent.click(toggle);
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith(
@@ -154,9 +154,9 @@ describe('OpenQuota customization persistence and reorder', () => {
   it('reorders dashboard metrics directly with a custom drag lift', async () => {
     render(App);
     await screen.findByText('Plus');
-    const session = screen.getByRole('group', { name: 'Session options' });
-    const weekly = screen.getByRole('group', { name: 'Weekly options' });
-    const trend = screen.getByRole('group', { name: '用量趋势 options' });
+    const session = screen.getByRole('group', { name: '当前周期 选项' });
+    const weekly = screen.getByRole('group', { name: '本周额度 选项' });
+    const trend = screen.getByRole('group', { name: '用量趋势 选项' });
     session.getBoundingClientRect = () =>
       ({ top: 0, right: 280, bottom: 40, left: 0, width: 280, height: 40 }) as DOMRect;
     weekly.getBoundingClientRect = () =>
@@ -268,7 +268,7 @@ describe('OpenQuota customization persistence and reorder', () => {
   it('does not let the global Enter shortcut steal an interactive control keypress', async () => {
     render(App);
     await screen.findByText('Plus');
-    const handle = screen.getByRole('button', { name: 'Move Session' });
+    const handle = screen.getByRole('button', { name: '移动 当前周期' });
 
     handle.focus();
     await fireEvent.keyDown(handle, { key: 'Enter' });
@@ -283,8 +283,8 @@ describe('OpenQuota customization persistence and reorder', () => {
   it('restores the pre-drag layout when a reorder is cancelled', async () => {
     render(App);
     await screen.findByText('Plus');
-    const session = screen.getByRole('group', { name: 'Session options' });
-    const weekly = screen.getByRole('group', { name: 'Weekly options' });
+    const session = screen.getByRole('group', { name: '当前周期 选项' });
+    const weekly = screen.getByRole('group', { name: '本周额度 选项' });
     session.getBoundingClientRect = () =>
       ({ top: 0, right: 280, bottom: 40, left: 0, width: 280, height: 40 }) as DOMRect;
     weekly.getBoundingClientRect = () =>

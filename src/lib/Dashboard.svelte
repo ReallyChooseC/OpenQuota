@@ -455,7 +455,7 @@
           data-reorder-touch-handle
           role="button"
           tabindex="0"
-          aria-label={`Move ${providerDisplayName(provider.id)}`}
+          aria-label={`移动 ${providerDisplayName(provider.id)}`}
           aria-describedby="reorder-instructions"
           aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown"><Icon name="grip-dots" size={13} /></span
         >
@@ -464,7 +464,7 @@
         {#if state?.snapshot && state.stale}<span
             class="status-badge"
             data-tooltip={stalenessTooltip(snapshot.refreshedAt)}
-            >数据已过期<span class="sr-only">. {stalenessTooltip(snapshot.refreshedAt)}</span></span
+            >数据已过期<span class="sr-only">。{stalenessTooltip(snapshot.refreshedAt)}</span></span
           >{/if}
         <span
           class="provider-status-slot"
@@ -549,7 +549,7 @@
               data-reorder-handle
               data-reorder-touch-handle
               type="button"
-              aria-label={`Move ${metricDefinition(metric.id)?.label ?? metric.id}`}
+              aria-label={`移动 ${metricDefinition(metric.id)?.label ?? metric.id}`}
               aria-describedby="reorder-instructions"
               aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown"
               ><Icon name="grip-lines" size={13} strokeWidth={2} /></button
@@ -608,7 +608,7 @@
                     data-reorder-handle
                     data-reorder-touch-handle
                     type="button"
-                    aria-label={`Move ${metricDefinition(metric.id)?.label ?? metric.id}`}
+                    aria-label={`移动 ${metricDefinition(metric.id)?.label ?? metric.id}`}
                     aria-describedby="reorder-instructions"
                     aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown"
                     ><Icon name="grip-lines" size={13} strokeWidth={2} /></button

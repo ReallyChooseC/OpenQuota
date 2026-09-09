@@ -176,7 +176,7 @@
                 data-reorder-touch-handle
                 role="button"
                 tabindex="0"
-                aria-label={`Move ${metricDefinition(metric.id)?.label ?? metric.id}`}
+                aria-label={`移动 ${metricDefinition(metric.id)?.label ?? metric.id}`}
                 aria-describedby="reorder-instructions"
                 aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown"
                 ><Icon name="grip-lines" size={16} strokeWidth={2} /></span

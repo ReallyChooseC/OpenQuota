@@ -115,7 +115,7 @@ describe('share card layout', () => {
     );
 
     expect(rows.find((row) => row.kind === 'text' && row.label === '今天')).toMatchObject({
-      value: '$0.03 · 500 tokens',
+      value: '$0.03 · 500 Token',
     });
   });
 
@@ -364,7 +364,7 @@ describe('share card layout', () => {
 
     expect(canvas.width).toBe(TOTAL_SPEND_GEOMETRY.width * SHARE_CARD_SCALE);
     expect(canvas.height).toBe(totalSpendShareCardHeight() * SHARE_CARD_SCALE);
-    expect(drawn).toEqual(expect.arrayContaining(['今天', '昨天', '近 30 天', 'Codex', 'dollars']));
+    expect(drawn).toEqual(expect.arrayContaining(['今天', '昨天', '近 30 天', 'Codex', '美元']));
     expect(drawn).not.toEqual(
       expect.arrayContaining([
         '费用',

@@ -77,7 +77,7 @@
           data-reorder-touch-handle
           role="button"
           tabindex={provider.enabled ? 0 : undefined}
-          aria-label={`Move ${providerDisplayName(provider.id)}`}
+          aria-label={`移动 ${providerDisplayName(provider.id)}`}
           aria-describedby="reorder-instructions"
           aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown"
           ><Icon name="grip-lines" size={16} strokeWidth={2} /></span

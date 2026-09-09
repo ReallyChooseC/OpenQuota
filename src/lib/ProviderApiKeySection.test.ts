@@ -28,9 +28,9 @@ describe('ProviderApiKeySection', () => {
       providerId: 'openrouter',
       providerName: 'OpenRouter',
     });
-    expect(await screen.findByRole('region', { name: 'OpenRouter API Key' })).toBeInTheDocument();
+    expect(await screen.findByRole('region', { name: 'OpenRouter API 密钥' })).toBeInTheDocument();
     await fireEvent.click(screen.getByRole('button', { name: '添加' }));
-    const input = screen.getByLabelText('OpenRouter API key');
+    const input = screen.getByLabelText('OpenRouter API 密钥', { selector: 'input' });
     expect(input).toHaveAttribute('type', 'password');
     expect(input).toHaveAttribute('placeholder', '粘贴 API 密钥');
     await fireEvent.input(input, { target: { value: 'sk-or-secret' } });
@@ -43,7 +43,7 @@ describe('ProviderApiKeySection', () => {
       }),
     );
     expect(screen.queryByDisplayValue('sk-or-secret')).not.toBeInTheDocument();
-    expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
+    expect(screen.getByRole('textbox', { name: 'OpenRouter API 密钥来源' })).toHaveValue(
       '已安全保存',
     );
     await waitFor(() => expect(screen.getByRole('button', { name: '完成' })).toHaveFocus());
@@ -66,17 +66,17 @@ describe('ProviderApiKeySection', () => {
       providerId: 'openrouter',
       providerName: 'OpenRouter',
     });
-    await screen.findByRole('region', { name: 'OpenRouter API Key' });
+    await screen.findByRole('region', { name: 'OpenRouter API 密钥' });
     await fireEvent.click(screen.getByRole('button', { name: '编辑' }));
-    expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
+    expect(screen.getByRole('textbox', { name: 'OpenRouter API 密钥来源' })).toHaveValue(
       '来自环境变量',
     );
     await fireEvent.click(screen.getByRole('checkbox', { name: '改用自定义密钥' }));
-    await fireEvent.input(screen.getByLabelText('OpenRouter API key'), {
+    await fireEvent.input(screen.getByLabelText('OpenRouter API 密钥', { selector: 'input' }), {
       target: { value: 'override' },
     });
     await fireEvent.click(screen.getByRole('button', { name: '保存' }));
-    expect(await screen.findByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
+    expect(await screen.findByRole('textbox', { name: 'OpenRouter API 密钥来源' })).toHaveValue(
       '自定义密钥',
     );
     expect(screen.queryByDisplayValue('override')).not.toBeInTheDocument();
@@ -95,7 +95,7 @@ describe('ProviderApiKeySection', () => {
     expect(
       screen.queryByRole('group', { name: '移除已保存的 API 密钥？' }),
     ).not.toBeInTheDocument();
-    expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
+    expect(screen.getByRole('textbox', { name: 'OpenRouter API 密钥来源' })).toHaveValue(
       '自定义密钥',
     );
     await waitFor(() => expect(removeTrigger).toHaveFocus());
@@ -116,7 +116,7 @@ describe('ProviderApiKeySection', () => {
     expect(
       mocks.invoke.mock.calls.filter(([command]) => command === 'delete_provider_api_key'),
     ).toHaveLength(1);
-    expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
+    expect(screen.getByRole('textbox', { name: 'OpenRouter API 密钥来源' })).toHaveValue(
       '来自环境变量',
     );
     await waitFor(() => expect(screen.getByRole('button', { name: '完成' })).toHaveFocus());
@@ -136,17 +136,17 @@ describe('ProviderApiKeySection', () => {
       providerId: 'openrouter',
       providerName: 'OpenRouter',
     });
-    await screen.findByRole('region', { name: 'OpenRouter API Key' });
+    await screen.findByRole('region', { name: 'OpenRouter API 密钥' });
     await fireEvent.click(screen.getByRole('button', { name: '编辑' }));
-    expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
+    expect(screen.getByRole('textbox', { name: 'OpenRouter API 密钥来源' })).toHaveValue(
       '来自配置文件',
     );
     await fireEvent.click(screen.getByRole('checkbox', { name: '改用自定义密钥' }));
-    await fireEvent.input(screen.getByLabelText('OpenRouter API key'), {
+    await fireEvent.input(screen.getByLabelText('OpenRouter API 密钥', { selector: 'input' }), {
       target: { value: 'config-override' },
     });
     await fireEvent.click(screen.getByRole('button', { name: '保存' }));
-    expect(await screen.findByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
+    expect(await screen.findByRole('textbox', { name: 'OpenRouter API 密钥来源' })).toHaveValue(
       '自定义密钥',
     );
   });
@@ -171,9 +171,9 @@ describe('ProviderApiKeySection', () => {
       providerName: 'OpenRouter',
     });
 
-    await screen.findByRole('region', { name: 'OpenRouter API Key' });
+    await screen.findByRole('region', { name: 'OpenRouter API 密钥' });
     await fireEvent.click(screen.getByRole('button', { name: '添加' }));
-    await fireEvent.input(screen.getByLabelText('OpenRouter API key'), {
+    await fireEvent.input(screen.getByLabelText('OpenRouter API 密钥', { selector: 'input' }), {
       target: { value: 'saved-secret' },
     });
     await fireEvent.click(screen.getByRole('button', { name: '保存' }));
@@ -182,7 +182,7 @@ describe('ProviderApiKeySection', () => {
       'The API key was saved securely, but OpenQuota could not finish updating provider status.',
     );
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-    expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
+    expect(screen.getByRole('textbox', { name: 'OpenRouter API 密钥来源' })).toHaveValue(
       '已安全保存',
     );
   });
@@ -198,7 +198,7 @@ describe('ProviderApiKeySection', () => {
         providerId: 'codex',
       }),
     );
-    expect(screen.queryByRole('region', { name: 'Codex API Key' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: 'Codex API 密钥' })).not.toBeInTheDocument();
   });
 
   it('shows an actionable credential-store error instead of hiding the API-key controls', async () => {
@@ -210,7 +210,7 @@ describe('ProviderApiKeySection', () => {
       providerName: 'OpenRouter',
     });
 
-    expect(await screen.findByRole('region', { name: 'OpenRouter API Key' })).toBeInTheDocument();
+    expect(await screen.findByRole('region', { name: 'OpenRouter API 密钥' })).toBeInTheDocument();
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Linux 密钥服务暂时不可用。 Start or unlock your keyring and try again.',
     );
