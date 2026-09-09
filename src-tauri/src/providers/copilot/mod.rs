@@ -643,7 +643,7 @@ mod tests {
         assert_eq!(snapshot.plan.as_deref(), Some("Pro"));
         assert_eq!(snapshot.quotas[0].id, "premium");
         assert_eq!(snapshot.quotas[0].format, QuotaFormat::Count);
-        assert_eq!(snapshot.quotas[0].unit.as_deref(), Some("credits"));
+        assert_eq!(snapshot.quotas[0].unit.as_deref(), Some("点数"));
         assert_eq!(snapshot.value_metrics[0].id, "extra");
         assert_eq!(snapshot.value_metrics[0].values[0].number, 2.0);
         assert_eq!(
