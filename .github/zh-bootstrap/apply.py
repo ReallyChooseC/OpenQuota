@@ -1,4 +1,4 @@
-"""One-time exact source edits for proxy routing and remaining generic UI text."""
+"""One-time idempotent source edits for proxy routing and remaining generic UI text."""
 from pathlib import Path
 
 ROOT = Path.cwd()
@@ -7,12 +7,16 @@ ROOT = Path.cwd()
 def replace_exact(relative_path: str, old: str, new: str, expected: int = 1) -> None:
     path = ROOT / relative_path
     text = path.read_text(encoding="utf-8")
-    actual = text.count(old)
-    if actual != expected:
-        raise RuntimeError(
-            f"Expected {expected} occurrence(s) in {relative_path}, found {actual}: {old!r}"
-        )
-    path.write_text(text.replace(old, new), encoding="utf-8")
+    old_count = text.count(old)
+    if old_count == expected:
+        path.write_text(text.replace(old, new), encoding="utf-8")
+        return
+    if old_count == 0 and text.count(new) >= expected:
+        return
+    raise RuntimeError(
+        f"Expected {expected} old occurrence(s), or an already applied replacement, "
+        f"in {relative_path}; found old={old_count}, new={text.count(new)}: {old!r}"
+    )
 
 
 # Remote provider requests follow the environment/Windows system proxy. The
