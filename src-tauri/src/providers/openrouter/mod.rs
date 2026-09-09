@@ -433,7 +433,7 @@ mod tests {
             .refresh()
             .unwrap_err();
         assert_eq!(error.kind(), ProviderErrorKind::Authentication);
-        assert!(error.to_string().contains("invalid"));
+        assert!(error.to_string().contains("无效"));
 
         let missing = provider(None, 200, r#"{"data":{}}"#, 200, r#"{"data":{}}"#)
             .refresh()

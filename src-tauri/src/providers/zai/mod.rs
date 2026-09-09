@@ -308,7 +308,7 @@ mod tests {
             ["session", "weekly", "webSearches"]
         );
         assert_eq!(snapshot.quotas[2].format, QuotaFormat::Count);
-        assert_eq!(snapshot.quotas[2].unit.as_deref(), Some("searches"));
+        assert_eq!(snapshot.quotas[2].unit.as_deref(), Some("次搜索"));
         assert!(snapshot.status_metrics.is_empty());
         assert!(snapshot.warnings.is_empty());
     }
@@ -340,7 +340,7 @@ mod tests {
                 .refresh()
                 .unwrap_err();
             assert_eq!(invalid.kind(), ProviderErrorKind::Authentication);
-            assert!(invalid.to_string().contains("invalid"));
+            assert!(invalid.to_string().contains("无效"));
             assert!(!invalid.to_string().contains("bad-key"));
         }
 

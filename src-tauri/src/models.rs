@@ -913,7 +913,7 @@ mod tests {
     #[test]
     fn provider_link_visibility_matches_the_trimmed_http_contract() {
         let links = [
-            ProviderLink::new(" Status ", " https://status.example.com/ "),
+            ProviderLink::new(" 服务状态 ", " https://status.example.com/ "),
             ProviderLink::new("HTTP", "http://example.com/dashboard"),
             ProviderLink::new("", "https://example.com/"),
             ProviderLink::new("No URL", " "),

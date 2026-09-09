@@ -207,7 +207,14 @@ fn snapshot_quota(
             QuotaFormat::Count,
             Some(used),
             Some(limit),
-            Some(unit.to_owned()),
+            Some(
+                match unit {
+                    "credits" => "点数",
+                    "requests" => "次请求",
+                    value => value,
+                }
+                .to_owned(),
+            ),
         )
     } else {
         (QuotaFormat::Percent, None, None, None)

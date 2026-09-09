@@ -257,7 +257,7 @@ mod tests {
         assert_eq!(mapped.value_metrics[0].values[0].number, 1234.56);
         assert_eq!(
             mapped.value_metrics[0].values[0].label.as_deref(),
-            Some("spent")
+            Some("已用")
         );
     }
 

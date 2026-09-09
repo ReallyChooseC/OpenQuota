@@ -133,7 +133,7 @@ fn unlimited_quota(
 ) -> QuotaWindow {
     QuotaWindow {
         id: id.into(),
-        label: format!("{label} (Unlimited)"),
+        label: format!("{label}（不限量）"),
         used_percent: 0.0,
         resets_at,
         period_seconds,
@@ -261,7 +261,7 @@ mod tests {
         assert!(mapped
             .quotas
             .iter()
-            .all(|quota| !quota.label.contains("Unlimited")));
+            .all(|quota| !quota.label.contains("不限量")));
     }
 
     #[test]
@@ -280,7 +280,7 @@ mod tests {
             .iter()
             .find(|quota| quota.id == "weekly")
             .unwrap();
-        assert_eq!(weekly.label, "Weekly (Unlimited)");
+        assert_eq!(weekly.label, "本周额度（不限量）");
     }
 
     #[test]

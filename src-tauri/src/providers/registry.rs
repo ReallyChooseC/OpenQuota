@@ -390,7 +390,7 @@ mod tests {
     fn registry_exposes_only_trimmed_http_provider_links() {
         let mut provider = definition("links");
         provider.links = vec![
-            crate::models::ProviderLink::new(" Status ", " https://status.example.com/ "),
+            crate::models::ProviderLink::new(" 服务状态 ", " https://status.example.com/ "),
             crate::models::ProviderLink::new("", "https://example.com/"),
             crate::models::ProviderLink::new("File", "file:///tmp/private"),
         ];

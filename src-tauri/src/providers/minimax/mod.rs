@@ -271,7 +271,7 @@ mod tests {
                 .collect::<Vec<_>>(),
             ["session", "weekly"]
         );
-        assert_eq!(snapshot.quotas[1].label, "Weekly (Unlimited)");
+        assert_eq!(snapshot.quotas[1].label, "本周额度（不限量）");
     }
 
     #[test]
