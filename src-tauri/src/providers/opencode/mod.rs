@@ -58,7 +58,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "opencode.monthly",
-                "Monthly",
+                "本月额度",
                 "monthly",
                 false,
                 true,

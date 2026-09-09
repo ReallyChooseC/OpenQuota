@@ -38,7 +38,7 @@ pub(super) fn map_go_usage(response: UsageResponse) -> Result<Vec<QuotaWindow>, 
             "本周额度",
             WEEKLY_PERIOD_SECONDS,
         ),
-        quota(usage.get("monthly"), "monthly", "Monthly", 0),
+        quota(usage.get("monthly"), "monthly", "本月额度", 0),
     ]
     .into_iter()
     .collect()

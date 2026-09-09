@@ -12,7 +12,7 @@
 
 ## 网络与代理
 
-Windows 版会自动读取当前用户在“设置 → 网络和 Internet → 代理”中启用的手动 HTTP/HTTPS 代理，并继续支持 `HTTP_PROXY`、`HTTPS_PROXY`、`ALL_PROXY` 和 `NO_PROXY` 环境变量。环境变量优先于系统代理。修改代理设置后请完全退出并重新启动 OpenQuota。
+Windows 版会自动读取当前用户在“设置 → 网络和 Internet → 代理”中启用的手动 HTTP/HTTPS 代理，并继续支持 `HTTP_PROXY`、`HTTPS_PROXY`、`ALL_PROXY` 和 `NO_PROXY` 环境变量。环境变量优先于系统代理；访问 `127.0.0.1` 的本地服务请求会显式绕过代理。修改代理设置后请完全退出并重新启动 OpenQuota。
 
 目前底层库只读取 Windows 的手动代理地址和绕过列表，不解析 PAC 自动配置脚本或 WPAD。使用 Clash、Mihomo、V2Ray 等工具时，请启用其“系统代理”，并确保系统代理指向 HTTP 或混合端口。
 
