@@ -1,4 +1,4 @@
-name: Chinese Windows build
+name: 简体中文 Windows x64
 
 on:
   push:
@@ -6,18 +6,119 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: zh-cn-windows
+  cancel-in-progress: false
+
+env:
+  CARGO_BUILD_TARGET: x86_64-pc-windows-msvc
 
 jobs:
-  source:
-    name: Source snapshot
-    runs-on: ubuntu-latest
+  windows:
+    if: github.repository == 'ReallyChooseC/OpenQuota'
+    runs-on: windows-latest
+    timeout-minutes: 80
     steps:
       - uses: actions/checkout@v4
-      - name: Archive source
-        run: git archive --format=zip --output=source.zip HEAD
+        with:
+          ref: zh-CN
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.11.0
+          run_install: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy,rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+          cache-on-failure: true
+      - name: 安装前端依赖
+        run: pnpm install --frozen-lockfile
+      - name: 应用一次性源码汉化
+        if: hashFiles('.github/zh-bootstrap/apply.py') != ''
+        run: |
+          python .github/zh-bootstrap/apply.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          pnpm format
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cargo fmt --manifest-path src-tauri/Cargo.toml --all
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git rm -r .github/zh-bootstrap
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src src-tauri index.html .github README.zh-CN.md
+          git commit -m 'feat: 固定简体中文界面、通知和 Windows 安装器'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git push origin HEAD:zh-CN
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: 版本与接口检查
+        id: contracts
+        continue-on-error: true
+        run: |
+          pnpm verify:versions
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          pnpm verify:contracts
+      - name: 前端代码检查
+        id: lint
+        continue-on-error: true
+        run: pnpm lint
+      - name: 类型检查
+        id: types
+        continue-on-error: true
+        run: pnpm check
+      - name: 前端测试
+        id: frontend
+        continue-on-error: true
+        run: pnpm test
+      - name: 构建前端
+        run: pnpm build
+      - name: Rust 测试
+        id: rust
+        continue-on-error: true
+        run: cargo test --release --manifest-path src-tauri/Cargo.toml --all-targets
+      - name: Rust 代码检查
+        id: clippy
+        continue-on-error: true
+        run: cargo clippy --release --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
+      - name: 构建 Windows x64 安装包
+        run: pnpm tauri build --target x86_64-pc-windows-msvc --bundles nsis
+      - name: 安装、启动与卸载测试
+        id: smoke
+        continue-on-error: true
+        uses: ./.github/actions/platform-smoke
+        with:
+          artifact-root: src-tauri/target/x86_64-pc-windows-msvc/release/bundle
+      - name: 生成校验文件和源码快照
+        run: |
+          $dir = 'src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis'
+          Get-ChildItem "$dir/*.exe" | ForEach-Object { "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)" } | Set-Content "$dir/SHA256SUMS.txt" -Encoding utf8
+          git archive --format=zip --output=OpenQuota-zh-CN-source.zip HEAD
+          git rev-parse HEAD | Set-Content "$dir/SOURCE_COMMIT.txt" -Encoding utf8
       - uses: actions/upload-artifact@v4
         with:
-          name: source-snapshot
-          path: source.zip
-          retention-days: 3
+          name: OpenQuota-zh-CN-windows-x64
+          path: |
+            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.txt
+          if-no-files-found: error
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: OpenQuota-zh-CN-source
+          path: OpenQuota-zh-CN-source.zip
+          if-no-files-found: warn
+          retention-days: 30
+      - name: 汇总检查结果
+        if: always()
+        env:
+          RESULTS: ${{ steps.contracts.outcome }} ${{ steps.lint.outcome }} ${{ steps.types.outcome }} ${{ steps.frontend.outcome }} ${{ steps.rust.outcome }} ${{ steps.clippy.outcome }} ${{ steps.smoke.outcome }}
+        run: |
+          Write-Output $env:RESULTS
+          if ($env:RESULTS -match 'failure') { exit 1 }

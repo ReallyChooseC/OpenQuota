@@ -1,0 +1,180 @@
+OpenQuota could not start a provider refresh.|OpenQuota 无法开始刷新服务商用量。
+Customization could not be reset.|无法重置自定义设置。
+All settings restored|已恢复所有设置
+Settings could not be reset.|无法重置设置。
+PNG unavailable|无法生成 PNG 图片
+Copied to clipboard|已复制到剪贴板
+Provider screenshot could not be copied.|无法复制服务商截图。
+Total Spend screenshot could not be copied.|无法复制总用量截图。
+Log path copied|已复制日志路径
+Settings|设置
+Customize|自定义
+OpenQuota panel resize could not be started.|无法开始调整 OpenQuota 面板高度。
+OpenQuota window could not be moved.|无法移动 OpenQuota 窗口。
+OpenQuota could not change the panel height mode.|无法更改 OpenQuota 面板高度模式。
+Notification permission could not be requested.|无法请求通知权限。
+Notification settings could not be opened on this system.|无法打开系统通知设置。
+OpenQuota event bridge is unavailable.|OpenQuota 事件通信不可用。
+OpenQuota backend is unavailable.|OpenQuota 后端不可用。
+OpenQuota usage dashboard|OpenQuota 用量概览
+Resize panel height|调整面板高度
+OpenQuota window controls|OpenQuota 窗口控制
+Hide OpenQuota|隐藏 OpenQuota
+Close OpenQuota|关闭 OpenQuota
+Back|返回
+Reset all customization|重置所有自定义设置
+Reset All Customization|重置所有自定义设置
+Refresh all provider usage|刷新所有服务商用量
+Updating…|正在更新…
+Return to Tray Popup|切换为托盘弹窗
+Keep Window Open|保持窗口打开
+Open options|打开选项
+Options menu|选项菜单
+Quit OpenQuota|退出 OpenQuota
+Reset All Customization?|重置所有自定义设置？
+Reset All|全部重置
+Reset All Settings?|重置所有设置？
+This restores appearance, notifications, shortcuts, updates, panel sizing, provider names, and layout. Provider sign-ins, API keys, and usage history stay in place. This cannot be undone.|这将恢复外观、通知、快捷键、更新、面板尺寸、服务商名称和布局。登录状态、API 密钥及用量历史将保留。此操作无法撤销。
+About OpenQuota|关于 OpenQuota
+Close About|关闭关于窗口
+Drag to reorder. With a keyboard, use Alt plus Up Arrow or Alt plus Down Arrow.|拖动可调整顺序；也可按 Alt + 向上或向下方向键调整。
+Options|选项
+Share Screenshot|分享截图
+Check for Updates…|检查更新…
+Version {appVersion}|版本 {appVersion}
+Private, local usage monitoring for your AI coding tools.|在本地查看 AI 编程工具用量，保护你的隐私。
+Loading OpenQuota…|正在加载 OpenQuota…
+Resetting…|正在重置…
+Cancel|取消
+Up to 2 stars per provider|每个服务商最多置顶 2 项
+Removed from menu bar|已从托盘栏移除
+Starred for menu bar|已置顶到托盘栏
+Always Visible metrics|始终显示的指标
+On Demand metrics|按需显示的指标
+Always Visible|始终显示
+On Demand|按需显示
+Unpin|取消置顶
+Pin|置顶
+Drag metrics here|将指标拖到这里
+Notifications, appearance and more|通知、外观及其他设置
+Last update time unavailable|无法获取上次更新时间
+Last updated moments ago|刚刚更新
+Update Available|有可用更新
+Update download|下载更新
+Installing update…|正在安装更新…
+Download interrupted. Retrying…|下载中断，正在重试…
+Downloading update…|正在下载更新…
+Try Again|重试
+Install Update|安装更新
+Download from GitHub|从 GitHub 下载
+Dismiss|忽略
+Refreshing|正在刷新
+Retrying|正在重试
+Retrying…|正在重试…
+Retry|重试
+Show less|收起
+Show more|展开
+Unstar|取消置顶
+Star for menu bar|置顶到托盘栏
+OpenQuota {updateStatus.version} is ready to download.|OpenQuota {updateStatus.version} 已可下载。
+What’s new|更新内容
+View Release|查看发行说明
+Welcome to OpenQuota|欢迎使用 OpenQuota
+We set you up with the AI tools found on your computer. Add or hide providers any time.|已根据本机检测到的 AI 工具完成设置。你可以随时添加或隐藏服务商。
+Open Customize|打开自定义
+Outdated|数据已过期
+Configure|配置
+Hide {providerDisplayName(menuProvider.id)}|隐藏 {providerDisplayName(menuProvider.id)}
+Refresh {providerDisplayName(menuProvider.id)}|刷新 {providerDisplayName(menuProvider.id)}
+Rename…|重命名…
+Customize…|自定义…
+Hide|隐藏
+Refresh {providerDisplayName(metricProvider.id)}|刷新 {providerDisplayName(metricProvider.id)}
+Turn on Customize to choose what to show.|请在自定义中选择要显示的内容。
+No data|暂无数据
+Reset unavailable|无法获取重置时间
+From Your Environment|来自环境变量
+From Config File|来自配置文件
+Saved securely|已安全保存
+Custom Key|自定义密钥
+The API key could not be saved.|无法保存 API 密钥。
+The saved API key could not be removed.|无法移除已保存的 API 密钥。
+The system credential store is unavailable.|系统凭据存储不可用。
+Done|完成
+Add|添加
+Edit|编辑
+Paste API key|粘贴 API 密钥
+Hide API key|隐藏 API 密钥
+Show API key|显示 API 密钥
+Saving…|正在保存…
+Save|保存
+Remove saved API key|移除已保存的 API 密钥
+API Key|API 密钥
+Remove saved API key?|移除已保存的 API 密钥？
+Override With a Custom Key|改用自定义密钥
+Estimated from local usage data and may differ from billed usage.|根据本地用量估算，可能与实际计费用量不同。
+Limit reached|额度已用尽
+Estimated quota|估算额度
+Will reach limit|预计将用尽额度
+Sessions start after you send your first message.|发送第一条消息后开始计算当前周期。
+Not started|尚未开始
+Rename Card|重命名卡片
+Leave the name empty to go back to the default.|留空即可恢复默认名称。
+Rename|重命名
+Expiring soon|即将到期
+Reset applied.|已重置额度。
+No active limit needs resetting.|当前没有需要重置的额度限制。
+This reset is no longer available.|该重置次数已不可用。
+Could not use this reset. Try again.|无法使用该重置次数，请重试。
+Use this reset?|使用这次额度重置？
+Use reset|重置额度
+Use|使用
+Expiry times unavailable|无法获取到期时间
+No rate limit resets available|没有可用的额度重置次数
+Reveal in Finder|在访达中显示
+Reveal in File Explorer|在文件资源管理器中显示
+Open Containing Folder|打开所在文件夹
+Open OpenQuota from anywhere|在任何位置打开 OpenQuota
+Type Shortcut…|请按下快捷键…
+Record Shortcut|录入快捷键
+Clear global shortcut|清除全局快捷键
+Icon Style|图标样式
+Bars|进度条
+Theme|主题
+Density|界面密度
+Compact|紧凑
+Window Mode|窗口模式
+Tray Popup|托盘弹窗
+Floating Window|悬浮窗口
+Panel Height|面板高度
+Manual|手动
+Time Format|时间格式
+Auto|自动
+12-hour|12 小时制
+24-hour|24 小时制
+Show Usage As|显示内容
+Left|剩余额度
+Used|已用额度
+Reset Times|重置时间
+Countdown|倒计时
+Exact Time|具体时间
+Alert when a limit drops below 10% remaining.|剩余额度低于 10% 时提醒。
+Alert when a limit is projected to finish with little left.|预计到重置时额度所剩不多时提醒。
+Alert when a limit is projected to finish before it resets.|预计在重置前用尽额度时提醒。
+Notifications are blocked|通知已被禁止
+Permission is required|需要通知权限
+Enable OpenQuota notifications in system settings.|请在系统设置中启用 OpenQuota 通知。
+Allow notifications to receive the alerts selected above.|允许通知后即可接收上方所选提醒。
+Open Settings|打开设置
+Allow|允许
+Log Level|日志级别
+Warning|警告
+Checking…|正在检查…
+Desktop Integration|桌面集成
+General|常规
+Show Total Spend|显示总用量
+Launch at Login|开机启动
+Global Shortcut|全局快捷键
+Appearance|外观
+Reduce Animations|减少动画
+Usage Display|用量显示
