@@ -65,19 +65,19 @@
         onRename(draft);
       }}
     >
-      <h1 id="rename-title">Rename Card</h1>
+      <h1 id="rename-title">重命名卡片</h1>
       <input
         bind:this={input}
         bind:value={draft}
         type="text"
         maxlength="48"
-        placeholder="Name"
-        aria-label="Name"
+        placeholder="名称"
+        aria-label="名称"
       />
-      <p id="rename-message">Leave the name empty to go back to the default.</p>
+      <p id="rename-message">留空即可恢复默认名称。</p>
       <div class="rename-sheet__actions">
-        <button type="button" onclick={onCancel}>Cancel</button>
-        <button class="rename-sheet__confirm" type="submit">Rename</button>
+        <button type="button" onclick={onCancel}>取消</button>
+        <button class="rename-sheet__confirm" type="submit">重命名</button>
       </div>
     </form>
   </div>

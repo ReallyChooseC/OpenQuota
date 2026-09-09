@@ -33,7 +33,7 @@ const CARD_RADIUS = 12;
 const ROW_HORIZONTAL_PADDING = 14;
 const HEADER_HEIGHT = 22;
 
-export const TOTAL_SPEND_PERIOD_LABELS = ['Today', 'Yesterday', '30 Days'] as const;
+export const TOTAL_SPEND_PERIOD_LABELS = ['今天', '昨天', '近 30 天'] as const;
 export const TOTAL_SPEND_GEOMETRY = {
   width: 320,
   outerPadding: 10,
@@ -135,7 +135,7 @@ export function buildProviderShareRows(
                   formatMetricValue(value.number, value.kind, 'row', value.label ?? undefined),
                 )
                 .join(' · ')
-            : 'No data',
+            : '暂无数据',
           condensed: previousTextSection === metric.section,
         });
         previousTextSection = metric.section;
@@ -144,8 +144,8 @@ export function buildProviderShareRows(
         rows.push({
           kind: 'quota',
           label: definition.label,
-          reading: 'No data',
-          trailing: 'Reset unavailable',
+          reading: '暂无数据',
+          trailing: '无法获取重置时间',
           fillPercent: 0,
           severity: 'normal',
           paceLabel: null,
@@ -165,7 +165,7 @@ export function buildProviderShareRows(
       rows.push({
         kind: 'text',
         label: definition.label,
-        value: statusMetric?.text ?? 'No data',
+        value: statusMetric?.text ?? '暂无数据',
         condensed: previousTextSection === metric.section,
       });
       previousTextSection = metric.section;
@@ -183,7 +183,7 @@ export function buildProviderShareRows(
                 formatMetricValue(value.number, value.kind, 'row', value.label ?? undefined),
               )
               .join(' · ')
-          : 'No data',
+          : '暂无数据',
         condensed: previousTextSection === metric.section,
       });
       previousTextSection = metric.section;
@@ -257,7 +257,7 @@ export function renderProviderShareCard(
     context.fillStyle = palette.secondary;
     context.font = '12px system-ui';
     context.textAlign = 'center';
-    context.fillText('No metrics to show', SHARE_CARD_WIDTH / 2, rowTop + 27);
+    context.fillText('没有可显示的指标', SHARE_CARD_WIDTH / 2, rowTop + 27);
     context.textAlign = 'left';
   } else {
     for (const row of options.rows) {
@@ -313,21 +313,21 @@ export function renderTotalSpendShareCard(
 function quotaShareRow(quota: QuotaWindow, settings: AppSettings, now: number): ShareRow {
   const used = clamp(quota.usedPercent, 0, 100);
   const remaining = Math.max(0, 100 - used);
-  let reading = `${(settings.usageDisplay === 'used' ? used : remaining).toFixed(0)}% ${settings.usageDisplay}`;
+  let reading = `${settings.usageDisplay === 'left' ? '剩余' : '已用'} ${(settings.usageDisplay === 'used' ? used : remaining).toFixed(0)}%`;
   let fillPercent = settings.usageDisplay === 'used' ? used : remaining;
   if (quota.format === 'count' && quota.usedValue !== null && quota.limitValue !== null) {
     const displayed =
       settings.usageDisplay === 'left'
         ? Math.max(0, quota.limitValue - quota.usedValue)
         : quota.usedValue;
-    reading = `${displayed.toFixed(0)} ${quota.unit?.trim() || 'requests'} ${settings.usageDisplay}`;
+    reading = `${settings.usageDisplay === 'left' ? '剩余' : '已用'} ${displayed.toFixed(0)} ${quota.unit?.trim() || '次请求'}`;
   }
   if (quota.format === 'dollars' && quota.usedValue !== null) {
     const displayed =
       settings.usageDisplay === 'left' && quota.limitValue !== null
         ? Math.max(0, quota.limitValue - quota.usedValue)
         : quota.usedValue;
-    reading = `$${displayed.toFixed(2)} ${settings.usageDisplay === 'left' ? 'left' : 'spent'}`;
+    reading = `${settings.usageDisplay === 'left' ? '剩余' : '已用'} $${displayed.toFixed(2)}`;
     if (quota.limitValue !== null && quota.limitValue > 0) {
       fillPercent = (displayed / quota.limitValue) * 100;
     }
@@ -346,15 +346,15 @@ function quotaShareRow(quota: QuotaWindow, settings: AppSettings, now: number): 
             : 'normal';
   const paceLabel =
     pace.severity === 'spent'
-      ? 'Limit reached'
+      ? '额度已用尽'
       : pace.severity === 'runningOut'
         ? formatLimit(pace.runOutAt, now, settings.resetDisplay, settings.timeFormat)
         : pace.severity === 'close' && pace.projectedUsedPercent !== null
-          ? `~${Math.max(1, Math.round(100 - pace.projectedUsedPercent))}% spare`
+          ? `预计剩余约 ${Math.max(1, Math.round(100 - pace.projectedUsedPercent))}%`
           : pace.severity === 'healthy' &&
               settings.alwaysShowPacing &&
               pace.projectedUsedPercent !== null
-            ? `~${Math.max(0, Math.round(100 - pace.projectedUsedPercent))}% left at reset`
+            ? `重置时预计剩余约 ${Math.max(0, Math.round(100 - pace.projectedUsedPercent))}%`
             : null;
 
   return {
@@ -375,8 +375,8 @@ function usagePeriod(snapshot: ProviderSnapshot, sourceId: string) {
 }
 
 function usageReading(period: UsagePeriod | null) {
-  if (!period) return 'No data';
-  const tokens = formatMetricValue(period.tokens, 'count', 'row', 'tokens');
+  if (!period) return '暂无数据';
+  const tokens = formatMetricValue(period.tokens, 'count', 'row', 'Token');
   if (period.estimatedCostUsd === null) return tokens;
   return `${formatMetricNumber(period.estimatedCostUsd, 'dollars', 'row')} · ${tokens}`;
 }
@@ -392,7 +392,7 @@ function createCanvas(width: number, height: number) {
   canvas.width = width * SHARE_CARD_SCALE;
   canvas.height = Math.ceil(height * SHARE_CARD_SCALE);
   const context = canvas.getContext('2d');
-  if (!context) throw new Error('Canvas unavailable');
+  if (!context) throw new Error('画布不可用');
   context.scale(SHARE_CARD_SCALE, SHARE_CARD_SCALE);
   context.textBaseline = 'alphabetic';
   return { canvas, context };
@@ -599,10 +599,10 @@ function drawSpendBody(
     context.textAlign = 'center';
     const empty =
       metric === 'tokens'
-        ? 'No token data for this period'
+        ? '此时段暂无 Token 数据'
         : metric === 'costPerMillion'
-          ? 'No cost-per-token data for this period'
-          : 'No cost data for this period';
+          ? '此时段暂无单位 Token 费用数据'
+          : '此时段暂无费用数据';
     context.fillText(empty, canvasWidth / 2, top + TOTAL_SPEND_GEOMETRY.ringDiameter / 2 + 4);
     context.textAlign = 'left';
     return;

@@ -16,8 +16,8 @@
   let hideTimer: ReturnType<typeof setTimeout> | undefined;
 
   function reading(value: UsagePeriod | null) {
-    if (!value) return 'No data';
-    const tokens = formatMetricValue(value.tokens, 'count', 'row', 'tokens');
+    if (!value) return '暂无数据';
+    const tokens = formatMetricValue(value.tokens, 'count', 'row', 'Token');
     if (value.estimatedCostUsd === null) return tokens;
     return `${formatMetricNumber(value.estimatedCostUsd, 'dollars', 'row')} · ${tokens}`;
   }
@@ -25,9 +25,7 @@
     if (!value) return undefined;
     if (value.modelBreakdown?.models.length) return undefined;
     const note =
-      value.estimatedCostUsd !== null && value.costEstimated
-        ? 'Estimated locally, so it may be off'
-        : undefined;
+      value.estimatedCostUsd !== null && value.costEstimated ? '本地估算，可能存在偏差' : undefined;
     const abbreviated =
       Math.abs(value.tokens) >= 1000 || Math.abs(value.estimatedCostUsd ?? 0) >= 1000;
     if (!abbreviated && !note) return undefined;
@@ -35,12 +33,12 @@
       value.estimatedCostUsd === null
         ? undefined
         : formatMetricNumber(value.estimatedCostUsd, 'dollars', 'full'),
-      formatMetricValue(value.tokens, 'count', 'full', 'tokens'),
+      formatMetricValue(value.tokens, 'count', 'full', 'Token'),
     ].filter(Boolean);
     return [...figures, note].filter(Boolean).join('\n');
   }
   function unknownModelTooltip(models: string[]) {
-    const heading = models.length === 1 ? 'Unknown model found' : 'Unknown models found';
+    const heading = models.length === 1 ? '发现价格未知的模型' : '发现价格未知的模型';
     return [heading, ...models.map((model) => `- ${model}`)].join('\n');
   }
   function scheduleShow(event: Event) {
@@ -79,7 +77,7 @@
     >{label}{#if period?.unknownModels?.length}<i
         class="usage-label-warning"
         data-tooltip={unknownModelTooltip(period.unknownModels)}
-        aria-label="This period used a model with unknown pricing"
+        aria-label="此时段使用了价格未知的模型"
         ><Icon name="warning" size={10} strokeWidth={2.2} /></i
       >{/if}</span
   >

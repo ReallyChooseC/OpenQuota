@@ -66,13 +66,13 @@
     </div>
     <div class="confirmation-sheet__actions">
       <button bind:this={cancelButton} type="button" disabled={pending} onclick={onCancel}
-        >Cancel</button
+        >取消</button
       >
       <button
         class="confirmation-sheet__confirm"
         type="button"
         disabled={pending}
-        onclick={onConfirm}>{pending ? 'Resetting…' : confirmLabel}</button
+        onclick={onConfirm}>{pending ? '正在重置…' : confirmLabel}</button
       >
     </div>
   </div>

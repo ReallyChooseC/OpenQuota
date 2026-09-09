@@ -9,7 +9,7 @@ describe('provider catalog index', () => {
     expect(catalog.displayName('codex')).toBe('Codex');
     expect(catalog.displayName('codex', { codex: '  Work Account  ' })).toBe('Work Account');
     expect(catalog.metric('claude.session')).toMatchObject({
-      label: 'Session',
+      label: '当前周期',
       source: { kind: 'quota', sourceId: 'session', sessionWindow: true },
     });
     expect(catalog.supportsSpend('claude')).toBe(true);
@@ -17,13 +17,13 @@ describe('provider catalog index', () => {
     expect(catalog.supportsApiKeyConfiguration('openrouter')).toBe(true);
     expect(catalog.supportsApiKeyConfiguration('codex')).toBe(false);
     expect(catalog.metric('openrouter.balance')).toMatchObject({
-      label: 'Balance',
+      label: '余额',
       source: { kind: 'value', sourceId: 'balance' },
     });
-    expect(catalog.localUsageSourceNote('codex')).toBe('From your Codex logs (estimated)');
+    expect(catalog.localUsageSourceNote('codex')).toBe('根据本地 Codex 日志估算');
     expect(catalog.provider('codex')?.links).toEqual([
-      { label: 'Status', url: 'https://status.openai.com/' },
-      { label: 'Dashboard', url: 'https://chatgpt.com/codex/settings/usage' },
+      { label: '服务状态', url: 'https://status.openai.com/' },
+      { label: '网页面板', url: 'https://chatgpt.com/codex/settings/usage' },
     ]);
   });
 
@@ -42,14 +42,14 @@ describe('provider catalog index', () => {
     const snapshot = structuredClone(codexState.snapshot!);
     snapshot.usage.last30Days!.modelBreakdown = {
       models: [],
-      sourceNote: 'From your Codex logs and pi (estimated)',
+      sourceNote: '根据本地 Codex 和 pi 日志估算',
     };
 
-    expect(usageSourceNote(catalog, snapshot)).toBe('From your Codex logs and pi (estimated)');
+    expect(usageSourceNote(catalog, snapshot)).toBe('根据本地 Codex 和 pi 日志估算');
     snapshot.usage.last30Days!.modelBreakdown = null;
     snapshot.usage.today!.modelBreakdown = null;
     snapshot.usage.yesterday!.modelBreakdown = null;
-    expect(usageSourceNote(catalog, snapshot)).toBe('From your Codex logs (estimated)');
+    expect(usageSourceNote(catalog, snapshot)).toBe('根据本地 Codex 日志估算');
   });
 
   it('rejects duplicate provider and metric ids at the frontend boundary', () => {

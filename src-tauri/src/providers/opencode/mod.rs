@@ -34,11 +34,11 @@ pub(crate) fn definition() -> ProviderDefinition {
         short_name: "OC".into(),
         fallback_enabled: false,
         local_usage_source_note: Some(USAGE_SOURCE_NOTE.into()),
-        links: vec![ProviderLink::new("Dashboard", "https://opencode.ai/auth")],
+        links: vec![ProviderLink::new("网页面板", "https://opencode.ai/auth")],
         metrics: vec![
             MetricDefinition::quota(
                 "opencode.session",
-                "Session",
+                "当前周期",
                 "session",
                 true,
                 true,
@@ -48,7 +48,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "opencode.weekly",
-                "Weekly",
+                "本周额度",
                 "weekly",
                 false,
                 true,
@@ -69,21 +69,21 @@ pub(crate) fn definition() -> ProviderDefinition {
             MetricDefinition::trend("opencode.trend"),
             MetricDefinition::usage(
                 "opencode.today",
-                "Today",
+                "今天",
                 UsagePeriodSelection::Today,
                 MetricSection::OnDemand,
                 "T",
             ),
             MetricDefinition::usage(
                 "opencode.yesterday",
-                "Yesterday",
+                "昨天",
                 UsagePeriodSelection::Yesterday,
                 MetricSection::OnDemand,
                 "Y",
             ),
             MetricDefinition::usage(
                 "opencode.last30",
-                "Last 30 Days",
+                "最近 30 天",
                 UsagePeriodSelection::Last30Days,
                 MetricSection::OnDemand,
                 "30",
@@ -94,23 +94,23 @@ pub(crate) fn definition() -> ProviderDefinition {
 
 #[derive(Debug, Error, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum OpenCodeError {
-    #[error("OpenCode was not detected. Sign in to OpenCode Go or use OpenCode locally first.")]
+    #[error("未检测到 OpenCode。请先登录 OpenCode Go，或在本机使用 OpenCode。")]
     NotDetected,
-    #[error("OpenCode login data could not be read. Sign in to OpenCode Go again.")]
+    #[error("无法读取 OpenCode 登录数据，请重新登录 OpenCode Go。")]
     CredentialsUnreadable,
-    #[error("The OpenCode data directory could not be read.")]
+    #[error("无法读取 OpenCode 数据目录。")]
     DataDirectoryUnreadable,
-    #[error("OpenCode local usage data is temporarily unavailable.")]
+    #[error("OpenCode 本地用量数据暂时不可用。")]
     DatabaseUnreadable,
-    #[error("OpenCode Go login data is invalid or expired. Sign in to OpenCode Go again.")]
+    #[error("OpenCode Go 登录数据无效或已过期，请重新登录。")]
     InvalidAuth,
-    #[error("OpenCode Go subscription required.")]
+    #[error("需要 OpenCode Go 订阅。")]
     GoSubscriptionRequired,
-    #[error("Could not reach OpenCode Go. Check your internet connection.")]
+    #[error("无法连接 OpenCode Go，请检查网络连接。")]
     ConnectionFailed,
-    #[error("OpenCode Go returned an invalid usage response.")]
+    #[error("OpenCode Go 返回的用量数据无效。")]
     InvalidResponse,
-    #[error("OpenCode Go usage request failed (HTTP {0}).")]
+    #[error("OpenCode Go 用量请求失败（HTTP {0}）。")]
     RequestFailed(u16),
 }
 
@@ -199,7 +199,7 @@ impl OpenCodeProvider {
                         Some("Go".into()),
                         quotas,
                         UsageHistory::default(),
-                        vec!["OpenCode local usage data is temporarily unavailable.".into()],
+                        vec!["OpenCode 本地用量数据暂时不可用。".into()],
                         now,
                     ));
                 }
@@ -222,18 +222,14 @@ impl OpenCodeProvider {
         };
         let mut warnings = scan.warnings;
         if go_key_error.is_some() {
-            warnings.push(
-                "OpenCode Go login data could not be read; local database usage is still shown."
-                    .into(),
-            );
+            warnings.push("无法读取 OpenCode Go 登录数据；仍会显示本地数据库用量。".into());
         }
         let (plan, quotas) = match go_usage {
             Ok(Some(quotas)) => (Some("Go".into()), quotas),
             Ok(None) => (None, Vec::new()),
             Err(OpenCodeError::GoSubscriptionRequired) if scan.usage.last_30_days.is_some() => {
                 warnings.push(
-                    "OpenCode Go subscription required. Local usage is still shown while OpenCode Go quota data is unavailable."
-                        .to_string(),
+                    "需要 OpenCode Go 订阅。云端额度不可用时，仍会显示本地用量。".to_string(),
                 );
                 (None, Vec::new())
             }

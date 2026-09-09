@@ -34,15 +34,15 @@ pub(crate) fn definition() -> ProviderDefinition {
         display_name: "Cursor".into(),
         short_name: "Cu".into(),
         fallback_enabled: true,
-        local_usage_source_note: Some("From your Cursor usage export".into()),
+        local_usage_source_note: Some("来自 Cursor 用量导出数据".into()),
         links: vec![
-            ProviderLink::new("Status", "https://status.cursor.com/"),
-            ProviderLink::new("Dashboard", "https://www.cursor.com/dashboard"),
+            ProviderLink::new("服务状态", "https://status.cursor.com/"),
+            ProviderLink::new("网页面板", "https://www.cursor.com/dashboard"),
         ],
         metrics: vec![
             MetricDefinition::quota(
                 "cursor.usage",
-                "Total Usage",
+                "总用量",
                 "usage",
                 false,
                 true,
@@ -52,7 +52,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "cursor.auto",
-                "Auto Usage",
+                "Auto 用量",
                 "auto",
                 false,
                 true,
@@ -62,7 +62,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "cursor.api",
-                "API Usage",
+                "API 用量",
                 "api",
                 false,
                 true,
@@ -72,7 +72,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota_or_value(
                 "cursor.onDemand",
-                "Extra Usage",
+                "额外用量",
                 "onDemand",
                 true,
                 MetricSection::OnDemand,
@@ -81,7 +81,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "cursor.requests",
-                "Requests",
+                "请求数",
                 "requests",
                 false,
                 false,
@@ -91,7 +91,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "cursor.credits",
-                "Credits",
+                "点数",
                 "credits",
                 false,
                 MetricSection::OnDemand,
@@ -102,21 +102,21 @@ pub(crate) fn definition() -> ProviderDefinition {
             MetricDefinition::trend("cursor.trend"),
             MetricDefinition::usage(
                 "cursor.today",
-                "Today",
+                "今天",
                 UsagePeriodSelection::Today,
                 MetricSection::OnDemand,
                 "T",
             ),
             MetricDefinition::usage(
                 "cursor.yesterday",
-                "Yesterday",
+                "昨天",
                 UsagePeriodSelection::Yesterday,
                 MetricSection::OnDemand,
                 "Y",
             ),
             MetricDefinition::usage(
                 "cursor.last30",
-                "Last 30 Days",
+                "最近 30 天",
                 UsagePeriodSelection::Last30Days,
                 MetricSection::OnDemand,
                 "M",
@@ -127,27 +127,27 @@ pub(crate) fn definition() -> ProviderDefinition {
 
 #[derive(Debug, Error)]
 pub enum CursorError {
-    #[error("Not logged in. Sign in via Cursor app or run `agent login`.")]
+    #[error("尚未登录。请在 Cursor 中登录，或运行 `agent login`。")]
     NotLoggedIn,
-    #[error("Session expired. Sign in via Cursor app or run `agent login`.")]
+    #[error("会话已过期。请在 Cursor 中登录，或运行 `agent login`。")]
     SessionExpired,
-    #[error("Token expired. Sign in via Cursor app or run `agent login`.")]
+    #[error("令牌已过期。请在 Cursor 中登录，或运行 `agent login`。")]
     TokenExpired,
-    #[error("The refreshed Cursor login could not be saved.")]
+    #[error("无法保存刷新后的 Cursor 登录状态。")]
     AuthWrite,
-    #[error("Could not connect to Cursor. Check your internet connection.")]
+    #[error("无法连接 Cursor，请检查网络连接。")]
     ConnectionFailed,
-    #[error("Cursor returned an invalid usage response.")]
+    #[error("Cursor 返回的用量数据无效。")]
     InvalidResponse,
-    #[error("Cursor usage request failed (HTTP {0}).")]
+    #[error("Cursor 用量请求失败（HTTP {0}）。")]
     RequestFailed(u16),
-    #[error("Usage request failed after refresh. Try again.")]
+    #[error("刷新后的用量请求失败，请重试。")]
     UsageAfterRefreshFailed,
     #[error("{0}")]
     RequestBasedUnavailable(String),
-    #[error("Total usage limit missing from API response.")]
+    #[error("API 响应缺少总用量上限。")]
     TotalUsageLimitMissing,
-    #[error("No active Cursor subscription.")]
+    #[error("没有有效的 Cursor 订阅。")]
     NoActiveSubscription,
 }
 
@@ -210,7 +210,7 @@ impl CursorProvider {
             if let Ok(mapped) = self.request_based_result(
                 current_token,
                 plan_name.as_deref(),
-                "Cursor request-based usage data unavailable. Try again later.",
+                "无法获取 Cursor 按请求计量的用量，请稍后重试。",
             ) {
                 return Ok(snapshot(mapped, UsageHistory::default(), Vec::new(), now));
             }

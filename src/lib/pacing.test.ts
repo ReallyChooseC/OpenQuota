@@ -11,7 +11,7 @@ function quota(
   const periodSeconds = 10_000;
   return {
     id: 'weekly',
-    label: 'Weekly',
+    label: '本周额度',
     usedPercent,
     format: 'percent',
     usedValue: null,
@@ -31,9 +31,9 @@ describe('quota pacing', () => {
     expect(healthy.severity).toBe('healthy');
     expect(close.severity).toBe('close');
     expect(runningOut.severity).toBe('runningOut');
-    expect(paceTooltip(healthy)).toBe('~40% left at reset');
-    expect(paceTooltip(close)).toBe('~92% used at reset');
-    expect(paceTooltip(runningOut)).toBe('~20% over limit at reset');
+    expect(paceTooltip(healthy)).toBe('重置时预计剩余约 40%');
+    expect(paceTooltip(close)).toBe('重置时预计已用约 92%');
+    expect(paceTooltip(runningOut)).toBe('重置时预计超额约 20%');
     expect(runningOut.runOutAt).toBeGreaterThan(now);
   });
 
@@ -67,8 +67,8 @@ describe('quota pacing', () => {
     const roundedToZero = projectPace(quota(49.8, 0.5), now);
     expect(exact).toMatchObject({ severity: 'runningOut', runOutAt: null });
     expect(roundedToZero).toMatchObject({ severity: 'runningOut', runOutAt: null });
-    expect(paceTooltip(exact)).toBe('~100% used at reset');
-    expect(paceTooltip(roundedToZero)).toBe('~100% used at reset');
+    expect(paceTooltip(exact)).toBe('重置时预计用尽额度');
+    expect(paceTooltip(roundedToZero)).toBe('重置时预计用尽额度');
   });
 
   it('uses the displayed precision to decide when the limit is reached', () => {
@@ -89,22 +89,22 @@ describe('quota pacing', () => {
 
   it('supports countdown and exact reset modes', () => {
     const reset = new Date(now + 90 * 60_000).toISOString();
-    expect(formatReset(reset, now, 'countdown')).toBe('Resets in 1h 30m');
+    expect(formatReset(reset, now, 'countdown')).toBe('1小时 30分钟后重置');
     const laterToday = new Date(now);
     laterToday.setHours(23, 59, 0, 0);
-    expect(formatReset(laterToday.toISOString(), now, 'exact')).toContain('Resets today at');
-    expect(formatLimit(now + 39 * 60_000, now, 'countdown')).toBe('Limit in 39m');
-    expect(formatLimit(now + 5 * 60_000, now, 'countdown')).toBe('Limit soon');
+    expect(formatReset(laterToday.toISOString(), now, 'exact')).toContain('今天 ');
+    expect(formatLimit(now + 39 * 60_000, now, 'countdown')).toBe('39分钟后用尽');
+    expect(formatLimit(now + 5 * 60_000, now, 'countdown')).toBe('即将用尽');
     expect(formatReset(new Date(now + 60 * 60_000).toISOString(), now, 'countdown')).toBe(
-      'Resets in 1h',
+      '1小时后重置',
     );
-    expect(formatReset(new Date(now - 1).toISOString(), now, 'exact')).toBe('Resets soon');
+    expect(formatReset(new Date(now - 1).toISOString(), now, 'exact')).toBe('即将重置');
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(12, 0, 0, 0);
-    expect(formatReset(tomorrow.toISOString(), now, 'exact')).toContain('Resets tomorrow at');
+    expect(formatReset(tomorrow.toISOString(), now, 'exact')).toContain('明天 ');
     expect(formatReset(new Date(now + 72 * 60 * 60_000).toISOString(), now, 'exact')).toMatch(
-      /^Resets .+ at /,
+      /.+重置$/,
     );
   });
 
@@ -112,7 +112,7 @@ describe('quota pacing', () => {
     const reset = new Date('2026-07-10T18:30:00Z').toISOString();
     const twelveHour = formatReset(reset, now, 'exact', 'twelveHour');
     const twentyFourHour = formatReset(reset, now, 'exact', 'twentyFourHour');
-    const dayPeriod = new Intl.DateTimeFormat([], { hour: '2-digit', hour12: true })
+    const dayPeriod = new Intl.DateTimeFormat('zh-CN', { hour: '2-digit', hour12: true })
       .formatToParts(new Date(reset))
       .find((part) => part.type === 'dayPeriod')?.value;
     expect(dayPeriod).toBeTruthy();

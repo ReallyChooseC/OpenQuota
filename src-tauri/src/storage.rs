@@ -15,13 +15,13 @@ use crate::{
 
 #[derive(Debug, Error)]
 pub enum StorageError {
-    #[error("OpenQuota data directory could not be created")]
+    #[error("无法创建 OpenQuota 数据目录")]
     CreateDirectory(#[source] std::io::Error),
-    #[error("OpenQuota database is unavailable")]
+    #[error("OpenQuota 数据库不可用")]
     Database(#[from] rusqlite::Error),
-    #[error("Cached OpenQuota data is invalid")]
+    #[error("OpenQuota 缓存数据无效")]
     InvalidCache(#[from] serde_json::Error),
-    #[error("OpenQuota database lock is unavailable")]
+    #[error("无法锁定 OpenQuota 数据库")]
     Poisoned,
 }
 
@@ -530,7 +530,7 @@ mod tests {
                             cost_usd: Some(0.12),
                             variants: None,
                         }],
-                        source_note: "From your Codex logs (estimated)".into(),
+                        source_note: "根据本地 Codex 日志估算".into(),
                     }),
                     unknown_models: Vec::new(),
                 }),
@@ -697,7 +697,7 @@ mod tests {
             plan: None,
             quotas: vec![QuotaWindow {
                 id: "requests".into(),
-                label: "Requests".into(),
+                label: "请求数".into(),
                 used_percent: 25.0,
                 resets_at: None,
                 period_seconds: 2_592_000,

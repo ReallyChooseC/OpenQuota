@@ -23,7 +23,7 @@ fn resolve_provider_link<'a>(
     registry
         .definition(provider_id)
         .and_then(|provider| provider.links.get(link_index))
-        .ok_or_else(|| "That provider link is unavailable.".to_owned())
+        .ok_or_else(|| "该服务商链接不可用。".to_owned())
 }
 
 #[tauri::command]
@@ -41,7 +41,7 @@ pub fn open_provider_link(
     );
     app.opener()
         .open_url(&link.url, None::<&str>)
-        .map_err(|_| "That provider link could not be opened.".to_owned())
+        .map_err(|_| "无法打开该服务商链接。".to_owned())
 }
 
 async fn api_key_state(
@@ -50,7 +50,7 @@ async fn api_key_state(
 ) -> Result<Option<ProviderApiKeyState>, String> {
     let runtime = registry
         .runtime(&provider_id)
-        .ok_or_else(|| "Unknown provider.".to_owned())?;
+        .ok_or_else(|| "未知服务商。".to_owned())?;
     tauri::async_runtime::spawn_blocking(move || {
         let Some(status) = runtime.api_key_status() else {
             return Ok(None);
@@ -62,7 +62,7 @@ async fn api_key_state(
         }))
     })
     .await
-    .map_err(|_| "The API key status could not be read.".to_owned())?
+    .map_err(|_| "无法读取 API 密钥状态。".to_owned())?
 }
 
 enum ApiKeyMutation<'a> {
@@ -82,7 +82,7 @@ fn mutate_api_key(
 ) -> Result<AppliedApiKeyMutation, String> {
     let initial_status = runtime
         .api_key_status()
-        .ok_or_else(|| "That provider does not accept an API key.".to_owned())?
+        .ok_or_else(|| "该服务商不支持使用 API 密钥。".to_owned())?
         .ok();
     let fallback_status = match &mutation {
         ApiKeyMutation::Save(_) => {
@@ -136,9 +136,7 @@ fn reconcile_provider_credential_state(
 }
 
 fn incomplete_mutation_warning(action: &str) -> String {
-    format!(
-        "The API key was {action}, but OpenQuota could not finish updating provider status. Restart OpenQuota or try again."
-    )
+    format!("API 密钥已{action}，但 OpenQuota 无法完成服务商状态更新。请重启 OpenQuota 或重试。")
 }
 
 #[tauri::command]
@@ -162,7 +160,7 @@ pub async fn save_provider_api_key(
     let api_key = Zeroizing::new(api_key);
     let runtime = registry
         .runtime(&provider_id)
-        .ok_or_else(|| "Unknown provider.".to_owned())?;
+        .ok_or_else(|| "未知服务商。".to_owned())?;
     let credential_guard = settings.lock_credential_mutation().await;
     settings.record_provider_credential_mutation();
     let provider_for_save = provider_id.clone();
@@ -174,7 +172,7 @@ pub async fn save_provider_api_key(
         )
     })
     .await
-    .map_err(|_| "The API key could not be saved.".to_owned())??;
+    .map_err(|_| "无法保存 API 密钥。".to_owned())??;
 
     let command_guard = settings.lock_command_mutation().await;
     let settings_reconciled = match reconcile_provider_credential_state(
@@ -210,7 +208,7 @@ pub async fn save_provider_api_key(
     Ok(ApiKeyMutationOutcome {
         state: applied.state,
         warning: (applied.status_uncertain || !settings_reconciled)
-            .then(|| incomplete_mutation_warning("saved securely")),
+            .then(|| incomplete_mutation_warning("安全保存")),
     })
 }
 
@@ -225,7 +223,7 @@ pub async fn delete_provider_api_key(
 ) -> Result<ApiKeyMutationOutcome, String> {
     let runtime = registry
         .runtime(&provider_id)
-        .ok_or_else(|| "Unknown provider.".to_owned())?;
+        .ok_or_else(|| "未知服务商。".to_owned())?;
     let credential_guard = settings.lock_credential_mutation().await;
     settings.record_provider_credential_mutation();
     let provider_for_delete = provider_id.clone();
@@ -237,7 +235,7 @@ pub async fn delete_provider_api_key(
         )
     })
     .await
-    .map_err(|_| "The API key could not be removed.".to_owned())??;
+    .map_err(|_| "无法移除 API 密钥。".to_owned())??;
 
     let command_guard = settings.lock_command_mutation().await;
     let detected = applied.state.status != ApiKeyStatus::NotSet;
@@ -281,7 +279,7 @@ pub async fn delete_provider_api_key(
     Ok(ApiKeyMutationOutcome {
         state: applied.state,
         warning: (applied.status_uncertain || !settings_reconciled)
-            .then(|| incomplete_mutation_warning("removed")),
+            .then(|| incomplete_mutation_warning("移除")),
     })
 }
 
@@ -362,10 +360,10 @@ mod tests {
             short_name: "P".into(),
             fallback_enabled: true,
             local_usage_source_note: None,
-            links: vec![ProviderLink::new("Status", "https://status.example.com/")],
+            links: vec![ProviderLink::new("服务状态", "https://status.example.com/")],
             metrics: vec![MetricDefinition::new(
                 "provider.session",
-                "Session",
+                "当前周期",
                 MetricSource::Quota {
                     source_id: "session".into(),
                     session_window: true,

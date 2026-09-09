@@ -14,7 +14,7 @@ function usage(today: UsageHistory['today']): UsageHistory {
   return { ...empty, today };
 }
 
-describe('Total Spend projection', () => {
+describe('总用量 projection', () => {
   it('keeps token-only Codex data available without inventing cost data', () => {
     const providers = [
       {

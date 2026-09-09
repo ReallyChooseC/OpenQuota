@@ -26,13 +26,13 @@ pub async fn claim_codex_reset_credit(
         .iter()
         .any(|id| id == "codex")
     {
-        return Err("Codex is not enabled.".to_owned());
+        return Err("尚未启用 Codex。".to_owned());
     }
     let claims = claims.inner().clone();
     let outcome =
         tauri::async_runtime::spawn_blocking(move || claims.claim(expires_at, &redeem_request_id))
             .await
-            .map_err(|_| "The reset claim could not be completed.".to_owned())?;
+            .map_err(|_| "无法完成额度重置。".to_owned())?;
 
     if outcome != ResetClaimOutcome::Failed {
         let observed_account_revision = AtomicU64::new(settings.account_revision());
@@ -81,7 +81,7 @@ pub async fn refresh_provider_usage(
     provider_id: String,
 ) -> Result<UsageViewState, String> {
     if !settings.enabled_provider_ids().contains(&provider_id) {
-        return Err("Provider is not enabled.".to_owned());
+        return Err("尚未启用该服务商。".to_owned());
     }
 
     let observed_account_revision = AtomicU64::new(settings.account_revision());

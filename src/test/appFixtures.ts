@@ -45,7 +45,7 @@ function usage(
 function trend(id: string): MetricDefinition {
   return {
     id,
-    label: 'Usage Trend',
+    label: '用量趋势',
     source: { kind: 'trend' },
     pinnable: false,
     defaultEnabled: true,
@@ -76,24 +76,24 @@ export const providerCatalog: ProviderCatalog = {
       displayName: 'Claude',
       shortName: 'Cl',
       fallbackEnabled: false,
-      localUsageSourceNote: 'From your Claude usage history (estimated)',
+      localUsageSourceNote: '根据本地 Claude 用量历史估算',
       links: [
-        { label: 'Status', url: 'https://status.anthropic.com/' },
-        { label: 'Dashboard', url: 'https://claude.ai/settings/usage' },
+        { label: '服务状态', url: 'https://status.anthropic.com/' },
+        { label: '网页面板', url: 'https://claude.ai/settings/usage' },
       ],
       metrics: [
-        quota('claude.session', 'Session', 'session', true),
-        quota('claude.weekly', 'Weekly', 'weekly'),
+        quota('claude.session', '当前周期', 'session', true),
+        quota('claude.weekly', '本周额度', 'weekly'),
         quota('claude.sonnet', 'Sonnet', 'sonnet'),
         quota('claude.fable', 'Fable', 'fable'),
         {
-          ...quota('claude.extra', 'Extra Usage', 'extra'),
+          ...quota('claude.extra', '额外用量', 'extra'),
           source: { kind: 'quotaOrValue', sourceId: 'extra', sessionWindow: false },
         },
         trend('claude.trend'),
-        usage('claude.today', 'Today', 'today'),
-        usage('claude.yesterday', 'Yesterday', 'yesterday'),
-        usage('claude.last30', 'Last 30 Days', 'last30Days'),
+        usage('claude.today', '今天', 'today'),
+        usage('claude.yesterday', '昨天', 'yesterday'),
+        usage('claude.last30', '最近 30 天', 'last30Days'),
       ],
     },
     {
@@ -101,29 +101,29 @@ export const providerCatalog: ProviderCatalog = {
       displayName: 'Codex',
       shortName: 'Cx',
       fallbackEnabled: true,
-      localUsageSourceNote: 'From your Codex logs (estimated)',
+      localUsageSourceNote: '根据本地 Codex 日志估算',
       links: [
-        { label: 'Status', url: 'https://status.openai.com/' },
-        { label: 'Dashboard', url: 'https://chatgpt.com/codex/settings/usage' },
+        { label: '服务状态', url: 'https://status.openai.com/' },
+        { label: '网页面板', url: 'https://chatgpt.com/codex/settings/usage' },
       ],
       metrics: [
-        quota('codex.session', 'Session', 'session'),
-        quota('codex.weekly', 'Weekly', 'weekly'),
+        quota('codex.session', '当前周期', 'session'),
+        quota('codex.weekly', '本周额度', 'weekly'),
         quota('codex.spark', 'Spark', 'spark'),
-        quota('codex.sparkWeekly', 'Spark Weekly', 'sparkWeekly'),
+        quota('codex.sparkWeekly', 'Spark 本周额度', 'sparkWeekly'),
         trend('codex.trend'),
         {
-          ...quota('codex.credits', 'Extra Usage', 'credits'),
+          ...quota('codex.credits', '额外用量', 'credits'),
           source: { kind: 'value', sourceId: 'credits' },
         },
         {
-          ...quota('codex.rateLimitResets', 'Rate Limit Resets', 'rateLimitResets'),
+          ...quota('codex.rateLimitResets', '额度重置次数', 'rateLimitResets'),
           source: { kind: 'value', sourceId: 'rateLimitResets' },
           tray: { shortLabel: 'R', suffix: 'resets' },
         },
-        usage('codex.today', 'Today', 'today'),
-        usage('codex.yesterday', 'Yesterday', 'yesterday'),
-        usage('codex.last30', 'Last 30 Days', 'last30Days'),
+        usage('codex.today', '今天', 'today'),
+        usage('codex.yesterday', '昨天', 'yesterday'),
+        usage('codex.last30', '最近 30 天', 'last30Days'),
       ],
     },
     {
@@ -134,10 +134,10 @@ export const providerCatalog: ProviderCatalog = {
       localUsageSourceNote: null,
       links: [],
       metrics: [
-        quota('antigravity.geminiPro', 'Session', 'geminiPro', true),
-        quota('antigravity.geminiWeekly', 'Weekly', 'geminiWeekly'),
+        quota('antigravity.geminiPro', '当前周期', 'geminiPro', true),
+        quota('antigravity.geminiWeekly', '本周额度', 'geminiWeekly'),
         quota('antigravity.claude', 'Claude', 'claude', true),
-        quota('antigravity.claudeWeekly', 'Claude Weekly', 'claudeWeekly'),
+        quota('antigravity.claudeWeekly', 'Claude 本周额度', 'claudeWeekly'),
       ],
     },
     {
@@ -147,16 +147,16 @@ export const providerCatalog: ProviderCatalog = {
       fallbackEnabled: false,
       localUsageSourceNote: null,
       links: [
-        { label: 'Activity', url: 'https://openrouter.ai/activity' },
-        { label: 'Credits', url: 'https://openrouter.ai/settings/credits' },
+        { label: '活动记录', url: 'https://openrouter.ai/activity' },
+        { label: '点数', url: 'https://openrouter.ai/settings/credits' },
       ],
       metrics: [
-        quota('openrouter.credits', 'Credits', 'credits'),
-        value('openrouter.balance', 'Balance', 'balance'),
-        value('openrouter.today', 'Today', 'today'),
-        value('openrouter.week', 'This Week', 'week'),
-        value('openrouter.month', 'This Month', 'month'),
-        quota('openrouter.keyLimit', 'Key Limit', 'keyLimit'),
+        quota('openrouter.credits', '点数', 'credits'),
+        value('openrouter.balance', '余额', 'balance'),
+        value('openrouter.today', '今天', 'today'),
+        value('openrouter.week', '本周', 'week'),
+        value('openrouter.month', '本月', 'month'),
+        quota('openrouter.keyLimit', '密钥额度', 'keyLimit'),
       ],
     },
   ],
@@ -179,7 +179,7 @@ export const codexState: ProviderViewState = {
     quotas: [
       {
         id: 'session',
-        label: 'Session',
+        label: '当前周期',
         usedPercent: 32,
         resetsAt: '2099-01-01T00:00:00Z',
         periodSeconds: 18000,
@@ -190,7 +190,7 @@ export const codexState: ProviderViewState = {
       },
       {
         id: 'weekly',
-        label: 'Weekly',
+        label: '本周额度',
         usedPercent: 59,
         resetsAt: '2099-01-07T00:00:00Z',
         periodSeconds: 604800,
@@ -203,13 +203,13 @@ export const codexState: ProviderViewState = {
     valueMetrics: [
       {
         id: 'rateLimitResets',
-        label: 'Rate Limit Resets',
+        label: '额度重置次数',
         values: [{ number: 2, kind: 'count', label: 'available', estimated: false }],
         expiriesAt: ['2099-01-02T00:00:00Z', '2099-01-03T00:00:00Z'],
       },
       {
         id: 'credits',
-        label: 'Extra Usage',
+        label: '额外用量',
         values: [
           { number: 32.84, kind: 'dollars', estimated: true },
           { number: 821, kind: 'count', label: 'credits', estimated: false },
@@ -263,7 +263,7 @@ export const claudeState: ProviderViewState = {
     quotas: [
       {
         id: 'session',
-        label: 'Session',
+        label: '当前周期',
         usedPercent: 20,
         resetsAt: '2099-01-01T00:00:00Z',
         periodSeconds: 18000,
@@ -274,7 +274,7 @@ export const claudeState: ProviderViewState = {
       },
       {
         id: 'extra',
-        label: 'Extra Usage',
+        label: '额外用量',
         usedPercent: 25,
         resetsAt: null,
         periodSeconds: 0,
@@ -306,7 +306,7 @@ export const antigravityState: ProviderViewState = {
     quotas: [
       {
         id: 'geminiPro',
-        label: 'Session',
+        label: '当前周期',
         usedPercent: 0,
         resetsAt: '2099-01-01T00:00:00Z',
         periodSeconds: 18000,
@@ -317,7 +317,7 @@ export const antigravityState: ProviderViewState = {
       },
       {
         id: 'geminiWeekly',
-        label: 'Weekly',
+        label: '本周额度',
         usedPercent: 13,
         resetsAt: '2099-01-07T00:00:00Z',
         periodSeconds: 604800,

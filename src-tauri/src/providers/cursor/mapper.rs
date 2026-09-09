@@ -89,10 +89,10 @@ pub fn request_fallback(
         && plan.is_empty()
         && plan_unavailable
     {
-        return Some("Cursor request-based usage data unavailable. Try again later.");
+        return Some("无法获取 Cursor 按请求计量的用量，请稍后重试。");
     }
     if facts.team_by_shape() && facts.has_plan_usage && facts.limit.is_none() {
-        return Some("Cursor request-based usage data unavailable. Try again later.");
+        return Some("无法获取 Cursor 按请求计量的用量，请稍后重试。");
     }
     None
 }
@@ -136,12 +136,12 @@ pub fn map_live_usage(
     if team {
         let limit = facts.limit.ok_or_else(|| {
             CursorError::RequestBasedUnavailable(
-                "Cursor request-based usage data unavailable. Try again later.".into(),
+                "无法获取 Cursor 按请求计量的用量，请稍后重试。".into(),
             )
         })?;
         quotas.push(quota(
             "usage",
-            "Total usage",
+            "总用量",
             used_cents / 100.0,
             limit / 100.0,
             QuotaFormat::Dollars,
@@ -151,7 +151,7 @@ pub fn map_live_usage(
     } else {
         quotas.push(percent_quota(
             "usage",
-            "Total usage",
+            "总用量",
             total_percent,
             resets_at,
             period_seconds,
@@ -160,7 +160,7 @@ pub fn map_live_usage(
     if let Some(used) = plan_usage.get("autoPercentUsed").and_then(number) {
         quotas.push(percent_quota(
             "auto",
-            "Auto usage",
+            "Auto 用量",
             used,
             resets_at,
             period_seconds,
@@ -169,7 +169,7 @@ pub fn map_live_usage(
     if let Some(used) = plan_usage.get("apiPercentUsed").and_then(number) {
         quotas.push(percent_quota(
             "api",
-            "API usage",
+            "API 用量",
             used,
             resets_at,
             period_seconds,
@@ -192,7 +192,7 @@ pub fn map_live_usage(
         if limit > 0.0 {
             quotas.push(quota(
                 "onDemand",
-                "On-demand",
+                "按需用量",
                 spent / 100.0,
                 limit / 100.0,
                 QuotaFormat::Dollars,
@@ -200,11 +200,11 @@ pub fn map_live_usage(
                 BILLING_PERIOD_SECONDS,
             ));
         } else if spent > 0.0 {
-            value_metrics.push(dollar_value("onDemand", "On-demand", spent / 100.0));
+            value_metrics.push(dollar_value("onDemand", "按需用量", spent / 100.0));
         }
     }
     if let Some(remaining) = credits_remaining(credit_grants, stripe_balance_cents) {
-        value_metrics.push(dollar_value("credits", "Credits", remaining / 100.0));
+        value_metrics.push(dollar_value("credits", "点数", remaining / 100.0));
     }
 
     Ok(CursorMappedUsage {
@@ -238,7 +238,7 @@ pub fn map_request_usage(
         plan: plan_label(plan_name),
         quotas: vec![quota(
             "requests",
-            "Requests",
+            "请求数",
             used,
             limit,
             QuotaFormat::Count,
@@ -276,7 +276,7 @@ pub fn map_summary_usage(
             Some((used, limit))
         });
     if let Some((used, limit)) = has_requests {
-        for (id, label) in [("usage", "Total usage"), ("requests", "Requests")] {
+        for (id, label) in [("usage", "总用量"), ("requests", "请求数")] {
             quotas.push(quota(
                 id,
                 label,
@@ -295,8 +295,8 @@ pub fn map_summary_usage(
         .and_then(|value| value.pointer("/individualUsage/plan"))
         .and_then(Value::as_object);
     for (key, id, label) in [
-        ("autoPercentUsed", "auto", "Auto usage"),
-        ("apiPercentUsed", "api", "API usage"),
+        ("autoPercentUsed", "auto", "Auto 用量"),
+        ("apiPercentUsed", "api", "API 用量"),
     ] {
         if let Some(used) = plan.and_then(|value| value.get(key)).and_then(number) {
             quotas.push(percent_quota(id, label, used, resets_at, period_seconds));
@@ -355,7 +355,7 @@ fn append_summary_total(
         {
             quotas.push(quota(
                 "usage",
-                "Total usage",
+                "总用量",
                 used / 100.0,
                 limit / 100.0,
                 QuotaFormat::Dollars,
@@ -371,7 +371,7 @@ fn append_summary_total(
     {
         quotas.push(percent_quota(
             "usage",
-            "Total usage",
+            "总用量",
             used,
             resets_at,
             period_seconds,
@@ -385,7 +385,7 @@ fn append_summary_total(
         if let Some((used, limit)) = bucket.and_then(dollar_meter) {
             quotas.push(quota(
                 "usage",
-                "Total usage",
+                "总用量",
                 used / 100.0,
                 limit / 100.0,
                 QuotaFormat::Dollars,
@@ -414,7 +414,7 @@ fn append_on_demand_bucket(
     if let Some((used, limit)) = bucket.and_then(dollar_meter) {
         quotas.push(quota(
             "onDemand",
-            "On-demand",
+            "按需用量",
             used / 100.0,
             limit / 100.0,
             QuotaFormat::Dollars,
@@ -428,7 +428,7 @@ fn append_on_demand_bucket(
         .and_then(number)
         .filter(|value| *value > 0.0)
     {
-        value_metrics.push(dollar_value("onDemand", "On-demand", used / 100.0));
+        value_metrics.push(dollar_value("onDemand", "按需用量", used / 100.0));
         return true;
     }
     false
@@ -513,7 +513,7 @@ pub fn usage_history(
             None => {}
         }
     }
-    accumulator.build(now, "From your Cursor usage export")
+    accumulator.build(now, "来自 Cursor 用量导出数据")
 }
 
 fn quota(
@@ -538,7 +538,7 @@ fn quota(
         format,
         used_value: Some(used),
         limit_value: Some(limit),
-        unit: (format == QuotaFormat::Count).then(|| "requests".into()),
+        unit: (format == QuotaFormat::Count).then(|| "次请求".into()),
         estimated: false,
         source_note: None,
     }

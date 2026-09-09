@@ -19,12 +19,12 @@ export class ProviderCatalogIndex {
 
     for (const provider of catalog.providers) {
       if (this.#providersById.has(provider.id)) {
-        throw new Error(`Duplicate provider definition: ${provider.id}`);
+        throw new Error(`服务商定义重复：${provider.id}`);
       }
       this.#providersById.set(provider.id, provider);
       for (const metric of provider.metrics) {
         if (this.#metricsById.has(metric.id)) {
-          throw new Error(`Duplicate metric definition: ${metric.id}`);
+          throw new Error(`指标定义重复：${metric.id}`);
         }
         this.#metricsById.set(metric.id, metric);
       }
@@ -55,9 +55,7 @@ export class ProviderCatalogIndex {
 
   localUsageSourceNote(id: string) {
     const provider = this.provider(id);
-    return (
-      provider?.localUsageSourceNote ?? `From your ${provider?.displayName ?? id} usage history`
-    );
+    return provider?.localUsageSourceNote ?? `来自你的 ${provider?.displayName ?? id} 用量历史`;
   }
 }
 

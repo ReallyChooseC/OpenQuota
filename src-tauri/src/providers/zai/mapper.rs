@@ -143,8 +143,8 @@ fn percent_quota(
         .ok_or(ZaiError::InvalidResponse)?
         .clamp(0.0, 100.0);
     let (id, label) = match window.kind {
-        TokenWindowKind::Session => ("session", "Session"),
-        TokenWindowKind::Weekly => ("weekly", "Weekly"),
+        TokenWindowKind::Session => ("session", "当前周期"),
+        TokenWindowKind::Weekly => ("weekly", "本周额度"),
     };
     Ok(QuotaWindow {
         id: id.into(),
@@ -170,7 +170,7 @@ fn web_search_quota(entry: &serde_json::Map<String, Value>) -> Result<QuotaWindo
         .ok_or(ZaiError::InvalidResponse)?;
     Ok(QuotaWindow {
         id: "webSearches".into(),
-        label: "Web Searches".into(),
+        label: "联网搜索".into(),
         used_percent: if limit > 0.0 {
             (used / limit * 100.0).clamp(0.0, 100.0)
         } else {

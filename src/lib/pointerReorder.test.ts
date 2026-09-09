@@ -121,7 +121,7 @@ describe('pointer reorder interaction', () => {
     const action = pointerReorder(source, {
       id: 'first',
       group: 'test',
-      label: 'Session',
+      label: '当前周期',
       onReorder: vi.fn(),
       onEnd,
     });
@@ -162,7 +162,7 @@ describe('pointer reorder interaction', () => {
     const action = pointerReorder(source, {
       id: 'first',
       group: 'test',
-      label: 'Session',
+      label: '当前周期',
       gripOnly: true,
       onReorder: () => {
         const replacement = source.cloneNode(true) as HTMLElement;

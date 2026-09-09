@@ -32,15 +32,15 @@ fn definition_for(id: &str, display_name: &str, fallback_enabled: bool) -> Provi
         display_name: display_name.into(),
         short_name: "Cl".into(),
         fallback_enabled,
-        local_usage_source_note: Some("From your Claude usage history (estimated)".into()),
+        local_usage_source_note: Some("根据本地 Claude 用量历史估算".into()),
         links: vec![
-            ProviderLink::new("Status", "https://status.anthropic.com/"),
-            ProviderLink::new("Dashboard", "https://claude.ai/settings/usage"),
+            ProviderLink::new("服务状态", "https://status.anthropic.com/"),
+            ProviderLink::new("网页面板", "https://claude.ai/settings/usage"),
         ],
         metrics: vec![
             MetricDefinition::quota(
                 "claude.session",
-                "Session",
+                "当前周期",
                 "session",
                 true,
                 true,
@@ -50,7 +50,7 @@ fn definition_for(id: &str, display_name: &str, fallback_enabled: bool) -> Provi
             ),
             MetricDefinition::quota(
                 "claude.weekly",
-                "Weekly",
+                "本周额度",
                 "weekly",
                 false,
                 true,
@@ -80,7 +80,7 @@ fn definition_for(id: &str, display_name: &str, fallback_enabled: bool) -> Provi
             ),
             MetricDefinition::quota_or_value(
                 "claude.extra",
-                "Extra Usage",
+                "额外用量",
                 "extra",
                 true,
                 MetricSection::AlwaysVisible,
@@ -90,21 +90,21 @@ fn definition_for(id: &str, display_name: &str, fallback_enabled: bool) -> Provi
             MetricDefinition::trend("claude.trend"),
             MetricDefinition::usage(
                 "claude.today",
-                "Today",
+                "今天",
                 UsagePeriodSelection::Today,
                 MetricSection::OnDemand,
                 "T",
             ),
             MetricDefinition::usage(
                 "claude.yesterday",
-                "Yesterday",
+                "昨天",
                 UsagePeriodSelection::Yesterday,
                 MetricSection::OnDemand,
                 "Y",
             ),
             MetricDefinition::usage(
                 "claude.last30",
-                "Last 30 Days",
+                "最近 30 天",
                 UsagePeriodSelection::Last30Days,
                 MetricSection::OnDemand,
                 "M",
@@ -136,33 +136,33 @@ use crate::providers::log_usage::scan_or_cached_usage;
 
 #[derive(Debug, Error)]
 pub enum ClaudeError {
-    #[error("Not logged in. Run `claude` to authenticate.")]
+    #[error("尚未登录。请运行 `claude` 完成登录。")]
     NotLoggedIn,
     #[error(
-        "Claude Desktop login found, but its macOS-only encrypted session cannot be reused safely. Run `claude` in a terminal and sign in once."
+        "检测到 Claude Desktop 登录，但无法安全复用其 macOS 加密会话。请在终端运行 `claude` 并登录一次。"
     )]
     DesktopAppOnly,
-    #[error("Your Claude session expired. Run `claude` to sign in again.")]
+    #[error("Claude 会话已过期。请运行 `claude` 重新登录。")]
     SessionExpired,
-    #[error("Your Claude token expired. Run `claude` to sign in again.")]
+    #[error("Claude 令牌已过期。请运行 `claude` 重新登录。")]
     TokenExpired,
-    #[error("Claude OAuth settings contain an invalid URL.")]
+    #[error("Claude OAuth 设置中的网址无效。")]
     InvalidOAuthUrl,
-    #[error("Refreshed Claude credentials could not be saved.")]
+    #[error("无法保存刷新后的 Claude 凭据。")]
     AuthWrite,
-    #[error("Claude login changed during refresh. Refresh again.")]
+    #[error("刷新期间 Claude 登录状态已变化，请重新刷新。")]
     CredentialsChanged,
-    #[error("The Claude account changed while OpenQuota was running. Restart OpenQuota to reconnect it safely.")]
+    #[error("OpenQuota 运行期间 Claude 账号已切换。请重启 OpenQuota，以安全地重新连接。")]
     AccountChanged,
-    #[error("Claude usage request failed (HTTP {0}).")]
+    #[error("Claude 用量请求失败（HTTP {0}）。")]
     RequestFailed(u16),
-    #[error("Claude returned an invalid usage response.")]
+    #[error("Claude 返回的用量数据无效。")]
     InvalidResponse,
-    #[error("Could not connect to Claude. Check your internet connection.")]
+    #[error("无法连接 Claude，请检查网络连接。")]
     ConnectionFailed,
-    #[error("Local Claude usage logs could not be processed.")]
+    #[error("无法处理本地 Claude 用量日志。")]
     LocalUsage,
-    #[error("Claude account settings could not be loaded.")]
+    #[error("无法加载 Claude 账号设置。")]
     AccountStore(#[from] crate::storage::StorageError),
 }
 
@@ -417,10 +417,7 @@ impl ClaudeProvider {
             });
         }
         if !credential.has_profile_scope() {
-            warnings.push(
-                "Re-login for live usage. Run `claude` and sign in again to restore subscription limits."
-                    .into(),
-            );
+            warnings.push("请运行 `claude` 重新登录，以恢复实时订阅额度显示。".into());
             return Ok(ProviderSnapshot {
                 provider_id: self.provider_id().into(),
                 plan: plan_name(credential),
@@ -458,15 +455,15 @@ impl ClaudeProvider {
             let retry = until.signed_duration_since(now).num_seconds().max(0) as u64;
             if let Some(mut snapshot) = self.last_good.lock().ok().and_then(|value| value.clone()) {
                 snapshot.usage = usage;
-                snapshot.warnings.push(
-                    "Claude live usage is rate limited; showing the last successful limits.".into(),
-                );
+                snapshot
+                    .warnings
+                    .push("Claude 实时用量查询受到限流；正在显示上次成功获取的额度。".into());
                 snapshot.notices = vec![rate_limit_notice(retry, true)];
                 snapshot.refreshed_at = now;
                 return Ok(snapshot);
             }
             warnings.push(format!(
-                "Claude live usage is rate limited; retrying in about {}.",
+                "Claude 实时用量查询受到限流；约 {}后重试。",
                 retry_minutes(retry)
             ));
             return Ok(ProviderSnapshot {
@@ -510,7 +507,7 @@ impl ClaudeProvider {
             if let Some(mut snapshot) = self.last_good.lock().ok().and_then(|value| value.clone()) {
                 snapshot.usage = usage;
                 snapshot.warnings.push(format!(
-                    "Claude live usage is rate limited; retrying in about {}.",
+                    "Claude 实时用量查询受到限流；约 {}后重试。",
                     retry_minutes(retry)
                 ));
                 snapshot.notices = vec![rate_limit_notice(retry, true)];
@@ -518,7 +515,7 @@ impl ClaudeProvider {
                 return Ok(snapshot);
             }
             warnings.push(format!(
-                "Claude live usage is rate limited; retrying in about {}.",
+                "Claude 实时用量查询受到限流；约 {}后重试。",
                 retry_minutes(retry)
             ));
             return Ok(ProviderSnapshot {
@@ -601,15 +598,15 @@ impl ClaudeProvider {
 
 fn rate_limit_notice(retry_seconds: u64, showing_stale_limits: bool) -> ProviderNotice {
     let retry = if retry_seconds == 0 {
-        "Ready to retry".to_owned()
+        "可以重试".to_owned()
     } else {
-        format!("Retrying in about {}", retry_minutes(retry_seconds))
+        format!("约 {}后重试", retry_minutes(retry_seconds))
     };
     ProviderNotice {
         id: "rateLimited".into(),
-        title: "Live usage paused".into(),
+        title: "实时用量查询已暂停".into(),
         message: if showing_stale_limits {
-            format!("Showing the last successful limits · {retry}")
+            format!("显示上次成功获取的额度 · {retry}")
         } else {
             retry
         },
@@ -619,10 +616,7 @@ fn rate_limit_notice(retry_seconds: u64, showing_stale_limits: bool) -> Provider
 
 fn retry_minutes(retry_seconds: u64) -> String {
     let minutes = retry_seconds.div_ceil(60);
-    format!(
-        "{minutes} {}",
-        if minutes == 1 { "minute" } else { "minutes" }
-    )
+    format!("{minutes} 分钟")
 }
 
 fn refresh_credential(
@@ -661,10 +655,7 @@ fn refresh_credential(
                 "auth:claude",
                 "failed to persist rotated credentials; using them for this session only"
             );
-            warnings.push(
-                "The refreshed Claude login is active for this session but could not be saved."
-                    .into(),
-            );
+            warnings.push("刷新后的 Claude 登录状态在本次运行中有效，但无法保存。".into());
         }
     }
     Ok(())
@@ -863,7 +854,7 @@ mod tests {
     #[test]
     fn rate_limit_notice_distinguishes_empty_and_stale_live_usage() {
         let empty = rate_limit_notice(301, false);
-        assert_eq!(empty.title, "Live usage paused");
+        assert_eq!(empty.title, "实时用量查询已暂停");
         assert_eq!(empty.message, "Retrying in about 6 minutes");
         assert_eq!(empty.tone, ProviderNoticeTone::Warning);
 

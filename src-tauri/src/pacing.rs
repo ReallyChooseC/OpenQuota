@@ -123,17 +123,17 @@ pub enum Milestone {
 impl Milestone {
     pub fn title(self) -> &'static str {
         match self {
-            Self::AlmostOut => "Almost Out",
-            Self::CuttingItClose => "Cutting It Close",
-            Self::WillRunOut => "Will Run Out",
+            Self::AlmostOut => "额度即将用尽",
+            Self::CuttingItClose => "额度可能不足",
+            Self::WillRunOut => "预计提前用尽",
         }
     }
 
     pub fn body(self) -> &'static str {
         match self {
-            Self::AlmostOut => "Under 10% usage remaining for this window.",
-            Self::CuttingItClose => "Projected to finish close to your limit.",
-            Self::WillRunOut => "Projected to run out before the limit resets.",
+            Self::AlmostOut => "当前周期的剩余额度已不足 10%。",
+            Self::CuttingItClose => "预计本周期结束时额度将所剩无几。",
+            Self::WillRunOut => "预计将在重置前用尽额度。",
         }
     }
 }
@@ -381,7 +381,7 @@ mod tests {
         let period = 10_000_u64;
         QuotaWindow {
             id: "session".into(),
-            label: "Session".into(),
+            label: "当前周期".into(),
             used_percent: used,
             resets_at: Some(
                 now + Duration::seconds(((1.0 - elapsed_fraction) * period as f64) as i64),
@@ -490,7 +490,7 @@ mod tests {
             50.0,
             reset,
             &toggles,
-            "Weekly"
+            "本周额度"
         )
         .is_empty());
         let first = transition(
@@ -499,7 +499,7 @@ mod tests {
             8.0,
             reset,
             &toggles,
-            "Weekly",
+            "本周额度",
         );
         assert_eq!(first.len(), 2);
         assert!(transition(
@@ -508,7 +508,7 @@ mod tests {
             8.0,
             reset,
             &toggles,
-            "Weekly"
+            "本周额度"
         )
         .is_empty());
     }
@@ -528,7 +528,7 @@ mod tests {
             50.0,
             Some(reset),
             &toggles,
-            "Weekly",
+            "本周额度",
         );
         assert_eq!(
             transition(
@@ -537,7 +537,7 @@ mod tests {
                 8.0,
                 Some(reset),
                 &toggles,
-                "Weekly"
+                "本周额度"
             )
             .len(),
             1
@@ -548,7 +548,7 @@ mod tests {
             8.0,
             Some(reset),
             &toggles,
-            "Weekly"
+            "本周额度"
         )
         .is_empty());
         let next_reset = reset + Duration::hours(1);
@@ -559,7 +559,7 @@ mod tests {
                 8.0,
                 Some(next_reset),
                 &toggles,
-                "Weekly"
+                "本周额度"
             )
             .len(),
             1
@@ -577,7 +577,7 @@ mod tests {
             50.0,
             reset,
             &disabled,
-            "Weekly",
+            "本周额度",
         );
         assert!(transition(
             &mut state,
@@ -585,7 +585,7 @@ mod tests {
             20.0,
             reset,
             &disabled,
-            "Weekly",
+            "本周额度",
         )
         .is_empty());
         assert_eq!(state.previous, None);
@@ -601,7 +601,7 @@ mod tests {
                 20.0,
                 reset,
                 &enabled,
-                "Weekly",
+                "本周额度",
             )
             .len(),
             1
@@ -625,7 +625,7 @@ mod tests {
             PaceAlert {
                 milestone: Milestone::WillRunOut,
                 provider: "Codex".into(),
-                metric: "Weekly".into(),
+                metric: "本周额度".into(),
                 metric_id: "codex.weekly".into(),
                 previous_severity: Some(PaceSeverity::Healthy),
                 previous_was_under_ten: false,
@@ -633,7 +633,7 @@ mod tests {
             PaceAlert {
                 milestone: Milestone::AlmostOut,
                 provider: "Codex".into(),
-                metric: "Weekly".into(),
+                metric: "本周额度".into(),
                 metric_id: "codex.weekly".into(),
                 previous_severity: Some(PaceSeverity::Healthy),
                 previous_was_under_ten: false,
@@ -806,7 +806,7 @@ mod tests {
         let evaluator = NotificationEvaluator::default();
 
         evaluator.evaluate(
-            &snapshot("session", "Session", 10.0),
+            &snapshot("session", "当前周期", 10.0),
             &settings,
             &registry,
             now,
@@ -818,7 +818,7 @@ mod tests {
             .contains_key("switching.session"));
 
         evaluator.evaluate(
-            &snapshot("weekly", "Weekly", 20.0),
+            &snapshot("weekly", "本周额度", 20.0),
             &settings,
             &registry,
             now,
@@ -829,7 +829,7 @@ mod tests {
         drop(states);
 
         let alerts = evaluator.evaluate(
-            &snapshot("session", "Session", 80.0),
+            &snapshot("session", "当前周期", 80.0),
             &settings,
             &registry,
             now,

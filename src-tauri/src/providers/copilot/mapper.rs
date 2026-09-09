@@ -33,7 +33,7 @@ pub(super) fn map_usage(body: &Value) -> Result<CopilotMappedUsage, CopilotError
     let mut quotas = Vec::new();
     let mut value_metrics = Vec::new();
     let credits =
-        premium.and_then(|value| snapshot_quota("premium", "Credits", "credits", value, resets_at));
+        premium.and_then(|value| snapshot_quota("premium", "点数", "credits", value, resets_at));
     if let Some(credits) = credits {
         quotas.push(credits);
         if let Some(extra) = premium.and_then(overage_metric) {
@@ -42,18 +42,14 @@ pub(super) fn map_usage(body: &Value) -> Result<CopilotMappedUsage, CopilotError
     }
 
     if let Some(snapshot) = snapshots.and_then(|snapshots| snapshots.get("chat")) {
-        if let Some(quota) = snapshot_quota("chat", "Chat", "requests", snapshot, resets_at) {
+        if let Some(quota) = snapshot_quota("chat", "对话", "requests", snapshot, resets_at) {
             quotas.push(quota);
         }
     }
     if let Some(snapshot) = snapshots.and_then(|snapshots| snapshots.get("completions")) {
-        if let Some(quota) = snapshot_quota(
-            "completions",
-            "Completions",
-            "completions",
-            snapshot,
-            resets_at,
-        ) {
+        if let Some(quota) =
+            snapshot_quota("completions", "补全", "completions", snapshot, resets_at)
+        {
             quotas.push(quota);
         }
     }
@@ -63,7 +59,7 @@ pub(super) fn map_usage(body: &Value) -> Result<CopilotMappedUsage, CopilotError
         let monthly = body.get("monthly_quotas").and_then(Value::as_object);
         if let Some(quota) = legacy_quota(
             "chat",
-            "Chat",
+            "对话",
             "requests",
             limited.and_then(|value| value.get("chat")),
             monthly.and_then(|value| value.get("chat")),
@@ -73,7 +69,7 @@ pub(super) fn map_usage(body: &Value) -> Result<CopilotMappedUsage, CopilotError
         }
         if let Some(quota) = legacy_quota(
             "completions",
-            "Completions",
+            "补全",
             "completions",
             limited.and_then(|value| value.get("completions")),
             monthly.and_then(|value| value.get("completions")),
@@ -149,7 +145,7 @@ pub(super) fn map_org_usage(body: &Value) -> Option<Vec<ValueMetric>> {
         vec![
             ValueMetric {
                 id: "orgCredits".into(),
-                label: "Org Credits".into(),
+                label: "组织点数".into(),
                 values: vec![MetricValue {
                     number: credits,
                     kind: MetricValueKind::Count,
@@ -160,7 +156,7 @@ pub(super) fn map_org_usage(body: &Value) -> Option<Vec<ValueMetric>> {
             },
             ValueMetric {
                 id: "orgSpend".into(),
-                label: "Org Spend".into(),
+                label: "组织花费".into(),
                 values: vec![MetricValue {
                     number: spend,
                     kind: MetricValueKind::Dollars,
@@ -242,7 +238,7 @@ fn overage_metric(value: &Value) -> Option<ValueMetric> {
         .max(0.0);
     Some(ValueMetric {
         id: "extra".into(),
-        label: "Extra Usage".into(),
+        label: "额外用量".into(),
         values: vec![MetricValue {
             number: count,
             kind: MetricValueKind::Count,

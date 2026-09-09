@@ -148,14 +148,14 @@ pub trait UsageProvider: Send + Sync {
     fn save_api_key(&self, _value: &str) -> Result<(), ProviderError> {
         Err(ProviderError::new(
             ProviderErrorKind::Internal,
-            "That provider does not accept an API key.",
+            "该服务商不支持使用 API 密钥。",
         ))
     }
 
     fn delete_api_key(&self) -> Result<(), ProviderError> {
         Err(ProviderError::new(
             ProviderErrorKind::Internal,
-            "That provider does not accept an API key.",
+            "该服务商不支持使用 API 密钥。",
         ))
     }
 }
@@ -209,19 +209,16 @@ mod tests {
         assert_eq!(
             links(claude::definition()),
             [
-                ("Status".into(), "https://status.anthropic.com/".into()),
-                (
-                    "Dashboard".into(),
-                    "https://claude.ai/settings/usage".into()
-                ),
+                ("服务状态".into(), "https://status.anthropic.com/".into()),
+                ("网页面板".into(), "https://claude.ai/settings/usage".into()),
             ]
         );
         assert_eq!(
             links(codex::definition()),
             [
-                ("Status".into(), "https://status.openai.com/".into()),
+                ("服务状态".into(), "https://status.openai.com/".into()),
                 (
-                    "Dashboard".into(),
+                    "网页面板".into(),
                     "https://chatgpt.com/codex/settings/usage".into()
                 ),
             ]
@@ -229,20 +226,17 @@ mod tests {
         assert_eq!(
             links(cursor::definition()),
             [
-                ("Status".into(), "https://status.cursor.com/".into()),
-                (
-                    "Dashboard".into(),
-                    "https://www.cursor.com/dashboard".into()
-                ),
+                ("服务状态".into(), "https://status.cursor.com/".into()),
+                ("网页面板".into(), "https://www.cursor.com/dashboard".into()),
             ]
         );
         assert!(links(antigravity::definition()).is_empty());
         assert_eq!(
             links(copilot::definition()),
             [
-                ("Status".into(), "https://www.githubstatus.com/".into()),
+                ("服务状态".into(), "https://www.githubstatus.com/".into()),
                 (
-                    "Dashboard".into(),
+                    "网页面板".into(),
                     "https://github.com/settings/billing".into()
                 ),
             ]
@@ -250,24 +244,24 @@ mod tests {
         assert_eq!(
             links(devin::definition()),
             [(
-                "Dashboard".into(),
+                "网页面板".into(),
                 "https://app.devin.ai/settings/plans".into()
             )]
         );
         assert_eq!(
             links(grok::definition()),
-            [("Usage".into(), "https://grok.com/?_s=usage".into())]
+            [("用量".into(), "https://grok.com/?_s=usage".into())]
         );
         assert_eq!(
             links(opencode::definition()),
-            [("Dashboard".into(), "https://opencode.ai/auth".into())]
+            [("网页面板".into(), "https://opencode.ai/auth".into())]
         );
         assert_eq!(
             links(openrouter::definition()),
             [
-                ("Activity".into(), "https://openrouter.ai/activity".into()),
+                ("活动记录".into(), "https://openrouter.ai/activity".into()),
                 (
-                    "Credits".into(),
+                    "点数".into(),
                     "https://openrouter.ai/settings/credits".into()
                 ),
             ]
@@ -276,11 +270,11 @@ mod tests {
             links(zai::definition()),
             [
                 (
-                    "Dashboard".into(),
+                    "网页面板".into(),
                     "https://z.ai/manage-apikey/coding-plan/personal/my-plan".into()
                 ),
                 (
-                    "API Keys".into(),
+                    "API 密钥".into(),
                     "https://z.ai/manage-apikey/apikey-list".into()
                 ),
             ]
@@ -289,11 +283,11 @@ mod tests {
             links(kimi::definition()),
             [
                 (
-                    "Dashboard".into(),
+                    "网页面板".into(),
                     "https://www.kimi.com/code/console".into()
                 ),
                 (
-                    "API Keys".into(),
+                    "API 密钥".into(),
                     "https://www.kimi.com/code/console".into()
                 ),
             ]
@@ -302,11 +296,11 @@ mod tests {
             links(minimax::definition()),
             [
                 (
-                    "Dashboard".into(),
+                    "网页面板".into(),
                     "https://platform.minimax.io/console/plan".into()
                 ),
                 (
-                    "API Keys".into(),
+                    "API 密钥".into(),
                     "https://platform.minimax.io/console/access".into()
                 ),
             ]

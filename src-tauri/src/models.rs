@@ -500,7 +500,7 @@ impl MetricDefinition {
     pub fn trend(id: &str) -> Self {
         Self::new(
             id,
-            "Usage Trend",
+            "用量趋势",
             MetricSource::Trend,
             false,
             true,
@@ -929,7 +929,7 @@ mod tests {
                 .filter_map(ProviderLink::visible)
                 .collect::<Vec<_>>(),
             [
-                ProviderLink::new("Status", "https://status.example.com/"),
+                ProviderLink::new("服务状态", "https://status.example.com/"),
                 ProviderLink::new("HTTP", "http://example.com/dashboard"),
             ]
         );

@@ -166,7 +166,7 @@ describe('pointer reorder integrations', () => {
       .find((provider) => provider.id === 'codex')!
       .metrics.find((metric) => metric.id === 'codex.today')!;
     expect(starredToday).toMatchObject({ enabled: false, pinned: true });
-    expect(screen.getByRole('status')).toHaveTextContent('Starred for menu bar');
+    expect(screen.getByRole('status')).toHaveTextContent('已置顶到托盘栏');
 
     onChange.mockClear();
     await rerender({ settings: starred });
@@ -199,7 +199,7 @@ describe('pointer reorder integrations', () => {
 
     expect(onChange).not.toHaveBeenCalled();
     expect(animate).toHaveBeenCalledOnce();
-    expect(screen.getByRole('status')).toHaveTextContent('Up to 2 stars per provider');
+    expect(screen.getByRole('status')).toHaveTextContent('每个服务商最多置顶 2 项');
   });
 
   it('reorders enabled providers from the grip and keeps disabled providers at the tail', async () => {
@@ -269,8 +269,8 @@ describe('pointer reorder integrations', () => {
       reducedMotion: false,
     });
 
-    const weekly = screen.getByText('Weekly').closest('.customize-metric-row') as HTMLElement;
-    const today = screen.getByText('Today').closest('.customize-metric-row') as HTMLElement;
+    const weekly = screen.getByText('本周额度').closest('.customize-metric-row') as HTMLElement;
+    const today = screen.getByText('今天').closest('.customize-metric-row') as HTMLElement;
     await drag(weekly, weekly.querySelector('[data-reorder-handle]')!, today, 'touch');
 
     const changed = onChange.mock.calls[0][0] as AppSettings;

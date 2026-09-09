@@ -8,9 +8,9 @@ function show(pending = false) {
   const onConfirm = vi.fn();
   const onCancel = vi.fn();
   render(ConfirmationSheet, {
-    title: 'Reset All Customization?',
+    title: '重置所有自定义设置？',
     message: 'This restores every provider layout.',
-    confirmLabel: 'Reset All',
+    confirmLabel: '全部重置',
     pending,
     onConfirm,
     onCancel,
@@ -21,9 +21,9 @@ function show(pending = false) {
 describe('confirmation sheet', () => {
   it('opens as an attached alert dialog and keeps keyboard focus inside', async () => {
     show();
-    const dialog = screen.getByRole('alertdialog', { name: 'Reset All Customization?' });
-    const cancel = screen.getByRole('button', { name: 'Cancel' });
-    const confirm = screen.getByRole('button', { name: 'Reset All' });
+    const dialog = screen.getByRole('alertdialog', { name: '重置所有自定义设置？' });
+    const cancel = screen.getByRole('button', { name: '取消' });
+    const confirm = screen.getByRole('button', { name: '全部重置' });
 
     await waitFor(() => expect(cancel).toHaveFocus());
     await fireEvent.keyDown(cancel, { key: 'Tab', shiftKey: true });
@@ -41,8 +41,8 @@ describe('confirmation sheet', () => {
 
     const pending = show(true);
     const dialog = screen.getByRole('alertdialog');
-    expect(screen.getByRole('button', { name: 'Cancel' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Resetting…' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: '取消' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: '正在重置…' })).toBeDisabled();
     await fireEvent.keyDown(dialog, { key: 'Escape' });
     expect(pending.onCancel).not.toHaveBeenCalled();
   });

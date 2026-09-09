@@ -34,7 +34,7 @@ fn map_user_status(
         .and_then(|info| info.get("planName"))
         .and_then(Value::as_str)
         .and_then(non_empty)
-        .unwrap_or_else(|| "Unknown".into());
+        .unwrap_or_else(|| "未知".into());
     let hide_daily = plan_info
         .and_then(|info| info.get("hideDailyQuota"))
         .and_then(bool_value)
@@ -62,7 +62,7 @@ fn map_user_status(
         if let Some(remaining) = daily_remaining {
             quotas.push(quota(
                 "daily",
-                "Daily",
+                "每日额度",
                 remaining,
                 daily_reset,
                 DAY_PERIOD_SECONDS,
@@ -72,7 +72,7 @@ fn map_user_status(
     if let Some(remaining) = weekly_remaining {
         quotas.push(quota(
             "weekly",
-            "Weekly",
+            "本周额度",
             remaining,
             weekly_reset,
             WEEK_PERIOD_SECONDS,
@@ -81,7 +81,7 @@ fn map_user_status(
         if let Some(remaining) = daily_remaining {
             quotas.push(quota(
                 "weekly",
-                "Weekly",
+                "本周额度",
                 remaining,
                 weekly_reset,
                 WEEK_PERIOD_SECONDS,
@@ -97,7 +97,7 @@ fn map_user_status(
         .map(|balance| {
             vec![ValueMetric {
                 id: "extraUsageBalance".into(),
-                label: "Extra Usage Balance".into(),
+                label: "额外用量余额".into(),
                 values: vec![MetricValue {
                     number: balance,
                     kind: MetricValueKind::Dollars,

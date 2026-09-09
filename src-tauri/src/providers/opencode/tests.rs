@@ -55,7 +55,7 @@ fn missing_go_subscription_is_reported_as_permission() {
     let error: crate::providers::ProviderError = OpenCodeError::GoSubscriptionRequired.into();
 
     assert_eq!(error.kind(), ProviderErrorKind::Permission);
-    assert_eq!(error.to_string(), "OpenCode Go subscription required.");
+    assert_eq!(error.to_string(), "需要 OpenCode Go 订阅。");
 }
 
 #[test]
@@ -690,7 +690,7 @@ fn unavailable_account_quota_keeps_local_history_and_explains_the_error() {
     assert!(snapshot
         .warnings
         .iter()
-        .any(|warning| { warning.contains("OpenCode Go subscription required.") }));
+        .any(|warning| { warning.contains("需要 OpenCode Go 订阅。") }));
 }
 
 #[test]
@@ -718,7 +718,7 @@ fn empty_readable_database_does_not_hide_missing_go_subscription() {
     let error = provider.refresh().unwrap_err();
 
     assert_eq!(error.kind(), ProviderErrorKind::Permission);
-    assert_eq!(error.to_string(), "OpenCode Go subscription required.");
+    assert_eq!(error.to_string(), "需要 OpenCode Go 订阅。");
 }
 
 #[test]

@@ -24,7 +24,7 @@
     data-reorder-id="section:onDemand"
     type="button"
     aria-expanded={expanded}
-    aria-label={expanded ? 'Show less' : 'Show more'}
+    aria-label={expanded ? '收起' : '展开'}
     onclick={onToggle}
   >
     <Icon name={expanded ? 'chevron-up' : 'chevron-down'} size={10} strokeWidth={2.2} />

@@ -46,7 +46,7 @@
     const date = new Date(`${value}T12:00:00`);
     return Number.isNaN(date.getTime())
       ? value
-      : new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
+      : new Intl.DateTimeFormat('zh-CN', { month: 'short', day: 'numeric' }).format(date);
   }
 
   function revealDetail() {
@@ -64,13 +64,13 @@
   });
 </script>
 
-<section class="trend-row" aria-label="Usage Trend">
-  <strong>Usage Trend</strong>
+<section class="trend-row" aria-label="用量趋势">
+  <strong>用量趋势</strong>
   {#if total > 0}
     <div
       class="trend-chart-wrap"
       role="group"
-      aria-label="Usage trend chart details"
+      aria-label="用量趋势图详情"
       onmouseenter={revealDetail}
       onmouseleave={concealDetail}
     >
@@ -78,22 +78,22 @@
         class="trend-bars"
         class:trend-bars--active={detailVisible}
         role="img"
-        aria-label={`30-day token chart. Peak ${compact(peak.tokens)} tokens on ${peak.date}.`}
+        aria-label={`近 30 天 Token 用量图。峰值为 ${compact(peak.tokens)} Token，出现在 ${peak.date}。`}
       >
         {#each points as point (point.date)}
           <span
             style={`height: ${Math.max(point.tokens > 0 ? 18 : 2, (point.tokens / max) * 100)}%`}
-            title={`${point.date}: ${compact(point.tokens)} tokens`}
+            title={`${point.date}：${compact(point.tokens)} Token`}
           ></span>
         {/each}
       </div>
       {#if detailVisible}
         <aside class="trend-detail" onmouseenter={revealDetail} onmouseleave={concealDetail}>
           <header>
-            <strong>Usage Trend</strong><span
+            <strong>用量趋势</strong><span
               >{hoveredDate
-                ? `${dayLabel(highlightedPoint.date)} · ${compact(highlightedPoint.tokens)} tokens`
-                : `peak ${compact(peak.tokens)} tokens`}</span
+                ? `${dayLabel(highlightedPoint.date)} · ${compact(highlightedPoint.tokens)} Token`
+                : `峰值 ${compact(peak.tokens)} Token`}</span
             >
           </header>
           <div
@@ -120,7 +120,7 @@
       {/if}
     </div>
   {:else}
-    <p class="trend-empty">No data</p>
+    <p class="trend-empty">暂无数据</p>
   {/if}
 </section>
 

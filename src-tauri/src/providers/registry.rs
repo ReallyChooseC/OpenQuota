@@ -334,7 +334,7 @@ mod tests {
             links: vec![],
             metrics: vec![MetricDefinition::new(
                 format!("{id}.session"),
-                "Session",
+                "当前周期",
                 MetricSource::Quota {
                     source_id: "session".into(),
                     session_window: true,
@@ -400,7 +400,7 @@ mod tests {
         assert_eq!(
             registry.definition("links").unwrap().links,
             vec![crate::models::ProviderLink::new(
-                "Status",
+                "服务状态",
                 "https://status.example.com/"
             )]
         );

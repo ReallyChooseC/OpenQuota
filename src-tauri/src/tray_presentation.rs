@@ -263,8 +263,8 @@ fn tray_metric(
                             UsageDisplay::Left => (limit - used).max(0.0),
                         };
                         let word = match display {
-                            UsageDisplay::Used => "used",
-                            UsageDisplay::Left => "left",
+                            UsageDisplay::Used => "已用",
+                            UsageDisplay::Left => "剩余",
                         };
                         let unit = quota.unit.as_deref().unwrap_or("requests");
                         return TrayMetric {
@@ -288,8 +288,8 @@ fn tray_metric(
                 };
                 let percent = display_fraction * 100.0;
                 let word = match display {
-                    UsageDisplay::Used => "used",
-                    UsageDisplay::Left => "left",
+                    UsageDisplay::Used => "已用",
+                    UsageDisplay::Left => "剩余",
                 };
                 TrayMetric {
                     value: format!("{percent:.0}%"),
@@ -584,7 +584,7 @@ mod tests {
             quotas: vec![
                 QuotaWindow {
                     id: "session".into(),
-                    label: "Session".into(),
+                    label: "当前周期".into(),
                     used_percent: 25.0,
                     resets_at: None,
                     period_seconds: 18_000,
@@ -597,7 +597,7 @@ mod tests {
                 },
                 QuotaWindow {
                     id: "weekly".into(),
-                    label: "Weekly".into(),
+                    label: "本周额度".into(),
                     used_percent: 60.0,
                     resets_at: None,
                     period_seconds: 604_800,
@@ -678,7 +678,7 @@ mod tests {
             plan: None,
             quotas: vec![QuotaWindow {
                 id: "requests".into(),
-                label: "Requests".into(),
+                label: "请求数".into(),
                 used_percent: 25.0,
                 resets_at: None,
                 period_seconds: 2_592_000,
@@ -783,7 +783,7 @@ mod tests {
             quotas: Vec::new(),
             value_metrics: vec![ValueMetric {
                 id: "credits".into(),
-                label: "Extra Usage".into(),
+                label: "额外用量".into(),
                 values: vec![
                     MetricValue {
                         number: 32.84,
@@ -827,7 +827,7 @@ mod tests {
             value_metrics: Vec::new(),
             status_metrics: vec![StatusMetric {
                 id: "payAsYouGo".into(),
-                label: "Extra Usage".into(),
+                label: "额外用量".into(),
                 text: "2500 cap".into(),
                 tone: StatusTone::Positive,
                 subtitle: None,
@@ -839,7 +839,7 @@ mod tests {
         };
         let definition = MetricDefinition::status(
             "grok.payAsYouGo",
-            "Extra Usage",
+            "额外用量",
             "payAsYouGo",
             true,
             MetricSection::AlwaysVisible,

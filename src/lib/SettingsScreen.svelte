@@ -47,10 +47,10 @@
   const settings = $derived(settingsView.settings);
   const revealLogLabel = $derived(
     platform === 'macos'
-      ? 'Reveal in Finder'
+      ? '在访达中显示'
       : platform === 'windows'
-        ? 'Reveal in File Explorer'
-        : 'Open Containing Folder',
+        ? '在文件资源管理器中显示'
+        : '打开所在文件夹',
   );
   const anyNotificationEnabled = $derived(
     settings.notifications.almostOut ||
@@ -73,7 +73,7 @@
       await onCopyLogPath();
       logActionError = null;
     } catch {
-      logActionError = "Couldn't copy the log path to the clipboard.";
+      logActionError = '无法将日志路径复制到剪贴板。';
     }
   }
   async function revealLogFile() {
@@ -81,7 +81,7 @@
       await onOpenLogFolder();
       logActionError = null;
     } catch {
-      logActionError = "Couldn't reveal the log file.";
+      logActionError = '无法显示日志文件。';
     }
   }
   function record(event: KeyboardEvent) {
@@ -124,7 +124,7 @@
   }
 </script>
 
-<section class="screen settings-screen" aria-label="Settings">
+<section class="screen settings-screen" aria-label="设置">
   {#if settingsView.integrationError}<p class="notice" role="alert">
       {settingsView.integrationError}
     </p>{/if}
@@ -132,93 +132,92 @@
   {#if settingsView.platformSummary}<div class="settings-section">
       <h2>Linux</h2>
       <div class="setting-row">
-        <span><b>Desktop Integration</b><small>{settingsView.platformSummary}</small></span>
+        <span><b>桌面集成</b><small>{settingsView.platformSummary}</small></span>
       </div>
     </div>{/if}
 
   <div class="settings-section">
-    <h2>General</h2>
+    <h2>常规</h2>
     <label class="setting-row"
-      ><span><b>Show Total Spend</b></span><input
+      ><span><b>显示总用量</b></span><input
         type="checkbox"
         checked={settings.showTotalSpend}
         onchange={(event) => patch({ showTotalSpend: event.currentTarget.checked })}
       /></label
     >
     <label class="setting-row"
-      ><span><b>Launch at Login</b></span><input
+      ><span><b>开机启动</b></span><input
         type="checkbox"
         checked={settings.launchAtLogin}
         onchange={(event) => patch({ launchAtLogin: event.currentTarget.checked })}
       /></label
     >
     <div class="setting-row">
-      <span><b>Global Shortcut</b></span>
+      <span><b>全局快捷键</b></span>
       <div class="shortcut-field">
         <button
           class:recording
           type="button"
           aria-pressed={recording}
           aria-describedby="shortcut-recording-help"
-          data-tooltip="Open OpenQuota from anywhere"
+          data-tooltip="在任何位置打开 OpenQuota"
           onclick={() => (recording = !recording)}
           onkeydown={record}
           onblur={() => (recording = false)}
-          >{recording ? 'Type Shortcut…' : (settings.globalShortcut ?? 'Record Shortcut')}</button
+          >{recording ? '请按下快捷键…' : (settings.globalShortcut ?? '录入快捷键')}</button
         >{#if settings.globalShortcut}<button
             type="button"
-            aria-label="Clear global shortcut"
+            aria-label="清除全局快捷键"
             onclick={() => patch({ globalShortcut: null })}
             ><Icon name="close" size={10} strokeWidth={2.2} /></button
           >{/if}
       </div>
       <small id="shortcut-recording-help" class="sr-only"
-        >Activate to record. While recording, press a modifier shortcut to save it, Delete to clear
-        it, or Escape to cancel.</small
+        >点击后录入快捷键：按组合键保存，按 Delete 清除，按 Escape 取消。</small
       >
     </div>
   </div>
 
   <div class="settings-section">
-    <h2>Appearance</h2>
+    <h2>外观</h2>
     {#if platform === 'macos'}
       <div class="setting-row">
-        <span><b>Icon Style</b></span><SelectMenu
-          label="Icon Style"
+        <span><b>图标样式</b></span><SelectMenu
+          label="图标样式"
           value={settings.menuBarStyle}
           options={[
-            { value: 'text', label: 'Text' },
-            { value: 'bars', label: 'Bars' },
+            { value: 'text', label: '文字' },
+            { value: 'bars', label: '进度条' },
           ]}
           onChange={(value) => patch({ menuBarStyle: value as AppSettings['menuBarStyle'] })}
         />
       </div>
     {/if}
     <div class="setting-row">
-      <span><b>Theme</b></span><SelectMenu
-        label="Theme"
+      <span><b>主题</b></span><SelectMenu
+        label="主题"
         value={settings.theme}
         options={[
-          { value: 'system', label: 'System' },
-          { value: 'light', label: 'Light' },
-          { value: 'dark', label: 'Dark' },
+          { value: 'system', label: '跟随系统' },
+          { value: 'light', label: '浅色' },
+          { value: 'dark', label: '深色' },
         ]}
         onChange={(value) => patch({ theme: value as AppSettings['theme'] })}
       />
     </div>
     <div class="setting-row">
-      <span><b>Density</b></span><SelectMenu
-        label="Density"
+      <span><b>界面密度</b></span><SelectMenu
+        label="界面密度"
         value={settings.density}
         options={[
-          { value: 'default', label: 'Default' },
-          { value: 'compact', label: 'Compact' },
+          { value: 'default', label: '默认' },
+          { value: 'compact', label: '紧凑' },
         ]}
         onChange={(value) => patch({ density: value as AppSettings['density'] })}
       />
     </div>
     <label class="setting-row"
-      ><span><b>Reduce Animations</b></span><input
+      ><span><b>减少动画</b></span><input
         type="checkbox"
         checked={settings.reduceAnimations}
         onchange={(event) => patch({ reduceAnimations: event.currentTarget.checked })}
@@ -226,36 +225,36 @@
     >
     {#if settingsView.trayAvailable}
       <div class="setting-row">
-        <span><b>Window Mode</b></span><SelectMenu
-          label="Window Mode"
+        <span><b>窗口模式</b></span><SelectMenu
+          label="窗口模式"
           value={settings.windowMode}
           options={[
-            { value: 'popup', label: 'Tray Popup' },
-            { value: 'floating', label: 'Floating Window' },
+            { value: 'popup', label: '托盘弹窗' },
+            { value: 'floating', label: '悬浮窗口' },
           ]}
           onChange={(value) => patch({ windowMode: value as AppSettings['windowMode'] })}
         />
       </div>
     {/if}
     <div class="setting-row">
-      <span><b>Panel Height</b></span><SelectMenu
-        label="Panel Height"
+      <span><b>面板高度</b></span><SelectMenu
+        label="面板高度"
         value={panelHeightMode}
         options={[
-          { value: 'automatic', label: 'Automatic' },
-          { value: 'manual', label: 'Manual' },
+          { value: 'automatic', label: '自动' },
+          { value: 'manual', label: '手动' },
         ]}
         onChange={(value) => onPanelHeightModeChange(value as PanelHeightMode)}
       />
     </div>
     <div class="setting-row">
-      <span><b>Time Format</b></span><SelectMenu
-        label="Time Format"
+      <span><b>时间格式</b></span><SelectMenu
+        label="时间格式"
         value={settings.timeFormat}
         options={[
-          { value: 'system', label: 'Auto' },
-          { value: 'twelveHour', label: '12-hour' },
-          { value: 'twentyFourHour', label: '24-hour' },
+          { value: 'system', label: '自动' },
+          { value: 'twelveHour', label: '12 小时制' },
+          { value: 'twentyFourHour', label: '24 小时制' },
         ]}
         onChange={(value) => patch({ timeFormat: value as AppSettings['timeFormat'] })}
       />
@@ -263,35 +262,35 @@
   </div>
 
   <div class="settings-section">
-    <h2>Usage Display</h2>
+    <h2>用量显示</h2>
     <div class="setting-row">
-      <span><b>Show Usage As</b></span><SelectMenu
-        label="Show Usage As"
+      <span><b>显示内容</b></span><SelectMenu
+        label="显示内容"
         value={settings.usageDisplay}
         options={[
-          { value: 'left', label: 'Left' },
-          { value: 'used', label: 'Used' },
+          { value: 'left', label: '剩余额度' },
+          { value: 'used', label: '已用额度' },
         ]}
         onChange={(value) => patch({ usageDisplay: value as AppSettings['usageDisplay'] })}
       />
     </div>
     <div class="setting-row">
-      <span><b>Reset Times</b></span><SelectMenu
-        label="Reset Times"
+      <span><b>重置时间</b></span><SelectMenu
+        label="重置时间"
         value={settings.resetDisplay}
         options={[
-          { value: 'countdown', label: 'Countdown' },
-          { value: 'exact', label: 'Exact Time' },
+          { value: 'countdown', label: '倒计时' },
+          { value: 'exact', label: '具体时间' },
         ]}
         onChange={(value) => patch({ resetDisplay: value as AppSettings['resetDisplay'] })}
       />
     </div>
     <label class="setting-row"
       ><span
-        ><b>Always Show Pacing</b><i
+        ><b>始终显示消耗速度</b><i
           class="setting-info"
-          data-tooltip="Show how you're pacing on every metric, not just ones near their limit"
-          aria-label="Show how you're pacing on every metric, not just ones near their limit"
+          data-tooltip="始终显示各项指标的消耗速度，而不只显示即将用尽的指标"
+          aria-label="始终显示各项指标的消耗速度，而不只显示即将用尽的指标"
           ><Icon name="about" size={12} strokeWidth={1.8} /></i
         ></span
       ><input
@@ -304,14 +303,14 @@
 
   <div class="settings-section">
     <h2>
-      Notifications {#if notificationsNeedAttention}<span class="permission-warning">!</span>{/if}
+      通知 {#if notificationsNeedAttention}<span class="permission-warning">!</span>{/if}
     </h2>
     <label class="setting-row"
       ><span
-        ><b>Almost Out</b><i
+        ><b>额度即将用尽</b><i
           class="setting-info"
-          data-tooltip="Alert when a limit drops below 10% remaining."
-          aria-label="Alert when a limit drops below 10% remaining."
+          data-tooltip="剩余额度低于 10% 时提醒。"
+          aria-label="剩余额度低于 10% 时提醒。"
           ><Icon name="about" size={12} strokeWidth={1.8} /></i
         ></span
       ><input
@@ -322,10 +321,10 @@
     >
     <label class="setting-row"
       ><span
-        ><b>Cutting It Close</b><i
+        ><b>额度可能不足</b><i
           class="setting-info"
-          data-tooltip="Alert when a limit is projected to finish with little left."
-          aria-label="Alert when a limit is projected to finish with little left."
+          data-tooltip="预计到重置时额度所剩不多时提醒。"
+          aria-label="预计到重置时额度所剩不多时提醒。"
           ><Icon name="about" size={12} strokeWidth={1.8} /></i
         ></span
       ><input
@@ -336,10 +335,10 @@
     >
     <label class="setting-row"
       ><span
-        ><b>Will Run Out</b><i
+        ><b>预计提前用尽</b><i
           class="setting-info"
-          data-tooltip="Alert when a limit is projected to finish before it resets."
-          aria-label="Alert when a limit is projected to finish before it resets."
+          data-tooltip="预计在重置前用尽额度时提醒。"
+          aria-label="预计在重置前用尽额度时提醒。"
           ><Icon name="about" size={12} strokeWidth={1.8} /></i
         ></span
       ><input
@@ -354,12 +353,12 @@
           <span
             ><b
               >{settingsView.notificationPermission === 'denied'
-                ? 'Notifications are blocked'
-                : 'Permission is required'}</b
+                ? '通知已被禁止'
+                : '需要通知权限'}</b
             ><small
               >{settingsView.notificationPermission === 'denied'
-                ? 'Enable OpenQuota notifications in system settings.'
-                : 'Allow notifications to receive the alerts selected above.'}</small
+                ? '请在系统设置中启用 OpenQuota 通知。'
+                : '允许通知后即可接收上方所选提醒。'}</small
             ></span
           >
           <button
@@ -368,7 +367,7 @@
             onclick={settingsView.notificationPermission === 'denied'
               ? onOpenNotificationSettings
               : onRequestNotifications}
-            >{settingsView.notificationPermission === 'denied' ? 'Open Settings' : 'Allow'}</button
+            >{settingsView.notificationPermission === 'denied' ? '打开设置' : '允许'}</button
           >
         </div>
       </div>
@@ -376,23 +375,23 @@
   </div>
 
   <div class="settings-section">
-    <h2>Advanced</h2>
+    <h2>高级</h2>
     <div class="setting-row">
-      <span><b>Log Level</b></span><SelectMenu
-        label="Log Level"
+      <span><b>日志级别</b></span><SelectMenu
+        label="日志级别"
         value={settings.logLevel}
         options={[
-          { value: 'error', label: 'Error' },
-          { value: 'warn', label: 'Warning' },
-          { value: 'info', label: 'Info' },
-          { value: 'debug', label: 'Debug' },
+          { value: 'error', label: '错误' },
+          { value: 'warn', label: '警告' },
+          { value: 'info', label: '信息' },
+          { value: 'debug', label: '调试' },
         ]}
         onChange={(value) => patch({ logLevel: value as AppSettings['logLevel'] })}
       />
     </div>
     <div class="setting-row setting-row--button">
       <button class="secondary-button settings-wide-button" type="button" onclick={copyLogPath}
-        >Copy Log Path</button
+        >复制日志路径</button
       >
     </div>
     <div class="setting-row setting-row--button">
@@ -407,15 +406,15 @@
       <button
         class="secondary-button settings-wide-button settings-reset-button"
         type="button"
-        onclick={onResetAllSettings}>Reset All Settings…</button
+        onclick={onResetAllSettings}>重置所有设置…</button
       >
     </div>
   </div>
 
   <div class="settings-section">
-    <h2>Updates</h2>
+    <h2>更新</h2>
     <label class="setting-row"
-      ><span><b>Check for Updates Automatically</b></span><input
+      ><span><b>自动检查更新</b></span><input
         type="checkbox"
         checked={settings.autoCheckUpdates}
         onchange={(event) => patch({ autoCheckUpdates: event.currentTarget.checked })}
@@ -426,7 +425,7 @@
         type="button"
         class="secondary-button settings-wide-button"
         disabled={checkingUpdate}
-        onclick={onCheckForUpdates}>{checkingUpdate ? 'Checking…' : 'Check for Updates…'}</button
+        onclick={onCheckForUpdates}>{checkingUpdate ? '正在检查…' : '检查更新…'}</button
       >
     </div>
     {#if updateError}<div class="settings-update-error" role="alert">
@@ -434,9 +433,9 @@
       </div>{/if}
   </div>
 
-  <button class="screen-cross-link" type="button" aria-label="Customize" onclick={onCustomize}>
+  <button class="screen-cross-link" type="button" aria-label="自定义" onclick={onCustomize}>
     <Icon name="sliders" size={17} />
-    <span><b>Customize</b><small>Choose what's visible and where</small></span>
+    <span><b>自定义</b><small>选择显示内容及其位置</small></span>
     <Icon name="chevron-right" size={13} strokeWidth={2.2} />
   </button>
 </section>
@@ -519,7 +518,7 @@
       color: var(--text);
     }
 
-    .shortcut-field button[aria-label='Clear global shortcut'] {
+    .shortcut-field button[aria-label='清除全局快捷键'] {
       display: grid;
       width: 24px;
       height: 24px;
@@ -529,8 +528,8 @@
       place-items: center;
     }
 
-    .shortcut-field button[aria-label='Clear global shortcut']:hover,
-    .shortcut-field button[aria-label='Clear global shortcut']:focus-visible {
+    .shortcut-field button[aria-label='清除全局快捷键']:hover,
+    .shortcut-field button[aria-label='清除全局快捷键']:focus-visible {
       outline: none;
       color: var(--text);
       background: var(--button-hover);

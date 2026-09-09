@@ -51,7 +51,7 @@ pub fn map_usage(body: &Value) -> Result<MiniMaxMappedUsage, MiniMaxError> {
     let weekly = quota_from_model(general, Window::Weekly)?;
     let session = quota_from_model(general, Window::Interval)?;
     Ok(MiniMaxMappedUsage {
-        plan: Some("Token Plan".into()),
+        plan: Some("Token 套餐".into()),
         quotas: [session, weekly].into_iter().flatten().collect(),
     })
 }
@@ -70,7 +70,7 @@ fn quota_from_model(model: &Value, window: Window) -> Result<Option<QuotaWindow>
             "weekly_end_time",
             "weekly_start_time",
             "weekly",
-            "Weekly",
+            "本周额度",
             WEEKLY_PERIOD_SECONDS,
         ),
         Window::Interval => (
@@ -79,7 +79,7 @@ fn quota_from_model(model: &Value, window: Window) -> Result<Option<QuotaWindow>
             "end_time",
             "start_time",
             "session",
-            "Session",
+            "当前周期",
             DEFAULT_INTERVAL_PERIOD_SECONDS,
         ),
     };
@@ -195,7 +195,7 @@ mod tests {
     fn captured_payload_includes_an_unlimited_weekly_window() {
         let mapped = map_usage(&captured()).unwrap();
 
-        assert_eq!(mapped.plan.as_deref(), Some("Token Plan"));
+        assert_eq!(mapped.plan.as_deref(), Some("Token 套餐"));
         assert_eq!(
             mapped
                 .quotas

@@ -34,12 +34,12 @@ pub(crate) fn definition() -> ProviderDefinition {
         display_name: "Grok".into(),
         short_name: "G".into(),
         fallback_enabled: false,
-        local_usage_source_note: Some("From your Grok logs (estimated)".into()),
-        links: vec![ProviderLink::new("Usage", "https://grok.com/?_s=usage")],
+        local_usage_source_note: Some("根据本地 Grok 日志估算".into()),
+        links: vec![ProviderLink::new("用量", "https://grok.com/?_s=usage")],
         metrics: vec![
             MetricDefinition::quota(
                 "grok.weekly",
-                "Weekly",
+                "本周额度",
                 "weekly",
                 false,
                 true,
@@ -49,7 +49,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::status(
                 "grok.payAsYouGo",
-                "Extra Usage",
+                "额外用量",
                 "payAsYouGo",
                 true,
                 MetricSection::OnDemand,
@@ -59,21 +59,21 @@ pub(crate) fn definition() -> ProviderDefinition {
             MetricDefinition::trend("grok.trend"),
             MetricDefinition::usage(
                 "grok.today",
-                "Today",
+                "今天",
                 UsagePeriodSelection::Today,
                 MetricSection::OnDemand,
                 "T",
             ),
             MetricDefinition::usage(
                 "grok.yesterday",
-                "Yesterday",
+                "昨天",
                 UsagePeriodSelection::Yesterday,
                 MetricSection::OnDemand,
                 "Y",
             ),
             MetricDefinition::usage(
                 "grok.last30",
-                "Last 30 Days",
+                "最近 30 天",
                 UsagePeriodSelection::Last30Days,
                 MetricSection::OnDemand,
                 "M",
@@ -84,23 +84,23 @@ pub(crate) fn definition() -> ProviderDefinition {
 
 #[derive(Debug, Error)]
 pub(crate) enum GrokError {
-    #[error("Grok is not logged in. Run `grok login`.")]
+    #[error("尚未登录 Grok。请运行 `grok login`。")]
     NotLoggedIn,
-    #[error("Grok login data is invalid. Run `grok login` again.")]
+    #[error("Grok 登录数据无效。请重新运行 `grok login`。")]
     InvalidAuth,
-    #[error("Grok login expired. Run `grok login` again.")]
+    #[error("Grok 登录已过期。请重新运行 `grok login`。")]
     Expired,
-    #[error("Refreshed Grok credentials could not be saved.")]
+    #[error("无法保存刷新后的 Grok 凭据。")]
     AuthWrite,
-    #[error("Could not reach Grok. Check your internet connection.")]
+    #[error("无法连接 Grok，请检查网络连接。")]
     ConnectionFailed,
-    #[error("Grok returned an invalid billing response.")]
+    #[error("Grok 返回的账单数据无效。")]
     InvalidResponse,
-    #[error("Grok billing request failed (HTTP {0}).")]
+    #[error("Grok 账单请求失败（HTTP {0}）。")]
     RequestFailed(u16),
-    #[error("Local Grok usage logs could not be processed.")]
+    #[error("无法处理本地 Grok 用量日志。")]
     LocalUsage,
-    #[error("OpenQuota cache is unavailable.")]
+    #[error("OpenQuota 缓存不可用。")]
     Storage,
 }
 
@@ -252,10 +252,7 @@ impl GrokProvider {
                 "auth:grok",
                 "failed to persist rotated credentials; using them for this session only"
             );
-            warnings.push(
-                "The refreshed Grok login is active for this session but could not be saved."
-                    .into(),
-            );
+            warnings.push("刷新后的 Grok 登录状态在本次运行中有效，但无法保存。".into());
         }
         Ok(())
     }

@@ -26,16 +26,16 @@ pub fn map_credits(data: &serde_json::Map<String, Value>) -> CreditsMetrics {
     let used = total_usage.max(0.0);
     let total = number(data.get("total_credits")).unwrap_or(0.0).max(0.0);
     CreditsMetrics {
-        quota: (total > 0.0).then(|| dollars_quota("credits", "Credits", used, total)),
-        balance: Some(dollars_value("balance", "Balance", (total - used).max(0.0))),
+        quota: (total > 0.0).then(|| dollars_quota("credits", "点数", used, total)),
+        balance: Some(dollars_value("balance", "余额", (total - used).max(0.0))),
     }
 }
 
 pub fn map_key(data: &serde_json::Map<String, Value>) -> KeyMetrics {
     let values = [
-        ("today", "Today", "usage_daily"),
-        ("week", "This Week", "usage_weekly"),
-        ("month", "This Month", "usage_monthly"),
+        ("today", "今天", "usage_daily"),
+        ("week", "本周", "usage_weekly"),
+        ("month", "本月", "usage_monthly"),
     ]
     .into_iter()
     .filter_map(|(id, label, field)| {
@@ -47,7 +47,7 @@ pub fn map_key(data: &serde_json::Map<String, Value>) -> KeyMetrics {
         .map(|limit| {
             dollars_quota(
                 "keyLimit",
-                "Key Limit",
+                "密钥额度",
                 number(data.get("usage")).unwrap_or(0.0).max(0.0),
                 limit,
             )
@@ -57,9 +57,9 @@ pub fn map_key(data: &serde_json::Map<String, Value>) -> KeyMetrics {
         .and_then(Value::as_bool)
         .map(|free| {
             if free {
-                "Free tier".to_owned()
+                "免费套餐".to_owned()
             } else {
-                "Pay as you go".to_owned()
+                "按量付费".to_owned()
             }
         });
     KeyMetrics {
@@ -149,7 +149,7 @@ mod tests {
             "limit":5
         }});
         let mapped = map_key(data_object(&body).unwrap());
-        assert_eq!(mapped.plan.as_deref(), Some("Pay as you go"));
+        assert_eq!(mapped.plan.as_deref(), Some("按量付费"));
         assert_eq!(
             mapped
                 .values

@@ -30,13 +30,13 @@
   const canClear = $derived(status === 'saved' || status === 'overrideActive');
   const sourceLabel = $derived(
     status === 'fromEnvironment'
-      ? 'From Your Environment'
+      ? '来自环境变量'
       : status === 'fromConfig'
-        ? 'From Config File'
+        ? '来自配置文件'
         : status === 'saved'
-          ? 'Saved securely'
+          ? '已安全保存'
           : status === 'overrideActive'
-            ? 'Custom Key'
+            ? '自定义密钥'
             : '',
   );
 
@@ -84,7 +84,7 @@
       await tick();
       editorToggle?.focus();
     } catch (cause) {
-      error = errorMessage(cause, 'The API key could not be saved.');
+      error = errorMessage(cause, '无法保存 API 密钥。');
     } finally {
       saving = false;
     }
@@ -104,7 +104,7 @@
       await tick();
       editorToggle?.focus();
     } catch (cause) {
-      error = errorMessage(cause, 'The saved API key could not be removed.');
+      error = errorMessage(cause, '无法移除已保存的 API 密钥。');
     } finally {
       saving = false;
     }
@@ -140,21 +140,21 @@
       })
       .catch((cause) => {
         supported = true;
-        availabilityError = errorMessage(cause, 'The system credential store is unavailable.');
+        availabilityError = errorMessage(cause, '系统凭据存储不可用。');
       });
   });
 </script>
 
 {#if supported}
-  <section class="api-key-section" aria-label={`${providerName} API Key`}>
-    <h2>API Key</h2>
+  <section class="api-key-section" aria-label={`${providerName} API 密钥`}>
+    <h2>API 密钥</h2>
     <div class="api-key-card">
       <div class="api-key-summary">
         <ProviderIcon {providerId} size={18} />
         <span class="api-key-provider">{providerName}</span>
         <i class:missing={status === 'notSet'} aria-hidden="true"></i>
         <button bind:this={editorToggle} type="button" onclick={toggleOpen}
-          >{open ? 'Done' : status === 'notSet' ? 'Add' : 'Edit'}</button
+          >{open ? '完成' : status === 'notSet' ? '添加' : '编辑'}</button
         >
       </div>
       {#if availabilityError}
@@ -170,14 +170,14 @@
                   bind:value={apiKey}
                   autocomplete="off"
                   spellcheck="false"
-                  placeholder="Paste API key"
-                  aria-label={`${providerName} API key`}
+                  placeholder="粘贴 API 密钥"
+                  aria-label={`${providerName} API 密钥`}
                   disabled={saving}
                 />
                 <button
                   class="field-icon"
                   type="button"
-                  aria-label={revealInput ? 'Hide API key' : 'Show API key'}
+                  aria-label={revealInput ? '隐藏 API 密钥' : '显示 API 密钥'}
                   onclick={() => (revealInput = !revealInput)}
                 >
                   <Icon name={revealInput ? 'eye-off' : 'eye'} size={15} />
@@ -188,10 +188,10 @@
                   class="primary"
                   type="button"
                   disabled={!apiKey.trim() || saving}
-                  onclick={save}>{saving ? 'Saving…' : 'Save'}</button
+                  onclick={save}>{saving ? '正在保存…' : '保存'}</button
                 >
                 {#if overrideExternal}
-                  <button type="button" disabled={saving} onclick={resetEditor}>Cancel</button>
+                  <button type="button" disabled={saving} onclick={resetEditor}>取消</button>
                 {/if}
               </div>
             {:else}
@@ -204,8 +204,8 @@
                     disabled={saving || confirmingRemoval}
                     aria-controls={`remove-api-key-${providerId}`}
                     aria-expanded={confirmingRemoval}
-                    aria-label="Remove saved API key"
-                    title="Remove saved API key"
+                    aria-label="移除已保存的 API 密钥"
+                    title="移除已保存的 API 密钥"
                     onclick={() => void requestRemoval()}
                   >
                     <Icon name="clear-filled" size={16} strokeWidth={1.8} />
@@ -215,7 +215,7 @@
                   class="api-key-source-field"
                   type="text"
                   use:displayValue={sourceLabel}
-                  aria-label={`${providerName} API key source`}
+                  aria-label={`${providerName} API 密钥来源`}
                   disabled
                 />
               </div>
@@ -227,9 +227,9 @@
                   aria-labelledby={`remove-api-key-title-${providerId}`}
                   aria-describedby={`remove-api-key-message-${providerId}`}
                 >
-                  <strong id={`remove-api-key-title-${providerId}`}>Remove saved API key?</strong>
+                  <strong id={`remove-api-key-title-${providerId}`}>移除已保存的 API 密钥？</strong>
                   <span id={`remove-api-key-message-${providerId}`}
-                    >The saved key will be removed from secure storage. This can't be undone.</span
+                    >将从安全存储中移除该密钥。此操作无法撤销。</span
                   >
                   <div class="api-key-remove-actions">
                     <button
@@ -237,14 +237,14 @@
                       type="button"
                       disabled={saving}
                       onkeydown={handleRemovalKeydown}
-                      onclick={() => void cancelRemoval()}>Cancel</button
+                      onclick={() => void cancelRemoval()}>取消</button
                     >
                     <button
                       class="destructive"
                       type="button"
                       disabled={saving}
                       onkeydown={handleRemovalKeydown}
-                      onclick={() => void remove()}>{saving ? 'Removing…' : 'Remove key'}</button
+                      onclick={() => void remove()}>{saving ? '正在移除…' : '移除密钥'}</button
                     >
                   </div>
                 </div>
@@ -252,7 +252,7 @@
               {#if status === 'fromEnvironment' || status === 'fromConfig'}
                 <label class="api-key-override">
                   <input type="checkbox" bind:checked={overrideExternal} disabled={saving} />
-                  Override With a Custom Key
+                  改用自定义密钥
                 </label>
               {/if}
             {/if}

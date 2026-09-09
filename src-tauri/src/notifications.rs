@@ -90,7 +90,7 @@ fn show(app: &AppHandle, title: &str, body: &str) -> Result<(), String> {
     let mut notification = notify_rust::Notification::new();
     notification.summary(title).body(body).appname("OpenQuota");
     #[cfg(any(target_os = "linux", target_os = "macos"))]
-    notification.action("default", "Open OpenQuota");
+    notification.action("default", "打开 OpenQuota");
     #[cfg(target_os = "windows")]
     notification.app_id(&app.config().identifier);
     #[cfg(target_os = "macos")]
@@ -102,7 +102,7 @@ fn show(app: &AppHandle, title: &str, body: &str) -> Result<(), String> {
 
     let handle = notification
         .show()
-        .map_err(|_| "The notification could not be delivered.".to_owned())?;
+        .map_err(|_| "无法发送通知。".to_owned())?;
     let app = app.clone();
     thread::spawn(move || {
         let _ = handle.wait_for_response(move |response: &notify_rust::NotificationResponse| {

@@ -58,13 +58,13 @@ export function isFreshSessionWindow(window: QuotaWindow, now: number, isSession
 
 export function paceTooltip(value: PaceProjection) {
   if (value.severity === 'level') return null;
-  if (value.severity === 'spent') return 'Limit reached';
+  if (value.severity === 'spent') return '额度已用尽';
   const projected = value.projectedUsedPercent;
   if (projected === null) return null;
-  if (value.severity === 'healthy') return `~${Math.round(100 - projected)}% left at reset`;
-  if (value.severity === 'close') return `~${Math.round(projected)}% used at reset`;
-  if (projected <= 100) return '~100% used at reset';
-  return `~${Math.max(1, Math.round(projected - 100))}% over limit at reset`;
+  if (value.severity === 'healthy') return `重置时预计剩余约 ${Math.round(100 - projected)}%`;
+  if (value.severity === 'close') return `重置时预计已用约 ${Math.round(projected)}%`;
+  if (projected <= 100) return '重置时预计用尽额度';
+  return `重置时预计超额约 ${Math.max(1, Math.round(projected - 100))}%`;
 }
 
 type TimeFormat = 'system' | 'twelveHour' | 'twentyFourHour';
@@ -75,10 +75,10 @@ export function formatReset(
   mode: 'countdown' | 'exact',
   timeFormat: TimeFormat = 'system',
 ) {
-  if (!value) return 'Reset unavailable';
+  if (!value) return '无法获取重置时间';
   const reset = new Date(value).getTime();
-  if (!Number.isFinite(reset)) return 'Reset unavailable';
-  return formatDeadline('Resets', reset, now, mode, timeFormat);
+  if (!Number.isFinite(reset)) return '无法获取重置时间';
+  return formatDeadline('重置', reset, now, mode, timeFormat);
 }
 
 export function formatLimit(
@@ -87,8 +87,8 @@ export function formatLimit(
   mode: 'countdown' | 'exact',
   timeFormat: TimeFormat = 'system',
 ) {
-  if (value === null) return 'Limit reached';
-  return formatDeadline('Limit', value, now, mode, timeFormat);
+  if (value === null) return '额度已用尽';
+  return formatDeadline('用尽', value, now, mode, timeFormat);
 }
 
 function formatDeadline(
@@ -100,27 +100,27 @@ function formatDeadline(
 ) {
   const remaining = value - now;
   if (remaining <= 0 || (mode === 'countdown' && remaining <= 5 * 60_000)) {
-    return `${prefix} soon`;
+    return `即将${prefix}`;
   }
-  if (mode === 'countdown') return `${prefix} in ${formatDuration(remaining)}`;
+  if (mode === 'countdown') return `${formatDuration(remaining)}后${prefix}`;
 
   const date = new Date(value);
   const current = new Date(now);
   const currentDay = Date.UTC(current.getFullYear(), current.getMonth(), current.getDate());
   const targetDay = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
   const dayDifference = Math.round((targetDay - currentDay) / 86_400_000);
-  const time = date.toLocaleTimeString([], {
+  const time = date.toLocaleTimeString('zh-CN', {
     hour: 'numeric',
     minute: '2-digit',
     hour12: timeFormat === 'system' ? undefined : timeFormat === 'twelveHour',
   });
-  if (dayDifference <= 0) return `${prefix} today at ${time}`;
-  if (dayDifference === 1) return `${prefix} tomorrow at ${time}`;
-  const monthDay = new Intl.DateTimeFormat(undefined, {
+  if (dayDifference <= 0) return `今天 ${time} ${prefix}`;
+  if (dayDifference === 1) return `明天 ${time} ${prefix}`;
+  const monthDay = new Intl.DateTimeFormat('zh-CN', {
     month: 'short',
     day: 'numeric',
   }).format(date);
-  return `${prefix} ${monthDay} at ${time}`;
+  return `${monthDay} ${time} ${prefix}`;
 }
 
 function formatDuration(milliseconds: number) {
@@ -128,9 +128,9 @@ function formatDuration(milliseconds: number) {
   const days = Math.floor(minutes / 1_440);
   const hours = Math.floor((minutes % 1_440) / 60);
   const remainder = minutes % 60;
-  if (days > 0) return `${days}d ${hours}h`;
-  if (hours > 0) return remainder > 0 ? `${hours}h ${remainder}m` : `${hours}h`;
-  return `${remainder}m`;
+  if (days > 0) return `${days}天 ${hours}小时`;
+  if (hours > 0) return remainder > 0 ? `${hours}小时 ${remainder}分钟` : `${hours}小时`;
+  return `${remainder}分钟`;
 }
 
 function level(): PaceProjection {

@@ -11,7 +11,7 @@ describe('UsageMetric model detail', () => {
   it('reveals the ranked real model names after the reference hover dwell', async () => {
     vi.useFakeTimers();
     render(UsageMetric, {
-      label: 'Today',
+      label: '今天',
       period: {
         tokens: 2_000,
         estimatedCostUsd: 0.04,
@@ -19,7 +19,7 @@ describe('UsageMetric model detail', () => {
         estimateComplete: true,
         unknownModels: [],
         modelBreakdown: {
-          sourceNote: 'From your Codex logs (estimated)',
+          sourceNote: '根据本地 Codex 日志估算',
           models: [
             { model: 'gpt-5.4', totalTokens: 1_100, costUsd: 0.03 },
             { model: 'gpt-5.3-codex', totalTokens: 900, costUsd: 0.01 },
@@ -42,7 +42,7 @@ describe('UsageMetric model detail', () => {
 
   it('shows the unknown model warning without inventing a model breakdown', () => {
     render(UsageMetric, {
-      label: 'Today',
+      label: '今天',
       period: {
         tokens: 0,
         estimatedCostUsd: null,
@@ -53,16 +53,16 @@ describe('UsageMetric model detail', () => {
       },
     });
 
-    expect(screen.getByLabelText('This period used a model with unknown pricing')).toHaveAttribute(
+    expect(screen.getByLabelText('此时段使用了价格未知的模型')).toHaveAttribute(
       'data-tooltip',
-      'Unknown model found\n- future-unpriced-model',
+      '发现价格未知的模型\n- future-unpriced-model',
     );
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
   it('keeps incomplete cost text ordinary and reports local estimation separately', () => {
     render(UsageMetric, {
-      label: 'Today',
+      label: '今天',
       period: {
         tokens: 500,
         estimatedCostUsd: 0.03,
@@ -74,17 +74,14 @@ describe('UsageMetric model detail', () => {
     });
 
     const reading = screen.getByRole('button', { name: '$0.03 · 500 tokens' });
-    expect(reading).toHaveAttribute(
-      'data-tooltip',
-      '$0.03\n500 tokens\nEstimated locally, so it may be off',
-    );
+    expect(reading).toHaveAttribute('data-tooltip', '$0.03\n500 tokens\n本地估算，可能存在偏差');
     expect(reading).not.toHaveTextContent('~');
-    expect(screen.getByLabelText('This period used a model with unknown pricing')).toBeVisible();
+    expect(screen.getByLabelText('此时段使用了价格未知的模型')).toBeVisible();
   });
 
   it('compacts large row values while keeping exact tooltip figures', () => {
     render(UsageMetric, {
-      label: 'Last 30 Days',
+      label: '最近 30 天',
       period: {
         tokens: 1_506_025_363,
         estimatedCostUsd: 2_059.07,
@@ -97,13 +94,13 @@ describe('UsageMetric model detail', () => {
 
     expect(screen.getByRole('button', { name: '$2.1K · 1.5B tokens' })).toHaveAttribute(
       'data-tooltip',
-      '$2,059.07\n1,506,025,363 tokens\nEstimated locally, so it may be off',
+      '$2,059.07\n1,506,025,363 tokens\n本地估算，可能存在偏差',
     );
   });
 
   it('lets the model detail replace the generic estimate tooltip', () => {
     render(UsageMetric, {
-      label: 'Today',
+      label: '今天',
       period: {
         tokens: 500,
         estimatedCostUsd: 0.03,

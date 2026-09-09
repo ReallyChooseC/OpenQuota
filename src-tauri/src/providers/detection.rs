@@ -123,7 +123,7 @@ mod tests {
                 links: vec![],
                 metrics: vec![MetricDefinition::new(
                     format!("{id}.session"),
-                    "Session",
+                    "当前周期",
                     MetricSource::Quota {
                         source_id: "session".into(),
                         session_window: true,

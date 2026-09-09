@@ -304,13 +304,13 @@
   }
   function stalenessTooltip(refreshedAt: string) {
     const elapsedSeconds = Math.max(0, Math.floor((now - Date.parse(refreshedAt)) / 1000));
-    if (!Number.isFinite(elapsedSeconds)) return 'Last update time unavailable';
-    if (elapsedSeconds < 60) return 'Last updated moments ago';
+    if (!Number.isFinite(elapsedSeconds)) return '无法获取上次更新时间';
+    if (elapsedSeconds < 60) return '刚刚更新';
     const minutes = Math.floor(elapsedSeconds / 60);
-    if (minutes < 60) return `Last updated ${minutes}m ago`;
+    if (minutes < 60) return `${minutes} 分钟前更新`;
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-    return `Last updated ${hours}h${remainingMinutes ? ` ${remainingMinutes}m` : ''} ago`;
+    return `${hours} 小时${remainingMinutes ? ` ${remainingMinutes} 分钟` : ''}前更新`;
   }
 </script>
 
@@ -322,20 +322,20 @@
 />
 
 {#if updateStatus?.available && updateStatus.version !== settings.dismissedUpdateVersion}
-  <section class="hint-card update-banner" aria-label="Update Available">
+  <section class="hint-card update-banner" aria-label="有可用更新">
     <span class="hint-card__icon"><Icon name="refresh" size={16} strokeWidth={2} /></span>
     <div>
-      <strong>Update Available</strong>
-      <span>OpenQuota {updateStatus.version} is ready to download.</span>
+      <strong>有可用更新</strong>
+      <span>OpenQuota {updateStatus.version} 已可下载。</span>
       {#if updateStatus.body}<details class="update-notes">
-          <summary>What’s new</summary>
+          <summary>更新内容</summary>
           <p>{updateStatus.body}</p>
         </details>{/if}
       {#if installingUpdate && updateProgress}
         <div
           class="update-progress"
           role="progressbar"
-          aria-label="Update download"
+          aria-label="下载更新"
           aria-valuemin="0"
           aria-valuemax="100"
           aria-valuenow={updateProgress.phase === 'installing'
@@ -348,12 +348,12 @@
         </div>
         <small>
           {updateProgress.phase === 'installing'
-            ? 'Installing update…'
+            ? '正在安装更新…'
             : updateProgress.phase === 'retrying'
-              ? 'Download interrupted. Retrying…'
+              ? '下载中断，正在重试…'
               : updateProgress.percent === null
-                ? 'Downloading update…'
-                : `Downloading update… ${updateProgress.percent}%`}
+                ? '正在下载更新…'
+                : `正在下载更新… ${updateProgress.percent}%`}
         </small>
       {/if}
       {#if updateError}<div class="update-error" role="alert">
@@ -368,22 +368,22 @@
         disabled={installingUpdate}
         >{updateStatus.installable
           ? installingUpdate
-            ? 'Updating…'
+            ? '正在更新…'
             : updateError?.retryable
-              ? 'Try Again'
-              : 'Install Update'
-          : 'Download from GitHub'}</button
+              ? '重试'
+              : '安装更新'
+          : '从 GitHub 下载'}</button
       >
       {#if updateStatus.installable && !installingUpdate}
         <button type="button" class="update-release-action" onclick={onOpenUpdatePage}
-          >View Release</button
+          >查看发行说明</button
         >
       {/if}
     </div>
     <button
       class="hint-card__dismiss"
       type="button"
-      aria-label="Dismiss"
+      aria-label="忽略"
       onclick={() =>
         onSettingsChange({
           ...settings,
@@ -396,12 +396,12 @@
 {#if !settings.detectionNoticeDismissed}
   <section class="detection-card" out:scale={{ start: 0.95, ...springMotion(reducedMotion) }}>
     <div>
-      <strong>Welcome to OpenQuota</strong><span
-        >We set you up with the AI tools found on your computer. Add or hide providers any time.</span
+      <strong>欢迎使用 OpenQuota</strong><span
+        >已根据本机检测到的 AI 工具完成设置。你可以随时添加或隐藏服务商。</span
       >
     </div>
-    <button type="button" onclick={onCustomize}>Open Customize</button>
-    <button class="dismiss" type="button" aria-label="Dismiss" onclick={dismissDetection}
+    <button type="button" onclick={onCustomize}>打开自定义</button>
+    <button class="dismiss" type="button" aria-label="忽略" onclick={dismissDetection}
       ><Icon name="close" size={10} strokeWidth={2.2} /></button
     >
   </section>
@@ -430,7 +430,7 @@
       data-reorder-id={provider.id}
       role="group"
       tabindex="-1"
-      aria-label={`${providerDisplayName(provider.id)} provider`}
+      aria-label={`${providerDisplayName(provider.id)} 服务商`}
       use:pointerReorder={{
         id: provider.id,
         group: 'dashboard-providers',
@@ -447,7 +447,7 @@
         class="provider-header"
         data-reorder-handle
         role="group"
-        aria-label={`Drag ${providerDisplayName(provider.id)} to reorder`}
+        aria-label={`拖动 ${providerDisplayName(provider.id)} 调整顺序`}
       >
         <span
           class="drag-grip"
@@ -464,14 +464,14 @@
         {#if state?.snapshot && state.stale}<span
             class="status-badge"
             data-tooltip={stalenessTooltip(snapshot.refreshedAt)}
-            >Outdated<span class="sr-only">. {stalenessTooltip(snapshot.refreshedAt)}</span></span
+            >数据已过期<span class="sr-only">. {stalenessTooltip(snapshot.refreshedAt)}</span></span
           >{/if}
         <span
           class="provider-status-slot"
           class:active={Boolean(state?.refreshing || state?.error || snapshot.warnings.length > 0)}
         >
           {#if state?.refreshing}
-            <span class="provider-refreshing" aria-label="Refreshing"
+            <span class="provider-refreshing" aria-label="正在刷新"
               ><Icon name="refresh" size={12} strokeWidth={2} /></span
             >
           {:else if state?.error}
@@ -494,7 +494,7 @@
       </header>
       <section
         class="provider-card"
-        aria-label={`${providerDisplayName(provider.id)} usage`}
+        aria-label={`${providerDisplayName(provider.id)} 用量`}
         aria-busy={state?.refreshing ? 'true' : undefined}
       >
         {#each snapshot.notices as notice (notice.id)}
@@ -510,16 +510,16 @@
               {#if catalog.supportsApiKeyConfiguration(provider.id) && (state.errorKind === 'authentication' || state.errorKind === 'permission' || state.errorKind === 'credentialStorage')}
                 <button
                   type="button"
-                  aria-label={`Configure ${providerDisplayName(provider.id)}`}
-                  onclick={() => onOpenProviderCustomize(provider.id)}>Configure</button
+                  aria-label={`配置 ${providerDisplayName(provider.id)}`}
+                  onclick={() => onOpenProviderCustomize(provider.id)}>配置</button
                 >
               {/if}
               <button
                 type="button"
-                aria-label={`${state.refreshing ? 'Retrying' : 'Retry'} ${providerDisplayName(provider.id)}`}
+                aria-label={`${state.refreshing ? '正在重试' : '重试'} ${providerDisplayName(provider.id)}`}
                 aria-disabled={state.refreshing}
                 onclick={(event) => void retryProvider(event, provider.id, state.refreshing)}
-                >{state.refreshing ? 'Retrying…' : 'Retry'}</button
+                >{state.refreshing ? '正在重试…' : '重试'}</button
               >
             </span>
           </div>
@@ -531,7 +531,7 @@
             data-reorder-group={`dashboard-metrics:${provider.id}`}
             data-reorder-id={metric.id}
             role="group"
-            aria-label={`${metricDefinition(metric.id)?.label ?? metric.id} options`}
+            aria-label={`${metricDefinition(metric.id)?.label ?? metric.id} 选项`}
             use:pointerReorder={{
               id: metric.id,
               group: `dashboard-metrics:${provider.id}`,
@@ -571,7 +571,7 @@
             data-reorder-id="section:onDemand"
             type="button"
             aria-expanded={provider.expanded}
-            aria-label={provider.expanded ? 'Show less' : 'Show more'}
+            aria-label={provider.expanded ? '收起' : '展开'}
             onclick={() => toggleDemandMetrics(provider)}
           >
             <Icon
@@ -589,7 +589,7 @@
                   data-reorder-group={`dashboard-metrics:${provider.id}`}
                   data-reorder-id={metric.id}
                   role="group"
-                  aria-label={`${metricDefinition(metric.id)?.label ?? metric.id} options`}
+                  aria-label={`${metricDefinition(metric.id)?.label ?? metric.id} 选项`}
                   use:pointerReorder={{
                     id: metric.id,
                     group: `dashboard-metrics:${provider.id}`,
@@ -652,23 +652,23 @@
         type="button"
         role="menuitem"
         onclick={() => hideProvider(menuProvider.id)}
-        ><Icon name="power" size={15} />Hide {providerDisplayName(menuProvider.id)}</button
+        ><Icon name="power" size={15} />隐藏 {providerDisplayName(menuProvider.id)}</button
       >
       <hr />
       <button type="button" role="menuitem" onclick={() => onRefresh(menuProvider.id)}
-        ><Icon name="refresh" size={15} />Refresh {providerDisplayName(menuProvider.id)}</button
+        ><Icon name="refresh" size={15} />刷新 {providerDisplayName(menuProvider.id)}</button
       >
       {#if canRenameProvider(menuProvider.id, renamableProviderIds)}
         <button type="button" role="menuitem" onclick={() => onRenameProvider(menuProvider.id)}
-          ><Icon name="edit" size={15} />Rename…</button
+          ><Icon name="edit" size={15} />重命名…</button
         >
       {/if}
       <button type="button" role="menuitem" onclick={() => onOpenProviderCustomize(menuProvider.id)}
-        ><Icon name="sliders" size={15} />Customize…</button
+        ><Icon name="sliders" size={15} />自定义…</button
       >
       <hr />
       <button type="button" role="menuitem" onclick={() => onShare(menuProvider.id)}
-        ><Icon name="share" size={15} />Share Screenshot</button
+        ><Icon name="share" size={15} />分享截图</button
       >
     </div>
   {/if}
@@ -692,7 +692,7 @@
         type="button"
         role="menuitem"
         onclick={() => patchMetric(metricProvider.id, menuMetric.id, { enabled: false })}
-        ><Icon name="power" size={15} />Hide</button
+        ><Icon name="power" size={15} />隐藏</button
       >
       {#if metricDefinition(menuMetric.id)?.pinnable}
         <button
@@ -705,19 +705,19 @@
               pinned: !menuMetric.pinned,
             })}
           ><Icon name={menuMetric.pinned ? 'star-filled' : 'star'} size={15} />{menuMetric.pinned
-            ? 'Unstar'
-            : 'Star for menu bar'}</button
+            ? '取消置顶'
+            : '置顶到托盘栏'}</button
         >
       {/if}
       <hr />
       <button type="button" role="menuitem" onclick={() => onRefresh(metricProvider.id)}
-        ><Icon name="refresh" size={15} />Refresh {providerDisplayName(metricProvider.id)}</button
+        ><Icon name="refresh" size={15} />刷新 {providerDisplayName(metricProvider.id)}</button
       >
       <button
         type="button"
         role="menuitem"
         onclick={() => onOpenProviderCustomize(metricProvider.id)}
-        ><Icon name="sliders" size={15} />Customize…</button
+        ><Icon name="sliders" size={15} />自定义…</button
       >
     </div>
   {/if}
@@ -725,7 +725,7 @@
 
 {#if enabledProviders.length === 0}
   <section class="empty-dashboard">
-    <span>Turn on Customize to choose what to show.</span>
+    <span>请在自定义中选择要显示的内容。</span>
   </section>
 {/if}
 

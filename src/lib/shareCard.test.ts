@@ -114,7 +114,7 @@ describe('share card layout', () => {
       Date.now(),
     );
 
-    expect(rows.find((row) => row.kind === 'text' && row.label === 'Today')).toMatchObject({
+    expect(rows.find((row) => row.kind === 'text' && row.label === '今天')).toMatchObject({
       value: '$0.03 · 500 tokens',
     });
   });
@@ -124,7 +124,7 @@ describe('share card layout', () => {
     snapshot.notices = [
       {
         id: 'rateLimited',
-        title: 'Live usage paused',
+        title: '实时用量查询已暂停',
         message: 'Retrying in about 5 minutes',
         tone: 'warning',
       },
@@ -139,7 +139,7 @@ describe('share card layout', () => {
 
     expect(rows[0]).toMatchObject({
       kind: 'text',
-      label: 'Live usage paused',
+      label: '实时用量查询已暂停',
       value: 'Retrying in about 5 minutes',
     });
   });
@@ -163,7 +163,7 @@ describe('share card layout', () => {
       Date.now(),
     );
 
-    expect(rows[0]).toMatchObject({ kind: 'quota', reading: '75 searches left' });
+    expect(rows[0]).toMatchObject({ kind: 'quota', reading: '剩余 75 searches' });
   });
 
   it('omits pacing copy for an unused non-session quota', () => {
@@ -182,7 +182,7 @@ describe('share card layout', () => {
       now,
     );
 
-    expect(rows.find((row) => row.kind === 'quota' && row.label === 'Weekly')).toMatchObject({
+    expect(rows.find((row) => row.kind === 'quota' && row.label === '本周额度')).toMatchObject({
       paceLabel: null,
     });
   });
@@ -200,7 +200,7 @@ describe('share card layout', () => {
           metrics: [
             {
               id: 'grok.payAsYouGo',
-              label: 'Extra Usage',
+              label: '额外用量',
               source: { kind: 'status', sourceId: 'payAsYouGo' },
               pinnable: true,
               defaultEnabled: true,
@@ -220,7 +220,7 @@ describe('share card layout', () => {
       statusMetrics: [
         {
           id: 'payAsYouGo',
-          label: 'Extra Usage',
+          label: '额外用量',
           text: '2500 cap',
           tone: 'positive',
         },
@@ -253,7 +253,7 @@ describe('share card layout', () => {
         settingsState.settings,
         Date.now(),
       ),
-    ).toEqual([{ kind: 'text', label: 'Extra Usage', value: '2500 cap', condensed: false }]);
+    ).toEqual([{ kind: 'text', label: '额外用量', value: '2500 cap', condensed: false }]);
   });
 
   it('keeps always-visible rows ahead of expanded rows like the dashboard', () => {
@@ -273,7 +273,7 @@ describe('share card layout', () => {
     };
 
     const rows = buildProviderShareRows('codex', snapshot, interleaved, settings, Date.now());
-    expect(rows.map((row) => row.label)).toEqual(['Session', 'Weekly', 'Today', 'Yesterday']);
+    expect(rows.map((row) => row.label)).toEqual(['当前周期', '本周额度', '今天', '昨天']);
   });
 
   it('grows provider exports with content instead of enforcing a minimum canvas', () => {
@@ -293,8 +293,8 @@ describe('share card layout', () => {
     expect(providerShareCardHeight([])).toBeLessThan(providerShareCardHeight(rows));
   });
 
-  it('keeps Total Spend to the period switcher and usage body', () => {
-    expect(TOTAL_SPEND_PERIOD_LABELS).toEqual(['Today', 'Yesterday', '30 Days']);
+  it('keeps 总用量 to the period switcher and usage body', () => {
+    expect(TOTAL_SPEND_PERIOD_LABELS).toEqual(['今天', '昨天', '近 30 天']);
     expect(TOTAL_SPEND_OUTER_PADDING).toBe(10);
     expect(TOTAL_SPEND_GEOMETRY).toMatchObject({
       width: 320,
@@ -305,14 +305,14 @@ describe('share card layout', () => {
     expect(totalSpendShareCardHeight()).toBe(187);
   });
 
-  it('shares the same geometry source with the live Total Spend card', () => {
+  it('shares the same geometry source with the live 总用量 card', () => {
     expect(totalSpendSource).toContain("import { TOTAL_SPEND_GEOMETRY } from './shareCard';");
     expect(totalSpendSource).toContain('--total-switcher-height:');
     expect(totalSpendSource).toContain('--total-ring-size:');
     expect(totalSpendSource).toContain('ringSectorPath(segment, TOTAL_SPEND_GEOMETRY)');
   });
 
-  it('does not add a title, selected-period caption, or marketing footer to Total Spend', () => {
+  it('does not add a title, selected-period caption, or marketing footer to 总用量', () => {
     const drawn: string[] = [];
     const context = {
       scale: vi.fn(),
@@ -364,13 +364,11 @@ describe('share card layout', () => {
 
     expect(canvas.width).toBe(TOTAL_SPEND_GEOMETRY.width * SHARE_CARD_SCALE);
     expect(canvas.height).toBe(totalSpendShareCardHeight() * SHARE_CARD_SCALE);
-    expect(drawn).toEqual(
-      expect.arrayContaining(['Today', 'Yesterday', '30 Days', 'Codex', 'dollars']),
-    );
+    expect(drawn).toEqual(expect.arrayContaining(['今天', '昨天', '近 30 天', 'Codex', 'dollars']));
     expect(drawn).not.toEqual(
       expect.arrayContaining([
-        'Cost',
-        'Last 30 Days',
+        '费用',
+        '最近 30 天',
         'Monitor Your AI Subscriptions with OpenQuota',
       ]),
     );

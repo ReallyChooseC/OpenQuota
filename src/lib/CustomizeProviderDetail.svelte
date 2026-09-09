@@ -58,7 +58,7 @@
   function togglePin(metric: MetricLayout, button: HTMLButtonElement) {
     if (!provider || !metricDefinition(metric.id)?.pinnable) return;
     if (!metric.pinned && provider.metrics.filter((item) => item.pinned).length >= 2) {
-      showMessage('Up to 2 stars per provider', 'denied');
+      showMessage('每个服务商最多置顶 2 项', 'denied');
       if (!reducedMotion) {
         button.animate?.(
           [
@@ -75,7 +75,7 @@
       }
       return;
     }
-    showMessage(metric.pinned ? 'Removed from menu bar' : 'Starred for menu bar', 'success');
+    showMessage(metric.pinned ? '已从托盘栏移除' : '已置顶到托盘栏', 'success');
     updateMetric({ ...metric, pinned: !metric.pinned });
   }
   function showMessage(text: string, kind: 'success' | 'denied') {
@@ -120,7 +120,7 @@
 {#if provider}
   <section
     class="screen customize-detail"
-    aria-label={`Customize ${providerDisplayName(provider.id)}`}
+    aria-label={`自定义 ${providerDisplayName(provider.id)}`}
   >
     {#if canRenameProvider(provider.id, renamableProviderIds)}
       <ProviderNameSection {settings} {provider} {catalog} onChange={onNameChange} />
@@ -130,9 +130,9 @@
       <div
         class="metric-section"
         role="group"
-        aria-label={section === 'alwaysVisible' ? 'Always Visible metrics' : 'On Demand metrics'}
+        aria-label={section === 'alwaysVisible' ? '始终显示的指标' : '按需显示的指标'}
       >
-        <h2>{section === 'alwaysVisible' ? 'Always Visible' : 'On Demand'}</h2>
+        <h2>{section === 'alwaysVisible' ? '始终显示' : '按需显示'}</h2>
         <div class="metric-list" role="list">
           {#if sectionMetrics.length === 0}
             <div
@@ -141,7 +141,7 @@
               data-reorder-group={`customize-metrics:${provider.id}`}
               data-reorder-id={`section:${section}`}
             >
-              Drag metrics here
+              将指标拖到这里
             </div>
           {/if}
           {#each sectionMetrics as metric (metric.id)}
@@ -189,7 +189,7 @@
                     class:pinned={metric.pinned}
                     class="pin-button"
                     type="button"
-                    aria-label={`${metric.pinned ? 'Unpin' : 'Pin'} ${metricDefinition(metric.id)?.label}`}
+                    aria-label={`${metric.pinned ? '取消置顶' : '置顶'} ${metricDefinition(metric.id)?.label}`}
                     onclick={(event) => togglePin(metric, event.currentTarget)}
                     ><Icon
                       name={metric.pinned ? 'star-filled' : 'star'}
@@ -200,7 +200,7 @@
               </span>
               <label class="switch"
                 ><input
-                  aria-label={`Show ${metricDefinition(metric.id)?.label ?? metric.id}`}
+                  aria-label={`显示 ${metricDefinition(metric.id)?.label ?? metric.id}`}
                   type="checkbox"
                   checked={metric.enabled}
                   onchange={(event) =>

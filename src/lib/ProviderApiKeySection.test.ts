@@ -29,12 +29,12 @@ describe('ProviderApiKeySection', () => {
       providerName: 'OpenRouter',
     });
     expect(await screen.findByRole('region', { name: 'OpenRouter API Key' })).toBeInTheDocument();
-    await fireEvent.click(screen.getByRole('button', { name: 'Add' }));
+    await fireEvent.click(screen.getByRole('button', { name: '添加' }));
     const input = screen.getByLabelText('OpenRouter API key');
     expect(input).toHaveAttribute('type', 'password');
-    expect(input).toHaveAttribute('placeholder', 'Paste API key');
+    expect(input).toHaveAttribute('placeholder', '粘贴 API 密钥');
     await fireEvent.input(input, { target: { value: 'sk-or-secret' } });
-    await fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await fireEvent.click(screen.getByRole('button', { name: '保存' }));
 
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith('save_provider_api_key', {
@@ -44,9 +44,9 @@ describe('ProviderApiKeySection', () => {
     );
     expect(screen.queryByDisplayValue('sk-or-secret')).not.toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
-      'Saved securely',
+      '已安全保存',
     );
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Done' })).toHaveFocus());
+    await waitFor(() => expect(screen.getByRole('button', { name: '完成' })).toHaveFocus());
   });
 
   it('offers an override for environment keys and clear for saved overrides', async () => {
@@ -67,36 +67,36 @@ describe('ProviderApiKeySection', () => {
       providerName: 'OpenRouter',
     });
     await screen.findByRole('region', { name: 'OpenRouter API Key' });
-    await fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
+    await fireEvent.click(screen.getByRole('button', { name: '编辑' }));
     expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
-      'From Your Environment',
+      '来自环境变量',
     );
-    await fireEvent.click(screen.getByRole('checkbox', { name: 'Override With a Custom Key' }));
+    await fireEvent.click(screen.getByRole('checkbox', { name: '改用自定义密钥' }));
     await fireEvent.input(screen.getByLabelText('OpenRouter API key'), {
       target: { value: 'override' },
     });
-    await fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await fireEvent.click(screen.getByRole('button', { name: '保存' }));
     expect(await screen.findByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
-      'Custom Key',
+      '自定义密钥',
     );
     expect(screen.queryByDisplayValue('override')).not.toBeInTheDocument();
 
-    const removeTrigger = screen.getByRole('button', { name: 'Remove saved API key' });
+    const removeTrigger = screen.getByRole('button', { name: '移除已保存的 API 密钥' });
     await fireEvent.click(removeTrigger);
     expect(mocks.invoke).not.toHaveBeenCalledWith('delete_provider_api_key', {
       providerId: 'openrouter',
     });
     expect(
-      screen.getByRole('group', { name: 'Remove saved API key?' }),
-    ).toHaveAccessibleDescription(
-      "The saved key will be removed from secure storage. This can't be undone.",
-    );
-    const cancel = screen.getByRole('button', { name: 'Cancel' });
+      screen.getByRole('group', { name: '移除已保存的 API 密钥？' }),
+    ).toHaveAccessibleDescription('将从安全存储中移除该密钥。此操作无法撤销。');
+    const cancel = screen.getByRole('button', { name: '取消' });
     await waitFor(() => expect(cancel).toHaveFocus());
     await fireEvent.keyDown(cancel, { key: 'Escape' });
-    expect(screen.queryByRole('group', { name: 'Remove saved API key?' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('group', { name: '移除已保存的 API 密钥？' }),
+    ).not.toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
-      'Custom Key',
+      '自定义密钥',
     );
     await waitFor(() => expect(removeTrigger).toHaveFocus());
     expect(mocks.invoke).not.toHaveBeenCalledWith('delete_provider_api_key', {
@@ -104,10 +104,10 @@ describe('ProviderApiKeySection', () => {
     });
 
     await fireEvent.click(removeTrigger);
-    await fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    await fireEvent.click(screen.getByRole('button', { name: '取消' }));
     await waitFor(() => expect(removeTrigger).toHaveFocus());
     await fireEvent.click(removeTrigger);
-    await fireEvent.click(screen.getByRole('button', { name: 'Remove key' }));
+    await fireEvent.click(screen.getByRole('button', { name: '移除密钥' }));
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith('delete_provider_api_key', {
         providerId: 'openrouter',
@@ -117,9 +117,9 @@ describe('ProviderApiKeySection', () => {
       mocks.invoke.mock.calls.filter(([command]) => command === 'delete_provider_api_key'),
     ).toHaveLength(1);
     expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
-      'From Your Environment',
+      '来自环境变量',
     );
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Done' })).toHaveFocus());
+    await waitFor(() => expect(screen.getByRole('button', { name: '完成' })).toHaveFocus());
   });
 
   it('identifies config-file keys and lets the user override them securely', async () => {
@@ -137,17 +137,17 @@ describe('ProviderApiKeySection', () => {
       providerName: 'OpenRouter',
     });
     await screen.findByRole('region', { name: 'OpenRouter API Key' });
-    await fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
+    await fireEvent.click(screen.getByRole('button', { name: '编辑' }));
     expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
-      'From Config File',
+      '来自配置文件',
     );
-    await fireEvent.click(screen.getByRole('checkbox', { name: 'Override With a Custom Key' }));
+    await fireEvent.click(screen.getByRole('checkbox', { name: '改用自定义密钥' }));
     await fireEvent.input(screen.getByLabelText('OpenRouter API key'), {
       target: { value: 'config-override' },
     });
-    await fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await fireEvent.click(screen.getByRole('button', { name: '保存' }));
     expect(await screen.findByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
-      'Custom Key',
+      '自定义密钥',
     );
   });
 
@@ -172,18 +172,18 @@ describe('ProviderApiKeySection', () => {
     });
 
     await screen.findByRole('region', { name: 'OpenRouter API Key' });
-    await fireEvent.click(screen.getByRole('button', { name: 'Add' }));
+    await fireEvent.click(screen.getByRole('button', { name: '添加' }));
     await fireEvent.input(screen.getByLabelText('OpenRouter API key'), {
       target: { value: 'saved-secret' },
     });
-    await fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await fireEvent.click(screen.getByRole('button', { name: '保存' }));
 
     expect(await screen.findByRole('status')).toHaveTextContent(
       'The API key was saved securely, but OpenQuota could not finish updating provider status.',
     );
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: 'OpenRouter API key source' })).toHaveValue(
-      'Saved securely',
+      '已安全保存',
     );
   });
 
@@ -203,7 +203,7 @@ describe('ProviderApiKeySection', () => {
 
   it('shows an actionable credential-store error instead of hiding the API-key controls', async () => {
     mocks.invoke.mockRejectedValue(
-      'Linux Secret Service is unavailable. Start or unlock your keyring and try again.',
+      'Linux 密钥服务暂时不可用。 Start or unlock your keyring and try again.',
     );
     render(ProviderApiKeySection, {
       providerId: 'openrouter',
@@ -212,8 +212,8 @@ describe('ProviderApiKeySection', () => {
 
     expect(await screen.findByRole('region', { name: 'OpenRouter API Key' })).toBeInTheDocument();
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Linux Secret Service is unavailable. Start or unlock your keyring and try again.',
+      'Linux 密钥服务暂时不可用。 Start or unlock your keyring and try again.',
     );
-    expect(screen.getByRole('button', { name: 'Add' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '添加' })).toBeInTheDocument();
   });
 });

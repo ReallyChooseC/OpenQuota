@@ -157,7 +157,7 @@ export function createWindowController(options: WindowControllerOptions) {
     } catch {
       pendingResizeHeight = null;
       resizeAvailable = false;
-      options.onError('OpenQuota window could not adapt to its content.');
+      options.onError('OpenQuota 无法根据内容调整窗口尺寸。');
     } finally {
       resizeInFlight = false;
     }

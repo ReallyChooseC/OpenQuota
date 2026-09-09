@@ -31,15 +31,15 @@ pub(crate) fn definition() -> ProviderDefinition {
         display_name: "Codex".into(),
         short_name: "Cx".into(),
         fallback_enabled: true,
-        local_usage_source_note: Some("From your Codex logs (estimated)".into()),
+        local_usage_source_note: Some("根据本地 Codex 日志估算".into()),
         links: vec![
-            ProviderLink::new("Status", "https://status.openai.com/"),
-            ProviderLink::new("Dashboard", "https://chatgpt.com/codex/settings/usage"),
+            ProviderLink::new("服务状态", "https://status.openai.com/"),
+            ProviderLink::new("网页面板", "https://chatgpt.com/codex/settings/usage"),
         ],
         metrics: vec![
             MetricDefinition::quota(
                 "codex.session",
-                "Session",
+                "当前周期",
                 "session",
                 false,
                 true,
@@ -49,7 +49,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "codex.weekly",
-                "Weekly",
+                "本周额度",
                 "weekly",
                 false,
                 true,
@@ -69,7 +69,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "codex.sparkWeekly",
-                "Spark Weekly",
+                "Spark 本周额度",
                 "sparkWeekly",
                 false,
                 true,
@@ -80,7 +80,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             MetricDefinition::trend("codex.trend"),
             MetricDefinition::value(
                 "codex.credits",
-                "Extra Usage",
+                "额外用量",
                 "credits",
                 true,
                 MetricSection::OnDemand,
@@ -90,7 +90,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "codex.rateLimitResets",
-                "Rate Limit Resets",
+                "额度重置次数",
                 "rateLimitResets",
                 true,
                 MetricSection::OnDemand,
@@ -100,21 +100,21 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::usage(
                 "codex.today",
-                "Today",
+                "今天",
                 UsagePeriodSelection::Today,
                 MetricSection::OnDemand,
                 "T",
             ),
             MetricDefinition::usage(
                 "codex.yesterday",
-                "Yesterday",
+                "昨天",
                 UsagePeriodSelection::Yesterday,
                 MetricSection::OnDemand,
                 "Y",
             ),
             MetricDefinition::usage(
                 "codex.last30",
-                "Last 30 Days",
+                "最近 30 天",
                 UsagePeriodSelection::Last30Days,
                 MetricSection::OnDemand,
                 "M",
@@ -125,35 +125,33 @@ pub(crate) fn definition() -> ProviderDefinition {
 
 #[derive(Debug, Error)]
 pub enum CodexError {
-    #[error("Not logged in. Run `codex` to authenticate.")]
+    #[error("尚未登录。请运行 `codex` 完成登录。")]
     NotLoggedIn,
-    #[error(
-        "Subscription usage is unavailable for API-key-only logins. Sign in to Codex with ChatGPT."
-    )]
+    #[error("仅使用 API 密钥登录时无法查看订阅用量。请使用 ChatGPT 账号登录 Codex。")]
     ApiKeyOnly,
-    #[error("Your Codex session expired. Run `codex` to sign in again.")]
+    #[error("Codex 会话已过期。请运行 `codex` 重新登录。")]
     SessionExpired,
-    #[error("Codex credentials changed while refreshing. Run `codex` to sign in again.")]
+    #[error("刷新期间 Codex 凭据已变化。请运行 `codex` 重新登录。")]
     TokenConflict,
-    #[error("Your Codex session was revoked. Run `codex` to sign in again.")]
+    #[error("Codex 会话已被撤销。请运行 `codex` 重新登录。")]
     TokenRevoked,
-    #[error("Your Codex access token expired. Run `codex` to sign in again.")]
+    #[error("Codex 访问令牌已过期。请运行 `codex` 重新登录。")]
     TokenExpired,
-    #[error("Codex auth data is invalid. Run `codex` to sign in again.")]
+    #[error("Codex 认证数据无效。请运行 `codex` 重新登录。")]
     InvalidAuth,
-    #[error("The Codex account changed while usage was refreshing. Refresh again.")]
+    #[error("刷新用量期间 Codex 账号已切换，请重新刷新。")]
     AccountChanged,
-    #[error("Refreshed Codex credentials could not be saved.")]
+    #[error("无法保存刷新后的 Codex 凭据。")]
     AuthWrite,
-    #[error("Codex usage request failed (HTTP {0}).")]
+    #[error("Codex 用量请求失败（HTTP {0}）。")]
     RequestFailed(u16),
-    #[error("Codex returned an invalid usage response.")]
+    #[error("Codex 返回的用量数据无效。")]
     InvalidResponse,
-    #[error("Could not connect to Codex. Check your internet connection.")]
+    #[error("无法连接 Codex，请检查网络连接。")]
     ConnectionFailed,
-    #[error("Local Codex usage logs could not be processed.")]
+    #[error("无法处理本地 Codex 用量日志。")]
     LocalUsage,
-    #[error("OpenQuota cache is unavailable.")]
+    #[error("OpenQuota 缓存不可用。")]
     Storage,
 }
 
@@ -326,10 +324,7 @@ impl CodexProvider {
                 "auth:codex",
                 "failed to persist rotated credentials; using them for this session only"
             );
-            warnings.push(
-                "The refreshed Codex login is active for this session but could not be saved."
-                    .into(),
-            );
+            warnings.push("刷新后的 Codex 登录状态在本次运行中有效，但无法保存。".into());
         }
         Ok(())
     }

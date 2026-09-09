@@ -15,7 +15,7 @@
   {#each links as link, linkIndex (`${link.label}:${link.url}`)}
     <button
       type="button"
-      aria-label={`${link.label}, opens in browser`}
+      aria-label={`${link.label}，在浏览器中打开`}
       onclick={() => onOpen(linkIndex)}
     >
       <span>{link.label}</span><Icon name="external-link" size={10} strokeWidth={1.8} />

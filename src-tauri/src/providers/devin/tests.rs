@@ -222,7 +222,7 @@ fn mapper_preserves_resets_zeroes_and_exact_metric_units() {
         "userStatus": {"planStatus": {"overageBalanceMicros": "0"}}
     }))
     .unwrap();
-    assert_eq!(zero.plan.as_deref(), Some("Unknown"));
+    assert_eq!(zero.plan.as_deref(), Some("未知"));
     assert_eq!(zero.value_metrics[0].values[0].number, 0.0);
 }
 
@@ -521,7 +521,7 @@ fn definition_matches_the_provider_neutral_layout_contract() {
             .iter()
             .map(|link| link.label.as_str())
             .collect::<Vec<_>>(),
-        ["Dashboard"]
+        ["网页面板"]
     );
     assert_eq!(
         definition

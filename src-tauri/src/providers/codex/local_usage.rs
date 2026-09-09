@@ -65,9 +65,9 @@ pub fn scan_local_usage(
         }
     };
     let source_note = if includes_pi {
-        "From your Codex logs and pi (estimated)"
+        "根据本地 Codex 和 pi 日志估算"
     } else {
-        "From your Codex logs (estimated)"
+        "根据本地 Codex 日志估算"
     };
     Ok(accumulator.build(now, source_note))
 }
@@ -482,7 +482,7 @@ fn auto_review_fallback(timestamp: &DateTime<Utc>) -> &'static str {
 fn aggregate(events: Vec<TokenEvent>, now: DateTime<Utc>, pricing: &ModelPricing) -> UsageHistory {
     let mut accumulator = DailyUsageAccumulator::default();
     aggregate_into(events, now, pricing, &mut accumulator);
-    accumulator.build(now, "From your Codex logs (estimated)")
+    accumulator.build(now, "根据本地 Codex 日志估算")
 }
 
 fn aggregate_into(
@@ -977,7 +977,7 @@ mod tests {
                 .collect::<Vec<_>>(),
             ["gpt-5.4", "gpt-5.3-codex"]
         );
-        assert_eq!(breakdown.source_note, "From your Codex logs (estimated)");
+        assert_eq!(breakdown.source_note, "根据本地 Codex 日志估算");
     }
 
     #[test]

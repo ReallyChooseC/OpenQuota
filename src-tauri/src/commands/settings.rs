@@ -104,7 +104,7 @@ async fn save_app_settings_inner(
                 settings.global_shortcut.as_deref(),
                 previous.global_shortcut.as_deref(),
             );
-            return Err("OpenQuota window is unavailable.".to_owned());
+            return Err("OpenQuota 窗口暂时不可用。".to_owned());
         };
         if let Err(error) = crate::window::apply_window_mode(&window, settings.window_mode, true) {
             if autostart_changed {
@@ -434,7 +434,7 @@ pub fn request_notification_permission(
         .notification()
         .request_permission()
         .err()
-        .map(|_| "Notification permission could not be requested.".to_owned());
+        .map(|_| "无法请求通知权限。".to_owned());
     if error.is_some() {
         crate::app_error!("notifications", "notification permission request failed");
     }
@@ -473,7 +473,7 @@ pub fn open_notification_settings() -> Result<(), String> {
 
     result
         .map(|_| ())
-        .map_err(|_| "Notification settings could not be opened on this system.".to_owned())
+        .map_err(|_| "无法打开系统通知设置。".to_owned())
 }
 
 #[tauri::command]

@@ -78,9 +78,9 @@ impl DesktopIntegration {
     pub fn platform_summary(&self) -> Option<String> {
         self.platform_label.as_ref().map(|label| {
             let mode = if self.tray_available() {
-                "StatusNotifier tray"
+                "StatusNotifier 托盘"
             } else {
-                "standalone window"
+                "独立窗口"
             };
             format!("{label} · {mode}")
         })
@@ -96,12 +96,12 @@ fn linux_integration(
     let desktop = match desktop {
         LinuxDesktop::Gnome => "GNOME",
         LinuxDesktop::Kde => "KDE Plasma",
-        LinuxDesktop::Other => "Linux desktop",
+        LinuxDesktop::Other => "Linux 桌面",
     };
     let session = match session {
         LinuxSessionType::X11 => "X11",
         LinuxSessionType::Wayland => "Wayland",
-        LinuxSessionType::Unknown => "unknown session",
+        LinuxSessionType::Unknown => "未知会话",
     };
     DesktopIntegration {
         tray_available: Arc::new(AtomicBool::new(tray_available)),

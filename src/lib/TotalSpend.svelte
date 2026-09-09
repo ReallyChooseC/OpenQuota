@@ -46,14 +46,14 @@
     if (value === null) return undefined;
     const exact = formatSpendValue(value, settings.totalSpendMetric, 'full');
     if (projection.costEstimated && settings.totalSpendMetric !== 'tokens') {
-      return `${exact} · Estimated locally, so it may be off`;
+      return `${exact} · 本地估算，可能存在偏差`;
     }
     return exact;
   }
   function metricTitle() {
-    if (settings.totalSpendMetric === 'tokens') return 'Tokens';
-    if (settings.totalSpendMetric === 'costPerMillion') return 'Cost/MTok';
-    return 'Cost';
+    if (settings.totalSpendMetric === 'tokens') return 'Token';
+    if (settings.totalSpendMetric === 'costPerMillion') return '每百万 Token 费用';
+    return '费用';
   }
   function patch(patch: Partial<AppSettings>) {
     onChange({ ...settings, ...patch });
@@ -68,47 +68,47 @@
 
 <section
   class="total-spend-section"
-  aria-label="Total Spend"
+  aria-label="总用量"
   data-total-spend
   style={`--total-card-padding-x:${TOTAL_SPEND_GEOMETRY.cardPaddingX}px;--total-card-padding-y:${TOTAL_SPEND_GEOMETRY.cardPaddingY}px;--total-switcher-height:${TOTAL_SPEND_GEOMETRY.switcherHeight}px;--total-period-size:${TOTAL_SPEND_GEOMETRY.periodFontSize}px;--total-body-gap:${TOTAL_SPEND_GEOMETRY.bodyGap}px;--total-legend-gap:${TOTAL_SPEND_GEOMETRY.legendGap}px;--total-ring-size:${TOTAL_SPEND_GEOMETRY.ringDiameter}px;--total-center-size:${TOTAL_SPEND_GEOMETRY.centerFontSize}px;--total-center-unit-size:${TOTAL_SPEND_GEOMETRY.centerUnitFontSize}px;--total-legend-size:${TOTAL_SPEND_GEOMETRY.legendFontSize}px;`}
 >
   <div class="total-card__header">
     <div class="total-card__title">
       <SelectMenu
-        label="Total Spend Metric"
+        label="总用量统计指标"
         value={settings.totalSpendMetric}
         variant="title"
         options={[
-          { value: 'cost', label: 'Cost' },
-          { value: 'costPerMillion', label: 'Cost/MTok' },
-          { value: 'tokens', label: 'Tokens' },
+          { value: 'cost', label: '费用' },
+          { value: 'costPerMillion', label: '每百万 Token 费用' },
+          { value: 'tokens', label: 'Token' },
         ]}
         onChange={(value) => patch({ totalSpendMetric: value as AppSettings['totalSpendMetric'] })}
       />
       <span
         class="icon-button icon-button--plain total-card__info"
-        data-tooltip={`Only includes ${providerNames.join(' and ')}.`}
-        aria-label={`Only includes ${providerNames.join(' and ')}`}
+        data-tooltip={`仅包含 ${providerNames.join('、')}。`}
+        aria-label={`仅包含 ${providerNames.join('、')}`}
         role="img"><Icon name="about" size={13} strokeWidth={1.9} /></span
       >
     </div>
     <button
       class="icon-button icon-button--plain total-card__share"
       type="button"
-      aria-label={`Share ${metricTitle()} Screenshot`}
-      data-tooltip="Share Screenshot"
+      aria-label={`分享${metricTitle()}截图`}
+      data-tooltip="分享截图"
       onclick={share}
       ><Icon name={shareCopied ? 'check' : 'share'} size={14} strokeWidth={1.8} /></button
     >
   </div>
   <div class="total-card">
-    <div class="period-switcher" aria-label="Total Spend period">
+    <div class="period-switcher" aria-label="总用量统计时段">
       <span
         class="period-switcher__selection"
         style={`transform: translateX(${periodIndex * 100}%)`}
         aria-hidden="true"
       ></span>
-      {#each [['today', 'Today'], ['yesterday', 'Yesterday'], ['last30Days', '30 Days']] as option (option[0])}
+      {#each [['today', '今天'], ['yesterday', '昨天'], ['last30Days', '近 30 天']] as option (option[0])}
         <button
           class:active={settings.totalSpendPeriod === option[0]}
           type="button"

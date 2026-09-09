@@ -63,19 +63,18 @@ use crate::{
 fn install_tray(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(target_os = "macos")]
     let menu = {
-        let settings_item =
-            MenuItem::with_id(app, "settings", "Settings", true, Some("CmdOrCtrl+,"))?;
+        let settings_item = MenuItem::with_id(app, "settings", "设置", true, Some("CmdOrCtrl+,"))?;
         let separator = PredefinedMenuItem::separator(app)?;
-        let quit = MenuItem::with_id(app, "quit", "Quit OpenQuota", true, Some("CmdOrCtrl+Q"))?;
+        let quit = MenuItem::with_id(app, "quit", "退出 OpenQuota", true, Some("CmdOrCtrl+Q"))?;
         Menu::with_items(app, &[&settings_item, &separator, &quit])?
     };
     #[cfg(not(target_os = "macos"))]
     let menu = {
-        let open = MenuItem::with_id(app, "open", "Open OpenQuota", true, None::<&str>)?;
-        let customize = MenuItem::with_id(app, "customize", "Customize…", true, None::<&str>)?;
-        let settings_item = MenuItem::with_id(app, "settings", "Settings…", true, None::<&str>)?;
+        let open = MenuItem::with_id(app, "open", "打开 OpenQuota", true, None::<&str>)?;
+        let customize = MenuItem::with_id(app, "customize", "自定义…", true, None::<&str>)?;
+        let settings_item = MenuItem::with_id(app, "settings", "设置…", true, None::<&str>)?;
         let separator = PredefinedMenuItem::separator(app)?;
-        let quit = MenuItem::with_id(app, "quit", "Quit OpenQuota", true, None::<&str>)?;
+        let quit = MenuItem::with_id(app, "quit", "退出 OpenQuota", true, None::<&str>)?;
         Menu::with_items(app, &[&open, &customize, &settings_item, &separator, &quit])?
     };
 
@@ -266,7 +265,7 @@ fn register_shortcut(app: &AppHandle, shortcut: &str) -> Result<(), String> {
         })
         .map_err(|_| {
             crate::app_warn!("config", "global shortcut registration failed");
-            "That global shortcut is invalid or already in use.".to_owned()
+            "该全局快捷键无效或已被占用。".to_owned()
         })
 }
 
@@ -297,8 +296,7 @@ pub(crate) fn set_autostart(app: &AppHandle, enabled: bool) -> Result<(), String
     #[cfg(target_os = "linux")]
     {
         let _ = app;
-        xdg_autostart::set_enabled(enabled)
-            .map_err(|_| "Launch at login could not be updated.".to_owned())
+        xdg_autostart::set_enabled(enabled).map_err(|_| "无法修改开机启动设置。".to_owned())
     }
     #[cfg(not(target_os = "linux"))]
     {
@@ -308,7 +306,7 @@ pub(crate) fn set_autostart(app: &AppHandle, enabled: bool) -> Result<(), String
         } else {
             manager.disable()
         };
-        result.map_err(|_| "Launch at login could not be updated.".to_owned())
+        result.map_err(|_| "无法修改开机启动设置。".to_owned())
     }
 }
 

@@ -186,7 +186,7 @@
     navigate(`provider:${providerId}`);
     if (!focusBack) return;
     await tick();
-    document.querySelector<HTMLButtonElement>('.screen-header button[aria-label="Back"]')?.focus();
+    document.querySelector<HTMLButtonElement>('.screen-header button[aria-label="返回"]')?.focus();
   }
   function back() {
     if (screen.startsWith('provider:')) navigate('customize');
@@ -311,7 +311,7 @@
           ]),
         ),
       };
-      settingsError = 'OpenQuota could not start a provider refresh.';
+      settingsError = 'OpenQuota 无法开始刷新服务商用量。';
     }
   }
   async function refreshProvider(providerId: string) {
@@ -337,7 +337,7 @@
           },
         };
       }
-      settingsError = `${providerDisplayName(providerId)} usage could not be refreshed.`;
+      settingsError = `无法刷新 ${providerDisplayName(providerId)} 的用量。`;
     }
   }
   function openProviderLink(providerId: string, linkIndex: number) {
@@ -357,7 +357,7 @@
       );
       customizationHistory = [...customizationHistory.slice(-19), previous];
     } catch {
-      settingsError = 'Customization could not be reset.';
+      settingsError = '无法重置自定义设置。';
     } finally {
       resettingCustomization = false;
       resetConfirmationOpen = false;
@@ -380,7 +380,7 @@
       );
       customizationHistory = [...customizationHistory.slice(-19), previous];
     } catch {
-      settingsError = `${providerDisplayName(providerId)} customization could not be reset.`;
+      settingsError = `无法重置 ${providerDisplayName(providerId)} 的自定义设置。`;
     } finally {
       resettingProviderId = null;
     }
@@ -399,9 +399,9 @@
       updatePanelHeightMode();
       updatePanelResizeEdge();
       settingsError = null;
-      showConfirmation('All settings restored');
+      showConfirmation('已恢复所有设置');
     } catch {
-      settingsError = 'Settings could not be reset.';
+      settingsError = '无法重置设置。';
       updatePanelHeightMode();
     } finally {
       resettingAllSettings = false;
@@ -411,7 +411,7 @@
   async function copyCanvas(canvas: HTMLCanvasElement, fallback: string) {
     const blob = await new Promise<Blob>((resolve, reject) =>
       canvas.toBlob(
-        (value) => (value ? resolve(value) : reject(new Error('PNG unavailable'))),
+        (value) => (value ? resolve(value) : reject(new Error('无法生成 PNG 图片'))),
         'image/png',
       ),
     );
@@ -420,7 +420,7 @@
     } else {
       await navigator.clipboard.writeText(fallback);
     }
-    showConfirmation('Copied to clipboard');
+    showConfirmation('已复制到剪贴板');
   }
   async function shareProvider(providerId: string) {
     const current = settingsState;
@@ -441,7 +441,7 @@
       });
       await copyCanvas(canvas, snapshot);
     } catch {
-      settingsError = 'Provider screenshot could not be copied.';
+      settingsError = '无法复制服务商截图。';
     }
   }
   async function shareTotalSpend(projection: SpendProjection) {
@@ -459,21 +459,21 @@
       await copyCanvas(canvas, card.innerText.trim());
       return true;
     } catch {
-      settingsError = 'Total Spend screenshot could not be copied.';
+      settingsError = '无法复制总用量截图。';
       return false;
     }
   }
   async function copyLogPath() {
     const path = await getLogPath();
     await navigator.clipboard.writeText(path);
-    showConfirmation('Log path copied');
+    showConfirmation('已复制日志路径');
   }
   async function openLogFolder() {
     await openSystemLogFolder();
   }
   function topBarTitle() {
     if (screen.startsWith('provider:')) return providerDisplayName(screen.slice(9));
-    return screen === 'settings' ? 'Settings' : 'Customize';
+    return screen === 'settings' ? '设置' : '自定义';
   }
   async function openAbout() {
     aboutTrigger = optionsMenuElement?.querySelector<HTMLElement>(':scope > summary') ?? null;
@@ -589,7 +589,7 @@
         // upstream support is still unavailable.
         await getCurrentWindow().startResizeDragging(edge === 'top' ? 'North' : 'South');
       } catch {
-        settingsError = 'OpenQuota panel resize could not be started.';
+        settingsError = '无法开始调整 OpenQuota 面板高度。';
       } finally {
         await lockPanelResizeAxis().catch(() => undefined);
         updatePanelHeightMode();
@@ -605,7 +605,7 @@
     event.preventDefault();
     void getCurrentWindow()
       .startDragging()
-      .catch(() => (settingsError = 'OpenQuota window could not be moved.'));
+      .catch(() => (settingsError = '无法移动 OpenQuota 窗口。'));
   }
   async function changePanelHeightMode(mode: PanelHeightMode) {
     if (!('__TAURI_INTERNALS__' in window)) return;
@@ -619,7 +619,7 @@
       if (request === panelHeightModeRequest) updatePanelHeightMode();
     } catch {
       if (request !== panelHeightModeRequest) return;
-      settingsError = 'OpenQuota could not change the panel height mode.';
+      settingsError = '无法更改 OpenQuota 面板高度模式。';
       updatePanelHeightMode();
     }
   }
@@ -629,14 +629,14 @@
       const permissionState = await requestNotificationPermission();
       settingsController.acceptExternalState(permissionState);
     } catch {
-      settingsError = 'Notification permission could not be requested.';
+      settingsError = '无法请求通知权限。';
     }
   }
   async function openNotificationSettings() {
     try {
       await openSystemNotificationSettings();
     } catch {
-      settingsError = 'Notification settings could not be opened on this system.';
+      settingsError = '无法打开系统通知设置。';
     }
   }
   async function checkForUpdates(manual = false) {
@@ -725,7 +725,7 @@
     document.addEventListener('keydown', handleKeydown);
     const clock = window.setInterval(() => (now = Date.now()), 30_000);
     const listeners = createListenerRegistry(() => {
-      settingsError ??= 'OpenQuota event bridge is unavailable.';
+      settingsError ??= 'OpenQuota 事件通信不可用。';
     });
     listeners.add(onUsageState((state) => (viewState = state)));
     listeners.add(
@@ -754,7 +754,7 @@
         settingsController.setState(state.settings);
         automaticUpdatesReady = true;
       })
-      .catch(() => (settingsError = 'OpenQuota backend is unavailable.'));
+      .catch(() => (settingsError = 'OpenQuota 后端不可用。'));
     return () => {
       document.removeEventListener('keydown', handleKeydown);
       window.clearInterval(clock);
@@ -776,23 +776,23 @@
   class="popover"
   class:popover--floating={floatingWindow}
   class:popover--macos={floatingWindow && platform === 'macos'}
-  aria-label="OpenQuota usage dashboard"
+  aria-label="OpenQuota 用量概览"
   oncontextmenu={(event) => event.preventDefault()}
 >
   <p id="reorder-instructions" class="sr-only">
-    Drag to reorder. With a keyboard, use Alt plus Up Arrow or Alt plus Down Arrow.
+    拖动可调整顺序；也可按 Alt + 向上或向下方向键调整。
   </p>
   {#if renderedResizeEdge === 'top'}
     <div
       class="panel-resize-dragger panel-resize-dragger--top"
       role="separator"
-      aria-label="Resize panel height"
+      aria-label="调整面板高度"
       aria-orientation="horizontal"
       onpointerdown={handlePanelResizePointerDown}
     ></div>
   {/if}
   {#if floatingWindow}
-    <header class="floating-chrome" aria-label="OpenQuota window controls">
+    <header class="floating-chrome" aria-label="OpenQuota 窗口控制">
       <div class="floating-chrome__drag">
         <OpenQuotaMark size={14} />
         <span>OpenQuota</span>
@@ -800,7 +800,7 @@
       <button
         class="floating-chrome__close"
         type="button"
-        aria-label={settingsState?.trayAvailable ? 'Hide OpenQuota' : 'Close OpenQuota'}
+        aria-label={settingsState?.trayAvailable ? '隐藏 OpenQuota' : '关闭 OpenQuota'}
         onclick={closeMainWindow}
       >
         <Icon name="close" size={12} strokeWidth={2.1} />
@@ -810,7 +810,7 @@
   {#if settingsState}
     {#if screen !== 'dashboard'}
       <header class="screen-header app-top-bar">
-        <button type="button" onclick={back} aria-label="Back" data-tooltip="Back">
+        <button type="button" onclick={back} aria-label="返回" data-tooltip="返回">
           <Icon name="back" size={16} strokeWidth={2.2} />
         </button>
         <h1>{topBarTitle()}</h1>
@@ -819,8 +819,8 @@
             class="text-button"
             type="button"
             onclick={requestCustomizationReset}
-            aria-label="Reset all customization"
-            data-tooltip="Reset All Customization"
+            aria-label="重置所有自定义设置"
+            data-tooltip="重置所有自定义设置"
             ><Icon name="reset" size={15} strokeWidth={2} /></button
           >
         {:else if screen.startsWith('provider:')}
@@ -829,8 +829,8 @@
             type="button"
             disabled={resettingProviderId !== null}
             onclick={() => resetProviderCustomization(screen.slice(9))}
-            aria-label={`Reset ${topBarTitle()}`}
-            data-tooltip={`Reset ${topBarTitle()}`}
+            aria-label={`重置${topBarTitle()}`}
+            data-tooltip={`重置${topBarTitle()}`}
             ><Icon name="reset" size={15} strokeWidth={2} /></button
           >
         {:else}
@@ -936,10 +936,10 @@
           type="button"
           onclick={refresh}
           disabled={anyRefreshing}
-          aria-label="Refresh all provider usage"
+          aria-label="刷新所有服务商用量"
         >
           <span>OpenQuota {appVersion}</span><small
-            >{anyRefreshing ? 'Updating…' : nextUpdateLabel(lastFullRefresh, now)}</small
+            >{anyRefreshing ? '正在更新…' : nextUpdateLabel(lastFullRefresh, now)}</small
           >
         </button>
         {#if screen === 'dashboard'}
@@ -949,26 +949,22 @@
                 class="window-mode-toggle"
                 class:window-mode-toggle--active={floatingWindow}
                 type="button"
-                aria-label={floatingWindow ? 'Return to Tray Popup' : 'Keep Window Open'}
+                aria-label={floatingWindow ? '切换为托盘弹窗' : '保持窗口打开'}
                 aria-pressed={floatingWindow}
-                data-tooltip={floatingWindow ? 'Return to Tray Popup' : 'Keep Window Open'}
+                data-tooltip={floatingWindow ? '切换为托盘弹窗' : '保持窗口打开'}
                 onclick={toggleFloatingWindow}
               >
                 <Icon name={floatingWindow ? 'pin-filled' : 'pin'} size={14} strokeWidth={1.9} />
               </button>
             {/if}
             <details class="options-menu" bind:this={optionsMenuElement}>
-              <summary aria-label="Open options" onkeydown={handleOptionsKey}
-                ><span>Options</span><Icon
-                  name="chevron-down"
-                  size={11}
-                  strokeWidth={2.2}
-                /></summary
+              <summary aria-label="打开选项" onkeydown={handleOptionsKey}
+                ><span>选项</span><Icon name="chevron-down" size={11} strokeWidth={2.2} /></summary
               >
               <div
                 class="options-menu__panel"
                 role="menu"
-                aria-label="Options menu"
+                aria-label="选项菜单"
                 tabindex="-1"
                 onkeydown={handleOptionsKey}
                 onclick={(event) => {
@@ -980,16 +976,16 @@
                 <button
                   class="menu-item"
                   type="button"
-                  aria-label="Customize"
+                  aria-label="自定义"
                   onclick={() => navigate('customize')}
-                  ><Icon name="sliders" /><span>Customize</span><kbd>↩</kbd></button
+                  ><Icon name="sliders" /><span>自定义</span><kbd>↩</kbd></button
                 >
                 <button
                   class="menu-item"
                   type="button"
-                  aria-label="Settings"
+                  aria-label="设置"
                   onclick={() => navigate('settings')}
-                  ><Icon name="gear" /><span>Settings</span><kbd>{shortcuts.settings}</kbd></button
+                  ><Icon name="gear" /><span>设置</span><kbd>{shortcuts.settings}</kbd></button
                 >
                 <hr />
                 <details
@@ -1000,7 +996,7 @@
                   <summary
                     ><span class="share-menu__direction"
                       ><Icon name="chevron-left" size={12} /></span
-                    ><span>Share Screenshot</span></summary
+                    ><span>分享截图</span></summary
                   >
                   <div>
                     {#if shareMenuOpen}
@@ -1013,18 +1009,18 @@
                   </div>
                 </details>
                 <button class="menu-item" type="button" onclick={() => void checkForUpdates(true)}
-                  ><Icon name="refresh" /><span>Check for Updates…</span></button
+                  ><Icon name="refresh" /><span>检查更新…</span></button
                 >
                 <hr />
                 <button class="menu-item" type="button" onclick={openAbout}
-                  ><Icon name="about" /><span>About OpenQuota</span></button
+                  ><Icon name="about" /><span>关于 OpenQuota</span></button
                 >
                 <button
                   class="menu-item menu-item--danger"
                   type="button"
-                  aria-label="Quit OpenQuota"
+                  aria-label="退出 OpenQuota"
                   onclick={quitApp}
-                  ><Icon name="power" /><span>Quit OpenQuota</span><kbd>{shortcuts.quit}</kbd
+                  ><Icon name="power" /><span>退出 OpenQuota</span><kbd>{shortcuts.quit}</kbd
                   ></button
                 >
               </div>
@@ -1042,9 +1038,9 @@
 
     {#if resetConfirmationOpen}
       <ConfirmationSheet
-        title="Reset All Customization?"
-        message="This turns installed providers back on and restores every provider's metric visibility and order."
-        confirmLabel="Reset All"
+        title="重置所有自定义设置？"
+        message="这将重新启用已安装的服务商，并恢复所有服务商指标的显示状态和顺序。"
+        confirmLabel="全部重置"
         pending={resettingCustomization}
         onConfirm={() => void confirmCustomizationReset()}
         onCancel={() => (resetConfirmationOpen = false)}
@@ -1053,9 +1049,9 @@
 
     {#if settingsResetConfirmationOpen}
       <ConfirmationSheet
-        title="Reset All Settings?"
-        message="This restores appearance, notifications, shortcuts, updates, panel sizing, provider names, and layout. Provider sign-ins, API keys, and usage history stay in place. This cannot be undone."
-        confirmLabel="Reset All"
+        title="重置所有设置？"
+        message="这将恢复外观、通知、快捷键、更新、面板尺寸、服务商名称和布局。登录状态、API 密钥及用量历史将保留。此操作无法撤销。"
+        confirmLabel="全部重置"
         pending={resettingAllSettings}
         onConfirm={() => void confirmAllSettingsReset()}
         onCancel={() => (settingsResetConfirmationOpen = false)}
@@ -1082,20 +1078,20 @@
           role="dialog"
           tabindex="-1"
           aria-modal="true"
-          aria-label="About OpenQuota"
+          aria-label="关于 OpenQuota"
         >
           <button
             bind:this={aboutCloseButton}
             class="about-card__close"
             type="button"
-            aria-label="Close About"
+            aria-label="关闭关于窗口"
             onclick={() => void closeAbout()}
             ><Icon name="close" size={11} strokeWidth={2.3} /></button
           >
           <OpenQuotaMark size={44} />
           <h1>OpenQuota</h1>
-          <p>Version {appVersion}</p>
-          <small>Private, local usage monitoring for your AI coding tools.</small>
+          <p>版本 {appVersion}</p>
+          <small>在本地查看 AI 编程工具用量，保护你的隐私。</small>
         </div>
       </div>
     {/if}
@@ -1104,7 +1100,7 @@
       {#if settingsError}
         <div class="notice notice--blocking" role="alert">{settingsError}</div>
       {:else}
-        <p class="empty-row">Loading OpenQuota…</p>
+        <p class="empty-row">正在加载 OpenQuota…</p>
       {/if}
     </div>
   {/if}
@@ -1112,7 +1108,7 @@
     <div
       class="panel-resize-dragger panel-resize-dragger--bottom"
       role="separator"
-      aria-label="Resize panel height"
+      aria-label="调整面板高度"
       aria-orientation="horizontal"
       onpointerdown={handlePanelResizePointerDown}
     ></div>

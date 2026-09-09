@@ -72,7 +72,7 @@ fn definition_matches_the_complete_default_layout() {
     assert_eq!(definition.id, "grok");
     assert_eq!(
         definition.local_usage_source_note.as_deref(),
-        Some("From your Grok logs (estimated)")
+        Some("根据本地 Grok 日志估算")
     );
     assert_eq!(
         definition
@@ -127,7 +127,7 @@ fn weekly_status_plan_and_local_history_form_one_snapshot() {
     assert_eq!(snapshot.plan.as_deref(), Some("SuperGrok Heavy"));
     assert_eq!(snapshot.quotas[0].id, "weekly");
     assert_eq!(snapshot.quotas[0].used_percent, 99.0);
-    assert_eq!(snapshot.status_metrics[0].text, "Disabled");
+    assert_eq!(snapshot.status_metrics[0].text, "未启用");
     assert_eq!(snapshot.status_metrics[0].tone, StatusTone::Neutral);
     assert_eq!(snapshot.usage.today.unwrap().tokens, 2_000_000);
     assert!(snapshot.warnings.is_empty());
@@ -267,7 +267,7 @@ fn monthly_accounts_keep_extra_usage_without_a_fake_weekly_meter() {
     let snapshot = provider.refresh_inner().unwrap();
 
     assert!(snapshot.quotas.is_empty());
-    assert_eq!(snapshot.status_metrics[0].text, "Disabled");
+    assert_eq!(snapshot.status_metrics[0].text, "未启用");
     server.finish();
 }
 

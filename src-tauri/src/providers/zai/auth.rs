@@ -250,10 +250,7 @@ mod tests {
 
         let without_fallback = store(Arc::new(ReadErrorSecrets), &[], &[]);
         let error = without_fallback.load().err().unwrap();
-        assert_eq!(
-            error.to_string(),
-            "The Z.ai API key could not be read or updated."
-        );
+        assert_eq!(error.to_string(), "无法读取或更新 Z.ai API 密钥。");
         assert!(!error.to_string().contains("secret-value"));
     }
 }

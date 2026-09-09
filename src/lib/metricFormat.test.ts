@@ -21,11 +21,11 @@ describe('shared metric formatting', () => {
     expect(formatSpendValue(2059.07, 'cost', 'full')).toBe('$2,059.07');
     expect(totalSpendRingCenter(2059.07, 'cost')).toEqual({
       primary: '$2.1K',
-      unit: 'dollars',
+      unit: '美元',
     });
     expect(totalSpendRingCenter(461_800_000, 'tokens')).toEqual({
       primary: '461.8',
-      unit: 'million',
+      unit: '百万 Token',
     });
   });
 });
