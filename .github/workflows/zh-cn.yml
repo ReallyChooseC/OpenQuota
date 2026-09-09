@@ -1,0 +1,23 @@
+name: Chinese Windows build
+
+on:
+  push:
+    branches: [zh-CN]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    name: Source snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Archive source
+        run: git archive --format=zip --output=source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-snapshot
+          path: source.zip
+          retention-days: 3
