@@ -1,0 +1,52 @@
+name: 中文构建诊断
+
+on:
+  push:
+    branches: [zh-CN]
+    paths: [.github/workflows/zh-diagnostics.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  diagnose:
+    if: github.repository == 'ReallyChooseC/OpenQuota'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: 提取失败日志
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          gh api "repos/$GH_REPO/actions/jobs/102448708625/logs" > previous-windows.log
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('previous-windows.log').read_text(encoding='utf-8-sig', errors='replace')
+          text = re.sub(r'\x1b\[[0-9;]*m', '', text)
+          lines = text.splitlines()
+          selected = set(range(max(0, len(lines) - 170), len(lines)))
+          pattern = re.compile(r'##\[error\]|error\[E\d+\]|^.{0,40}error:|Test Files |Tests |test result:|failed to bundle|beforeBuildCommand|Corepack|Cannot find matching keyid')
+          for i, line in enumerate(lines):
+              if pattern.search(line):
+                  selected.update(range(max(0, i - 2), min(len(lines), i + 7)))
+          output = '\n'.join(lines[i] for i in sorted(selected))
+          Path('diagnostics.txt').write_text(output, encoding='utf-8')
+          print('::stop-commands::raw-diagnostic-output')
+          print(output[-70000:])
+          print('::raw-diagnostic-output::')
+          PY
+      - name: 源码快照
+        run: git archive --format=zip --output=source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zh-cn-diagnostics
+          path: |
+            diagnostics.txt
+            source.zip
+          retention-days: 7
