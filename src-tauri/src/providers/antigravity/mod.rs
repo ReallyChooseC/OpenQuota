@@ -39,7 +39,7 @@ pub(crate) fn definition() -> ProviderDefinition {
         metrics: vec![
             MetricDefinition::quota(
                 "antigravity.geminiPro",
-                "Session",
+                "当前周期",
                 "geminiPro",
                 true,
                 true,
@@ -49,7 +49,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "antigravity.geminiWeekly",
-                "Weekly",
+                "本周额度",
                 "geminiWeekly",
                 false,
                 true,
@@ -69,7 +69,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "antigravity.claudeWeekly",
-                "Claude Weekly",
+                "Claude 本周额度",
                 "claudeWeekly",
                 false,
                 true,
@@ -83,15 +83,15 @@ pub(crate) fn definition() -> ProviderDefinition {
 
 #[derive(Debug, Error)]
 pub enum AntigravityError {
-    #[error("Start Antigravity or run `agy` and try again.")]
+    #[error("请启动 Antigravity 或运行 `agy`，然后重试。")]
     NotSignedIn,
-    #[error("Antigravity sign-in expired. Open Antigravity or run `agy` to refresh.")]
+    #[error("Antigravity 登录已过期。请打开 Antigravity 或运行 `agy` 重新登录。")]
     AuthExpired,
-    #[error("Antigravity credentials could not be read from secure storage.")]
+    #[error("无法从安全存储读取 Antigravity 凭据。")]
     CredentialStoreUnreadable,
-    #[error("Antigravity credentials are invalid. Sign in again in Antigravity or `agy`.")]
+    #[error("Antigravity 凭据无效。请在 Antigravity 或 `agy` 中重新登录。")]
     InvalidCredentialData,
-    #[error("Antigravity usage is temporarily unavailable. Try again shortly.")]
+    #[error("暂时无法获取 Antigravity 用量，请稍后重试。")]
     Unavailable,
 }
 

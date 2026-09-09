@@ -13,7 +13,7 @@ use tokio::sync::Mutex;
 
 use crate::child_process::background_command;
 
-const RELEASE_URL: &str = "https://github.com/deviffyy/OpenQuota/releases/latest";
+const RELEASE_URL: &str = "https://github.com/ReallyChooseC/OpenQuota/releases";
 
 #[derive(Default)]
 pub struct UpdateCoordinator {
@@ -94,16 +94,16 @@ fn classify_updater_error(error: &UpdaterError, operation: &'static str) -> Upda
     if normalized.contains("403") || normalized.contains("forbidden") {
         return UpdateFailure::new(
             "download_forbidden",
-            "GitHub refused the update download.",
-            "Try again. If it still fails, download the verified installer from the release page.",
+            "GitHub 拒绝了更新下载请求。",
+            "请重试；如仍失败，请从发行页面下载经过验证的安装包。",
             true,
         );
     }
     if normalized.contains("429") || normalized.contains("rate limit") {
         return UpdateFailure::new(
             "rate_limited",
-            "GitHub temporarily limited update requests.",
-            "Wait a few minutes, then try again.",
+            "GitHub 暂时限制了更新请求。",
+            "请稍后重试。",
             true,
         );
     }
@@ -113,23 +113,23 @@ fn classify_updater_error(error: &UpdaterError, operation: &'static str) -> Upda
     ) {
         return UpdateFailure::new(
             "signature_invalid",
-            "The downloaded update failed its security check.",
-            "Do not install this download. Open the release page or try again later.",
+            "下载的更新未通过安全校验。",
+            "请勿安装此次下载的文件。请打开发行页面或稍后重试。",
             false,
         );
     }
     if matches!(error, UpdaterError::Reqwest(_) | UpdaterError::Network(_)) {
         return UpdateFailure::new(
             "network",
-            format!("OpenQuota could not {operation} because the network request failed."),
-            "Check your connection or proxy, then try again.",
+            format!("网络请求失败，OpenQuota 无法{operation}。"),
+            "请检查网络连接或代理后重试。",
             true,
         );
     }
     UpdateFailure::new(
         "update_failed",
-        format!("OpenQuota could not {operation}."),
-        "Try again or use the release page to download the installer manually.",
+        format!("OpenQuota 无法{operation}。"),
+        "请重试，或从发行页面手动下载安装包。",
         true,
     )
 }
@@ -173,8 +173,8 @@ pub async fn check_for_updates(
     let _operation = coordinator.operation.try_lock().map_err(|_| {
         UpdateFailure::new(
             "busy",
-            "Another update operation is already running.",
-            "Wait for it to finish, then try again.",
+            "另一个更新操作正在进行。",
+            "请在该操作完成后重试。",
             true,
         )
     })?;
@@ -184,8 +184,8 @@ pub async fn check_for_updates(
         .map_err(|_| {
             UpdateFailure::new(
                 "not_configured",
-                "Automatic updates are not configured in this build.",
-                "Download the latest version from the release page.",
+                "此版本尚未配置自动更新。",
+                "请从发行页面下载最新版本。",
                 false,
             )
         })?
@@ -193,7 +193,7 @@ pub async fn check_for_updates(
         .await
         .map_err(|error| {
             crate::app_warn!("updates", "update check failed: {error}");
-            classify_updater_error(&error, "check for updates")
+            classify_updater_error(&error, "检查更新")
         })?;
     crate::app_info!(
         "updates",
@@ -233,16 +233,16 @@ pub async fn install_update(
     if !supports_in_app_install() {
         return Err(UpdateFailure::new(
             "manual_install_required",
-            "This Linux package cannot update itself.",
-            "Download the new package from the release page and install it normally.",
+            "此 Linux 安装包不支持自行更新。",
+            "请从发行页面下载新安装包并正常安装。",
             false,
         ));
     }
     let _operation = coordinator.operation.try_lock().map_err(|_| {
         UpdateFailure::new(
             "busy",
-            "Another update operation is already running.",
-            "Wait for it to finish, then try again.",
+            "另一个更新操作正在进行。",
+            "请在该操作完成后重试。",
             true,
         )
     })?;
@@ -251,19 +251,19 @@ pub async fn install_update(
         .map_err(|_| {
             UpdateFailure::new(
                 "not_configured",
-                "Automatic updates are not configured in this build.",
-                "Download the latest version from the release page.",
+                "此版本尚未配置自动更新。",
+                "请从发行页面下载最新版本。",
                 false,
             )
         })?
         .check()
         .await
-        .map_err(|error| classify_updater_error(&error, "check for updates"))?
+        .map_err(|error| classify_updater_error(&error, "检查更新"))?
         .ok_or_else(|| {
             UpdateFailure::new(
                 "up_to_date",
-                "OpenQuota is already up to date.",
-                "No action is needed.",
+                "OpenQuota 已是最新版本。",
+                "无需操作。",
                 false,
             )
         })?;
@@ -272,10 +272,7 @@ pub async fn install_update(
     if let Err(first_error) = download_and_install_once(&app, &update).await {
         if !retryable_download_error(&first_error) {
             crate::app_warn!("updates", "update installation failed: {first_error}");
-            return Err(classify_updater_error(
-                &first_error,
-                "install the signed update",
-            ));
+            return Err(classify_updater_error(&first_error, "安装已签名的更新"));
         }
         crate::app_warn!(
             "updates",
@@ -287,7 +284,7 @@ pub async fn install_update(
             .await
             .map_err(|error| {
                 crate::app_warn!("updates", "update retry failed: {error}");
-                classify_updater_error(&error, "install the signed update")
+                classify_updater_error(&error, "安装已签名的更新")
             })?;
     }
     crate::app_info!("updates", "signed update installed; restarting");
@@ -308,7 +305,7 @@ pub fn open_update_page() -> Result<(), String> {
         .args(arguments)
         .spawn()
         .map(|_| ())
-        .map_err(|error| format!("The OpenQuota download page could not be opened: {error}"))
+        .map_err(|error| format!("无法打开 OpenQuota 下载页面：{error}"))
 }
 
 #[cfg(test)]
@@ -337,17 +334,17 @@ mod tests {
     fn forbidden_downloads_have_a_safe_retry_and_manual_fallback() {
         let error =
             UpdaterError::Network("Download request failed with status: 403 Forbidden".into());
-        let failure = classify_updater_error(&error, "install the signed update");
+        let failure = classify_updater_error(&error, "安装已签名的更新");
         assert_eq!(failure.code, "download_forbidden");
         assert!(failure.retryable);
-        assert!(failure.action.contains("release page"));
+        assert!(failure.action.contains("发行页面"));
         assert!(retryable_download_error(&error));
     }
 
     #[test]
     fn signature_failures_are_never_retried() {
         let error = UpdaterError::SignatureUtf8("bad signature".into());
-        let failure = classify_updater_error(&error, "install the signed update");
+        let failure = classify_updater_error(&error, "安装已签名的更新");
         assert_eq!(failure.code, "signature_invalid");
         assert!(!failure.retryable);
         assert!(!retryable_download_error(&error));

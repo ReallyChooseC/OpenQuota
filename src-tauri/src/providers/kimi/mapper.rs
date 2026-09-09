@@ -87,7 +87,7 @@ fn weekly_quota(body: &Value) -> Result<QuotaWindow, KimiError> {
     };
     Ok(QuotaWindow {
         id: "weekly".into(),
-        label: "Weekly".into(),
+        label: "本周额度".into(),
         used_percent,
         resets_at: iso_time(usage.get("resetTime")),
         period_seconds: WEEKLY_PERIOD_SECONDS,
@@ -132,7 +132,7 @@ fn session_quota(body: &Value) -> Result<Option<QuotaWindow>, KimiError> {
 
     Ok(Some(QuotaWindow {
         id: "session".into(),
-        label: "Session".into(),
+        label: "当前周期".into(),
         used_percent,
         resets_at: iso_time(detail.get("resetTime")),
         period_seconds,

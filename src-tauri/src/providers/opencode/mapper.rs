@@ -29,16 +29,16 @@ pub(super) fn map_go_usage(response: UsageResponse) -> Result<Vec<QuotaWindow>, 
         quota(
             usage.get("rolling"),
             "session",
-            "Session",
+            "当前周期",
             ROLLING_PERIOD_SECONDS,
         ),
         quota(
             usage.get("weekly"),
             "weekly",
-            "Weekly",
+            "本周额度",
             WEEKLY_PERIOD_SECONDS,
         ),
-        quota(usage.get("monthly"), "monthly", "Monthly", 0),
+        quota(usage.get("monthly"), "monthly", "本月额度", 0),
     ]
     .into_iter()
     .collect()
@@ -137,7 +137,7 @@ mod tests {
         let error = map_go_usage(response).unwrap_err();
         assert_eq!(
             error.to_string(),
-            "OpenCode Go login data is invalid or expired. Sign in to OpenCode Go again."
+            "OpenCode Go 登录数据无效或已过期，请重新登录。"
         );
     }
 
@@ -146,10 +146,7 @@ mod tests {
         let response = fetch_response(429, r#"{"type":"error"}"#);
 
         let error = map_go_usage(response).unwrap_err();
-        assert_eq!(
-            error.to_string(),
-            "OpenCode Go usage request failed (HTTP 429)."
-        );
+        assert_eq!(error.to_string(), "OpenCode Go 用量请求失败（HTTP 429）。");
     }
 
     #[test]

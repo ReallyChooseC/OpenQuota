@@ -62,7 +62,7 @@ function announce(message: string) {
 }
 
 function announceMove(options: PointerReorderOptions, targetId?: string | null) {
-  const label = options.label ?? 'Item';
+  const label = options.label ?? '项目';
   queueMicrotask(() => {
     const entries = reorderElements(options.group).filter(
       (entry) => !entry.id.startsWith('section:'),
@@ -76,10 +76,10 @@ function announceMove(options: PointerReorderOptions, targetId?: string | null) 
       : null;
     const message =
       position >= 0
-        ? `${label} moved to position ${position + 1} of ${entries.length}.`
+        ? `已将${label}移至第 ${position + 1} 项，共 ${entries.length} 项。`
         : section
-          ? `${label} moved to ${section}.`
-          : `${label} moved.`;
+          ? `已将${label}移至${section}。`
+          : `已移动${label}。`;
     announce(message);
   });
 }
@@ -299,7 +299,7 @@ export function pointerReorder(node: HTMLElement, initialOptions: PointerReorder
       if (dragging) {
         suppressDragClick();
         options.onEnd?.(moved, cancelled);
-        if (cancelled) announce(`${options.label ?? 'Item'} move cancelled.`);
+        if (cancelled) announce(`已取消移动${options.label ?? '项目'}。`);
         else if (moved) announceMove(options, lastTarget);
         if (restoreFocus) {
           queueMicrotask(() => {

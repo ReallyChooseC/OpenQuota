@@ -27,13 +27,13 @@ pub(crate) fn definition() -> ProviderDefinition {
         fallback_enabled: false,
         local_usage_source_note: None,
         links: vec![ProviderLink::new(
-            "Dashboard",
+            "网页面板",
             "https://app.devin.ai/settings/plans",
         )],
         metrics: vec![
             MetricDefinition::quota(
                 "devin.daily",
-                "Daily",
+                "每日额度",
                 "daily",
                 false,
                 true,
@@ -43,7 +43,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "devin.weekly",
-                "Weekly",
+                "本周额度",
                 "weekly",
                 false,
                 true,
@@ -53,7 +53,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "devin.extra",
-                "Extra Balance",
+                "额外余额",
                 "extraUsageBalance",
                 true,
                 MetricSection::OnDemand,
@@ -67,17 +67,17 @@ pub(crate) fn definition() -> ProviderDefinition {
 
 #[derive(Debug, Error, PartialEq, Eq)]
 pub(crate) enum DevinError {
-    #[error("Devin is not logged in. Run `devin auth login` or sign in to the Devin app.")]
+    #[error("尚未登录 Devin。请运行 `devin auth login` 或在 Devin 应用中登录。")]
     NotLoggedIn,
-    #[error("Devin login expired. Run `devin auth login` or sign in to the Devin app.")]
+    #[error("Devin 登录已过期。请运行 `devin auth login` 或在 Devin 应用中登录。")]
     AuthenticationFailed,
-    #[error("Could not reach Devin. Check your internet connection.")]
+    #[error("无法连接 Devin，请检查网络连接。")]
     ConnectionFailed,
-    #[error("Devin returned an invalid usage response.")]
+    #[error("Devin 返回的用量数据无效。")]
     InvalidResponse,
-    #[error("Devin usage request failed (HTTP {0}).")]
+    #[error("Devin 用量请求失败（HTTP {0}）。")]
     RequestFailed(u16),
-    #[error("Devin quota data is unavailable for this account.")]
+    #[error("此账号的 Devin 额度数据不可用。")]
     QuotaUnavailable,
 }
 

@@ -41,15 +41,15 @@ describe('native UI language contract', () => {
   });
 
   it('keeps Customize concise and free of duplicate status and count copy', () => {
-    expect(customizeList).toContain('Notifications, appearance and more');
-    expect(customizeList).toContain('{provider.metrics.length} metrics');
+    expect(customizeList).toContain('通知、外观及其他设置');
+    expect(customizeList).toContain('{provider.metrics.length} 项指标');
     expect(customizeList).not.toContain('Detected locally');
     expect(customizeList).not.toContain('screen-intro');
     expect(customizeList).not.toContain('pinned\n');
-    expect(customizeDetail).toContain('Drag metrics here');
-    expect(customizeDetail).toContain('Starred for menu bar');
-    expect(customizeDetail).toContain('Removed from menu bar');
-    expect(customizeDetail).toContain('Up to 2 stars per provider');
+    expect(customizeDetail).toContain('将指标拖到这里');
+    expect(customizeDetail).toContain('已置顶到托盘栏');
+    expect(customizeDetail).toContain('已从托盘栏移除');
+    expect(customizeDetail).toContain('每个服务商最多置顶 2 项');
     expect(customizeDetail).not.toContain('provider-toggle-row');
     expect(customizeDetail).not.toContain('section-divider');
     expect(customizeDetail).not.toContain('of 2 pinned');
@@ -57,25 +57,25 @@ describe('native UI language contract', () => {
 
   it('uses the shared Settings labels and single-line control rows', () => {
     for (const label of [
-      'General',
-      'Show Total Spend',
-      'Launch at Login',
-      'Global Shortcut',
-      'Icon Style',
-      'Appearance',
-      'Window Mode',
-      'Usage Display',
-      'Notifications',
-      'Advanced',
-      'Updates',
-      'Check for Updates Automatically',
-      'Check for Updates…',
+      '常规',
+      '显示总用量',
+      '开机启动',
+      '全局快捷键',
+      '图标样式',
+      '外观',
+      '窗口模式',
+      '用量显示',
+      '通知',
+      '高级',
+      '更新',
+      '自动检查更新',
+      '检查更新…',
     ]) {
       expect(settings).toContain(label);
     }
-    expect(settings).toContain("{ value: 'system', label: 'Auto' }");
-    expect(settings).toContain("{ value: 'twelveHour', label: '12-hour' }");
-    expect(settings).toContain("{ value: 'twentyFourHour', label: '24-hour' }");
+    expect(settings).toContain("{ value: 'system', label: '自动' }");
+    expect(settings).toContain("{ value: 'twelveHour', label: '12 小时制' }");
+    expect(settings).toContain("{ value: 'twentyFourHour', label: '24 小时制' }");
     expect(settings).not.toContain('<h2>Startup</h2>');
     expect(settings).not.toContain('Automatic Checks');
     expect(settings).not.toContain('Combined cost and token summary.');
@@ -84,14 +84,14 @@ describe('native UI language contract', () => {
   });
 
   it('keeps dashboard onboarding, empty state, and menus on the shared wording', () => {
-    expect(dashboard).toContain('Welcome to OpenQuota');
-    expect(dashboard).toContain('Open Customize');
-    expect(dashboard).toContain('Turn on Customize to choose what to show.');
-    expect(dashboard).toContain('Customize…');
-    expect(dashboard).toContain('Refresh {providerDisplayName(menuProvider.id)}');
+    expect(dashboard).toContain('欢迎使用 OpenQuota');
+    expect(dashboard).toContain('打开自定义');
+    expect(dashboard).toContain('请在自定义中选择要显示的内容。');
+    expect(dashboard).toContain('自定义…');
+    expect(dashboard).toContain('刷新 {providerDisplayName(menuProvider.id)}');
     expect(dashboard).not.toContain('Providers Detected');
     expect(dashboard).not.toContain('Starter Provider');
-    expect(dashboard).not.toContain("Expand'} On Demand");
+    expect(dashboard).not.toContain("Expand'} 按需显示");
     expect(dashboard).not.toContain('>×</button');
   });
 

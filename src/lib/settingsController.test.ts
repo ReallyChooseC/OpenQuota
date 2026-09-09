@@ -230,7 +230,7 @@ describe('SettingsController', () => {
     const save = controller.save(settingsView('light').settings);
     const reset = controller.runMutation(mutation);
 
-    await expect(reset).rejects.toThrow('Settings changed before this operation could start.');
+    await expect(reset).rejects.toThrow('操作开始前设置已发生变化。');
     await save;
     expect(mutation).not.toHaveBeenCalled();
     expect(mocks.getAppSettings).toHaveBeenCalledTimes(1);

@@ -105,9 +105,9 @@ pub fn scan_local_usage(
         false
     };
     let source_note = if includes_pi {
-        "From your Claude usage history and pi (estimated)"
+        "根据本地 Claude 和 pi 用量历史估算"
     } else {
-        "From your Claude usage history (estimated)"
+        "根据本地 Claude 用量历史估算"
     };
     Ok(accumulator.build(now, source_note))
 }
@@ -438,7 +438,7 @@ fn aggregate(
 ) -> UsageHistory {
     let mut accumulator = DailyUsageAccumulator::default();
     aggregate_into(events, now, pricing, &mut accumulator);
-    accumulator.build(now, "From your Claude usage history (estimated)")
+    accumulator.build(now, "根据本地 Claude 用量历史估算")
 }
 
 fn aggregate_into(
@@ -478,7 +478,7 @@ fn aggregate_into(
                 date,
                 tokens.total_tokens(),
                 cost,
-                model_name.unwrap_or("Unattributed"),
+                model_name.unwrap_or("未归类"),
             );
         } else if tokens.total_tokens() > 0 {
             if let Some(model) = model_name {

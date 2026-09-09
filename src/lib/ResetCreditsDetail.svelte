@@ -38,17 +38,17 @@
             ? 'warning'
             : 'normal';
       const relative = formatReset(expiry, now, 'countdown', timeFormat).replace(
-        /^Resets(?: in)?\s*/,
+        /(?:后)?重置$/,
         '',
       );
-      const exact = formatReset(expiry, now, 'exact', timeFormat).replace(/^Resets\s*/, '');
-      const imminent = relative === 'soon';
+      const exact = formatReset(expiry, now, 'exact', timeFormat).replace(/\s*重置$/, '');
+      const imminent = relative === '即将';
       return {
         id: `${expiry}:${index}`,
         expiry,
         number: index + 1,
         severity,
-        exact: imminent ? 'Expiring soon' : exact,
+        exact: imminent ? '即将到期' : exact,
         relative: imminent ? null : relative,
       };
     }),
@@ -56,13 +56,13 @@
 
   const resultMessage = $derived(
     result?.outcome === 'success'
-      ? 'Reset applied.'
+      ? '已重置额度。'
       : result?.outcome === 'nothingToReset'
-        ? 'No active limit needs resetting.'
+        ? '当前没有需要重置的额度限制。'
         : result?.outcome === 'noCredit'
-          ? 'This reset is no longer available.'
+          ? '该重置次数已不可用。'
           : result?.outcome === 'failed'
-            ? 'Could not use this reset. Try again.'
+            ? '无法使用该重置次数，请重试。'
             : null,
   );
 
@@ -132,7 +132,7 @@
   style={`top:${top}px`}
   role="dialog"
   tabindex="-1"
-  aria-label={`${title} details`}
+  aria-label={`${title} 详情`}
   onmouseenter={onEnter}
   onfocusin={onEnter}
   onmouseleave={() => {
@@ -168,9 +168,9 @@
                   aria-labelledby={`reset-confirm-title-${index}`}
                   aria-describedby={`reset-confirm-message-${index}`}
                 >
-                  <strong id={`reset-confirm-title-${index}`}>Use this reset?</strong>
+                  <strong id={`reset-confirm-title-${index}`}>使用这次额度重置？</strong>
                   <span id={`reset-confirm-message-${index}`}
-                    >Immediately reset your usage limits. This can't be undone.</span
+                    >立即重置用量限制。此操作无法撤销。</span
                   >
                   <div>
                     <button
@@ -178,13 +178,13 @@
                       type="button"
                       disabled={pendingExpiry !== null}
                       onclick={() => confirmClaim(entry.expiry)}
-                      >{pendingExpiry === entry.expiry ? 'Resetting…' : 'Use reset'}</button
+                      >{pendingExpiry === entry.expiry ? '正在重置…' : '重置额度'}</button
                     >
                     <button
                       bind:this={cancelButton}
                       type="button"
                       disabled={pendingExpiry !== null}
-                      onclick={() => void cancelClaim()}>Cancel</button
+                      onclick={() => void cancelClaim()}>取消</button
                     >
                   </div>
                 </div>
@@ -197,9 +197,9 @@
                       class="reset-use"
                       type="button"
                       data-reset-trigger={index}
-                      aria-label={`Use reset expiring ${entry.exact}`}
+                      aria-label={`使用将于 ${entry.exact} 到期的重置次数`}
                       disabled={pendingExpiry !== null}
-                      onclick={() => void beginClaim(entry.expiry, index)}>Use</button
+                      onclick={() => void beginClaim(entry.expiry, index)}>使用</button
                     >
                   </div>
                 </div>
@@ -210,11 +210,11 @@
       </div>
     {:else if count > 0}
       <div class="reset-empty">
-        <strong>{count} available</strong>
-        <span>Expiry times unavailable</span>
+        <strong>可用 {count} 次</strong>
+        <span>无法获取到期时间</span>
       </div>
     {:else}
-      <div class="reset-empty"><span>No rate limit resets available</span></div>
+      <div class="reset-empty"><span>没有可用的额度重置次数</span></div>
     {/if}
   </div>
 </div>

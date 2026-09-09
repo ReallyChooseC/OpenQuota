@@ -45,7 +45,7 @@
   class="model-usage-detail"
   style={`top:${top}px`}
   role="tooltip"
-  aria-label={`${title} model usage`}
+  aria-label={`${title} 模型用量`}
   onmouseenter={onEnter}
   onmouseleave={onLeave}
 >
@@ -63,7 +63,7 @@
         </div>
         <div class="model-usage-secondary">
           <span>{percents[index]}%</span><span
-            >{formatMetricValue(model.totalTokens, 'count', 'row', 'tokens')}</span
+            >{formatMetricValue(model.totalTokens, 'count', 'row', 'Token')}</span
           >
         </div>
         <div class="model-usage-meter" aria-hidden="true">

@@ -121,7 +121,7 @@ describe('pointer reorder interaction', () => {
     const action = pointerReorder(source, {
       id: 'first',
       group: 'test',
-      label: 'Session',
+      label: '当前周期',
       onReorder: vi.fn(),
       onEnd,
     });
@@ -149,7 +149,7 @@ describe('pointer reorder interaction', () => {
     await waitFor(() => {
       expect(document.activeElement).toBe(grip);
       expect(document.querySelector('[data-reorder-announcer]')).toHaveTextContent(
-        'Session move cancelled.',
+        '已取消移动当前周期。',
       );
     });
     action.destroy();
@@ -162,7 +162,7 @@ describe('pointer reorder interaction', () => {
     const action = pointerReorder(source, {
       id: 'first',
       group: 'test',
-      label: 'Session',
+      label: '当前周期',
       gripOnly: true,
       onReorder: () => {
         const replacement = source.cloneNode(true) as HTMLElement;
@@ -179,7 +179,7 @@ describe('pointer reorder interaction', () => {
 
     await waitFor(() =>
       expect(document.querySelector('[data-reorder-announcer]')).toHaveTextContent(
-        'Session moved to position 2 of 2.',
+        '已将当前周期移至第 2 项，共 2 项。',
       ),
     );
     expect(document.activeElement).toBe(replacementGrip);

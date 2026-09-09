@@ -11,7 +11,7 @@ afterEach(cleanup);
 function quota(usedPercent: number, elapsedFraction = 0.5): QuotaWindow {
   return {
     id: 'weekly',
-    label: 'Weekly',
+    label: '本周额度',
     usedPercent,
     format: 'percent',
     usedValue: null,
@@ -57,21 +57,21 @@ describe('quota pacing presentation', () => {
   it('shows the flame, run-out time, and projection tooltip', async () => {
     const onToggleReset = vi.fn();
     const { container } = show(quota(60), onToggleReset);
-    const warning = screen.getByRole('button', { name: 'Limit in 56m' });
+    const warning = screen.getByRole('button', { name: '56分钟后用尽' });
     expect(container.querySelector('.pace-warning__icon')).toBeInTheDocument();
-    expect(warning).toHaveAttribute('data-tooltip', '~20% over limit at reset');
+    expect(warning).toHaveAttribute('data-tooltip', '重置时预计超额约 20%');
     expect(container.querySelector('.meter-shell')).toHaveAttribute(
       'data-tooltip',
-      '~20% over limit at reset',
+      '重置时预计超额约 20%',
     );
     expect(container.querySelector('.meter__fill')).toHaveStyle('--fill-percent: 40%');
-    expect(screen.getByRole('button', { name: '40% left' })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: '剩余 40%' })).toHaveAttribute(
       'data-tooltip',
-      '60% used',
+      '已用 60%',
     );
-    expect(screen.getByRole('button', { name: /Resets in/ })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: /后重置/ })).toHaveAttribute(
       'data-tooltip',
-      expect.stringContaining('Resets today at'),
+      expect.stringContaining('今天 '),
     );
     await fireEvent.click(warning);
     expect(onToggleReset).toHaveBeenCalledOnce();
@@ -79,17 +79,20 @@ describe('quota pacing presentation', () => {
 
   it('shows a flame without a misleading time at the exact-limit edge', () => {
     const { container } = show(quota(50));
-    expect(screen.getByLabelText('Will reach limit')).toBeInTheDocument();
-    expect(screen.queryByText(/Limit in/)).not.toBeInTheDocument();
+    expect(screen.getByLabelText('预计将用尽额度')).toBeInTheDocument();
+    expect(screen.queryByText(/后用尽/)).not.toBeInTheDocument();
     expect(container.querySelector('.pace-warning')).toHaveAttribute(
       'data-tooltip',
-      '~100% used at reset',
+      '重置时预计用尽额度',
     );
   });
 
   it('shows the rounded spare copy and projected-use tooltip when close', () => {
     show(quota(46));
-    expect(screen.getByText('~8% spare')).toHaveAttribute('data-tooltip', '~92% used at reset');
+    expect(screen.getByText('预计剩余约 8%')).toHaveAttribute(
+      'data-tooltip',
+      '重置时预计已用约 92%',
+    );
   });
 
   it('frames the even-pace tick in the selected remaining mode', () => {
@@ -99,9 +102,9 @@ describe('quota pacing presentation', () => {
 
   it('shows an unused rolling session as not started without pacing decoration', () => {
     const { container } = show(quota(0), vi.fn(), true);
-    expect(screen.getByText('Not started')).toHaveAttribute(
+    expect(screen.getByText('尚未开始')).toHaveAttribute(
       'data-tooltip',
-      'Sessions start after you send your first message.',
+      '发送第一条消息后开始计算当前周期。',
     );
     expect(container.querySelector('.pace-warning')).not.toBeInTheDocument();
     expect(container.querySelector('.meter-shell')).not.toHaveAttribute('data-tooltip');
@@ -109,7 +112,7 @@ describe('quota pacing presentation', () => {
 
   it('does not decorate unused non-session quotas as healthy pacing', () => {
     const { container } = showAlways(quota(0));
-    expect(screen.queryByText(/left at reset/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/重置时预计剩余/)).not.toBeInTheDocument();
     expect(container.querySelector('.meter__pace')).not.toBeInTheDocument();
     expect(container.querySelector('.meter-shell')).not.toHaveAttribute('data-tooltip');
   });
@@ -118,15 +121,15 @@ describe('quota pacing presentation', () => {
     show({
       ...quota(24),
       id: 'requests',
-      label: 'Requests',
+      label: '请求数',
       format: 'count',
       usedValue: 120,
       limitValue: 500,
       unit: 'searches',
     });
-    expect(screen.getByRole('button', { name: '380 searches left' })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: '剩余 380 searches' })).toHaveAttribute(
       'data-tooltip',
-      '120 searches used',
+      '已用 120 searches',
     );
   });
 
@@ -137,7 +140,7 @@ describe('quota pacing presentation', () => {
       sourceNote: 'Estimated from local records.',
     });
 
-    expect(screen.getByLabelText('Estimated quota')).toHaveAttribute(
+    expect(screen.getByLabelText('估算额度')).toHaveAttribute(
       'data-tooltip',
       'Estimated from local records.',
     );

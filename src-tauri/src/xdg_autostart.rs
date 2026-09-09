@@ -8,8 +8,7 @@ pub fn set_enabled(enabled: bool) -> Result<(), String> {
         std::env::var_os("XDG_CONFIG_HOME").map(PathBuf::from),
         std::env::var_os("HOME").map(PathBuf::from),
     )?;
-    let executable =
-        std::env::current_exe().map_err(|_| "OpenQuota executable path could not be resolved.")?;
+    let executable = std::env::current_exe().map_err(|_| "无法获取 OpenQuota 可执行文件路径。")?;
     set_enabled_at(&path, &executable, enabled)
 }
 
@@ -20,20 +19,16 @@ fn set_enabled_at(
 ) -> Result<(), String> {
     if !enabled {
         if path.exists() {
-            fs::remove_file(path).map_err(|_| "XDG autostart entry could not be removed.")?;
+            fs::remove_file(path).map_err(|_| "无法移除XDG 自动启动项。")?;
         }
         return Ok(());
     }
 
-    let parent = path
-        .parent()
-        .ok_or("XDG autostart directory could not be resolved.")?;
-    fs::create_dir_all(parent).map_err(|_| "XDG autostart directory could not be created.")?;
+    let parent = path.parent().ok_or("无法获取XDG 自动启动目录。")?;
+    fs::create_dir_all(parent).map_err(|_| "无法创建XDG 自动启动目录。")?;
     let temporary = path.with_extension("desktop.tmp");
-    fs::write(&temporary, desktop_entry(executable))
-        .map_err(|_| "XDG autostart entry could not be written.")?;
-    fs::rename(temporary, path)
-        .map_err(|_| "XDG autostart entry could not be installed.".to_owned())
+    fs::write(&temporary, desktop_entry(executable)).map_err(|_| "无法写入XDG 自动启动项。")?;
+    fs::rename(temporary, path).map_err(|_| "无法安装XDG 自动启动项。".to_owned())
 }
 
 #[cfg(target_os = "linux")]
@@ -52,7 +47,7 @@ fn autostart_path(
     let config = xdg_config_home
         .filter(|path| path.is_absolute() || path.to_string_lossy().starts_with('/'))
         .or_else(|| home.map(|path| path.join(".config")))
-        .ok_or("XDG configuration directory could not be resolved.")?;
+        .ok_or("无法获取XDG 配置目录。")?;
     Ok(config.join("autostart").join(DESKTOP_FILE))
 }
 

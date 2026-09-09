@@ -75,7 +75,7 @@ export function projectSpend(
 }
 
 export function emptySpendMessage(metric: AppSettings['totalSpendMetric']) {
-  if (metric === 'tokens') return 'No token data for this period';
-  if (metric === 'costPerMillion') return 'No cost-per-token data for this period';
-  return 'No cost data for this period';
+  if (metric === 'tokens') return '此时段暂无 Token 数据';
+  if (metric === 'costPerMillion') return '此时段暂无单位 Token 费用数据';
+  return '此时段暂无费用数据';
 }

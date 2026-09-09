@@ -30,15 +30,15 @@ pub(crate) fn definition() -> ProviderDefinition {
         local_usage_source_note: None,
         links: vec![
             ProviderLink::new(
-                "Dashboard",
+                "网页面板",
                 "https://z.ai/manage-apikey/coding-plan/personal/my-plan",
             ),
-            ProviderLink::new("API Keys", "https://z.ai/manage-apikey/apikey-list"),
+            ProviderLink::new("API 密钥", "https://z.ai/manage-apikey/apikey-list"),
         ],
         metrics: vec![
             MetricDefinition::quota(
                 "zai.session",
-                "Session",
+                "当前周期",
                 "session",
                 false,
                 true,
@@ -48,7 +48,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "zai.weekly",
-                "Weekly",
+                "本周额度",
                 "weekly",
                 false,
                 true,
@@ -58,13 +58,13 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "zai.webSearches",
-                "Web Searches",
+                "联网搜索",
                 "webSearches",
                 false,
                 true,
                 MetricSection::OnDemand,
                 false,
-                "Search",
+                "搜索",
             ),
         ],
     }
@@ -73,20 +73,20 @@ pub(crate) fn definition() -> ProviderDefinition {
 #[derive(Debug, Error, PartialEq, Eq)]
 pub(super) enum ZaiError {
     #[error(
-        "Add a Z.ai API key in Customize, set ZAI_API_KEY, or configure ~/.config/openquota/zai.json."
+        "请在自定义中添加 Z.ai API 密钥，设置 ZAI_API_KEY，或配置 ~/.config/openquota/zai.json。"
     )]
     MissingKey,
-    #[error("The Z.ai API key is invalid. Check it at z.ai/manage-apikey/apikey-list.")]
+    #[error("Z.ai API 密钥无效，请在 z.ai/manage-apikey/apikey-list 检查。")]
     InvalidKey,
-    #[error("Could not reach Z.ai. Check your internet connection.")]
+    #[error("无法连接 Z.ai，请检查网络连接。")]
     ConnectionFailed,
-    #[error("Z.ai usage data is temporarily unavailable.")]
+    #[error("Z.ai 用量数据暂时不可用。")]
     InvalidResponse,
-    #[error("Z.ai request failed (HTTP {0}).")]
+    #[error("Z.ai 请求失败（HTTP {0}）。")]
     RequestFailed(u16),
-    #[error("No active GLM Coding Plan. Subscribe at z.ai/subscribe to view usage.")]
+    #[error("没有有效的 GLM 编程套餐。请在 z.ai/subscribe 订阅后查看用量。")]
     NoCodingPlan,
-    #[error("The Z.ai API key could not be read or updated.")]
+    #[error("无法读取或更新 Z.ai API 密钥。")]
     CredentialStorage,
 }
 
@@ -308,7 +308,7 @@ mod tests {
             ["session", "weekly", "webSearches"]
         );
         assert_eq!(snapshot.quotas[2].format, QuotaFormat::Count);
-        assert_eq!(snapshot.quotas[2].unit.as_deref(), Some("searches"));
+        assert_eq!(snapshot.quotas[2].unit.as_deref(), Some("次搜索"));
         assert!(snapshot.status_metrics.is_empty());
         assert!(snapshot.warnings.is_empty());
     }
@@ -333,14 +333,14 @@ mod tests {
     fn missing_invalid_and_rate_limited_keys_are_distinct() {
         let missing = provider(None, 200, "{}", 200, "{}").refresh().unwrap_err();
         assert_eq!(missing.kind(), ProviderErrorKind::Authentication);
-        assert!(missing.to_string().contains("Add a Z.ai API key"));
+        assert!(missing.to_string().contains("添加 Z.ai API 密钥"));
 
         for status in [401, 403] {
             let invalid = provider(Some("bad-key"), status, "{}", 200, "{}")
                 .refresh()
                 .unwrap_err();
             assert_eq!(invalid.kind(), ProviderErrorKind::Authentication);
-            assert!(invalid.to_string().contains("invalid"));
+            assert!(invalid.to_string().contains("无效"));
             assert!(!invalid.to_string().contains("bad-key"));
         }
 
@@ -362,7 +362,7 @@ mod tests {
         .refresh()
         .unwrap_err();
         assert_eq!(no_plan.kind(), ProviderErrorKind::Permission);
-        assert!(no_plan.to_string().contains("GLM Coding Plan"));
+        assert!(no_plan.to_string().contains("GLM 编程套餐"));
 
         let malformed = provider(
             Some("secret"),
@@ -450,7 +450,7 @@ mod tests {
                 .iter()
                 .map(|link| link.label.as_str())
                 .collect::<Vec<_>>(),
-            ["Dashboard", "API Keys"]
+            ["网页面板", "API 密钥"]
         );
 
         let metric = |id: &str| {

@@ -19,7 +19,7 @@
       {metric.text}
     </span>
   {:else}
-    <span class="status-reading">No data</span>
+    <span class="status-reading">暂无数据</span>
   {/if}
 </div>
 

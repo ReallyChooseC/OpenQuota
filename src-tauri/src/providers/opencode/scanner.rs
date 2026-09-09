@@ -14,8 +14,7 @@ use super::{
 };
 
 const SCAN_DAYS: i64 = 33;
-pub(crate) const USAGE_SOURCE_NOTE: &str =
-    "From your OpenCode local database; missing costs use catalog estimates";
+pub(crate) const USAGE_SOURCE_NOTE: &str = "来自 OpenCode 本地数据库；缺少费用时按价格表估算";
 
 #[derive(Debug)]
 pub(crate) struct OpenCodeUsageScan {
@@ -102,9 +101,7 @@ impl OpenCodeUsageScanner {
                 "plugin:opencode",
                 "{failed_databases} local database(s) could not be read; usable sources remain"
             );
-            warnings.push(
-                "Some OpenCode databases could not be read; available local usage is shown.".into(),
-            );
+            warnings.push("部分 OpenCode 数据库无法读取；正在显示可获取的本地用量。".into());
         }
 
         Ok(Some(OpenCodeUsageScan {

@@ -8,7 +8,7 @@ export type SettingsMutation = (
 
 class CancelledSettingsMutation extends Error {
   constructor() {
-    super('Settings changed before this operation could start.');
+    super('操作开始前设置已发生变化。');
   }
 }
 
@@ -28,7 +28,7 @@ function strictlyFollows(candidate: SettingsViewState, current: SettingsViewStat
 }
 
 function errorMessage(error: unknown) {
-  return typeof error === 'string' ? error : 'Settings could not be saved.';
+  return typeof error === 'string' ? error : '无法保存设置。';
 }
 
 export class SettingsController {
@@ -111,7 +111,7 @@ export class SettingsController {
   }
 
   runMutation(mutation: SettingsMutation) {
-    if (!this.state) return Promise.reject('Settings are unavailable.');
+    if (!this.state) return Promise.reject('设置不可用。');
     return this.#enqueueMutation(mutation);
   }
 
@@ -123,7 +123,7 @@ export class SettingsController {
     const task = this.#mutationQueue.then(async () => {
       if (generation !== this.#mutationGeneration) throw new CancelledSettingsMutation();
       const base = this.#serverState ?? this.state;
-      if (!base) throw new Error('Settings are unavailable.');
+      if (!base) throw new Error('设置不可用。');
 
       try {
         const saved = await mutation(base.settingsRevision, base.accountRevision);
@@ -178,7 +178,7 @@ export class SettingsController {
         this.state = state;
       }
     } catch {
-      this.onError('Settings could not be saved or reloaded.');
+      this.onError('无法保存或重新加载设置。');
     }
   }
 }

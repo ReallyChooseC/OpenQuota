@@ -25,7 +25,7 @@ export class UpdateController {
       onChecked(new SvelteDate().toISOString());
       if (manual) onMessage(updateCheckMessage(status));
     } catch (error) {
-      if (manual) this.error = updateFailure(error, 'Updates could not be checked.');
+      if (manual) this.error = updateFailure(error, '无法检查更新。');
     } finally {
       this.checking = false;
     }
@@ -39,7 +39,7 @@ export class UpdateController {
     try {
       await installApplicationUpdate();
     } catch (error) {
-      this.error = updateFailure(error, 'The update could not be installed.');
+      this.error = updateFailure(error, '无法安装更新。');
       this.installing = false;
       this.progress = null;
     }
@@ -49,7 +49,7 @@ export class UpdateController {
     try {
       await openUpdatePage();
     } catch (error) {
-      this.error = updateFailure(error, 'The OpenQuota download page could not be opened.');
+      this.error = updateFailure(error, '无法打开 OpenQuota 下载页面。');
     }
   }
 
@@ -59,17 +59,15 @@ export class UpdateController {
 }
 
 export function nextUpdateLabel(value: string | undefined, now: number) {
-  if (!value) return 'Waiting for first update';
+  if (!value) return '等待首次刷新';
   const timestamp = Date.parse(value);
-  if (Number.isNaN(timestamp)) return 'Next update unavailable';
+  if (Number.isNaN(timestamp)) return '无法获取下次刷新时间';
   const remaining = Math.min(
     USAGE_REFRESH_INTERVAL_MS,
     Math.max(0, timestamp + USAGE_REFRESH_INTERVAL_MS - now),
   );
   const seconds = Math.ceil(remaining / 1000);
-  return seconds >= 60
-    ? `Next update in ${Math.ceil(seconds / 60)}m`
-    : `Next update in ${seconds}s`;
+  return seconds >= 60 ? `${Math.ceil(seconds / 60)} 分钟后刷新` : `${seconds} 秒后刷新`;
 }
 
 export function updateFailure(error: unknown, fallback: string): UpdateFailure {
@@ -79,7 +77,7 @@ export function updateFailure(error: unknown, fallback: string): UpdateFailure {
       return {
         code: typeof candidate.code === 'string' ? candidate.code : 'update_failed',
         message: candidate.message,
-        action: typeof candidate.action === 'string' ? candidate.action : 'Try again later.',
+        action: typeof candidate.action === 'string' ? candidate.action : '请稍后重试。',
         retryable: candidate.retryable !== false,
       };
     }
@@ -87,14 +85,12 @@ export function updateFailure(error: unknown, fallback: string): UpdateFailure {
   return {
     code: 'update_failed',
     message: typeof error === 'string' ? error : fallback,
-    action: 'Try again or download the installer from the release page.',
+    action: '请重试，或从发行页面下载安装包。',
     retryable: true,
   };
 }
 
 function updateCheckMessage(status: UpdateStatus) {
-  if (!status.available) return `OpenQuota ${status.currentVersion} is up to date.`;
-  return status.version
-    ? `OpenQuota ${status.version} is available.`
-    : 'An OpenQuota update is available.';
+  if (!status.available) return `OpenQuota ${status.currentVersion} 已是最新版本。`;
+  return status.version ? `OpenQuota ${status.version} 已可下载。` : 'OpenQuota 有可用更新。';
 }

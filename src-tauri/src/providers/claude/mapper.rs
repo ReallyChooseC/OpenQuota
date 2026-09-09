@@ -29,14 +29,14 @@ pub fn map_usage(
     append_window(
         &mut quotas,
         "session",
-        "Session",
+        "当前周期",
         object.get("five_hour"),
         5 * 60 * 60,
     );
     append_window(
         &mut quotas,
         "weekly",
-        "Weekly",
+        "本周额度",
         object.get("seven_day"),
         7 * 24 * 60 * 60,
     );
@@ -77,7 +77,7 @@ pub fn map_usage(
                     let limit_value = limit.unwrap_or_default();
                     quotas.push(QuotaWindow {
                         id: "extra".into(),
-                        label: "Extra Usage".into(),
+                        label: "额外用量".into(),
                         used_percent: (used / limit_value * 100.0).clamp(0.0, 100.0),
                         resets_at: None,
                         period_seconds: 0,
@@ -91,11 +91,11 @@ pub fn map_usage(
                 } else if used > 0.0 {
                     value_metrics.push(ValueMetric {
                         id: "extra".into(),
-                        label: "Extra Usage".into(),
+                        label: "额外用量".into(),
                         values: vec![MetricValue {
                             number: used,
                             kind: MetricValueKind::Dollars,
-                            label: Some("spent".into()),
+                            label: Some("已用".into()),
                             estimated: false,
                         }],
                         expiries_at: Vec::new(),
@@ -257,7 +257,7 @@ mod tests {
         assert_eq!(mapped.value_metrics[0].values[0].number, 1234.56);
         assert_eq!(
             mapped.value_metrics[0].values[0].label.as_deref(),
-            Some("spent")
+            Some("已用")
         );
     }
 

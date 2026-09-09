@@ -73,11 +73,11 @@ describe('OpenQuota update lifecycle', () => {
     );
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    await fireEvent.click(screen.getByRole('button', { name: 'Check for Updates…' }));
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+    await fireEvent.click(screen.getByRole('button', { name: '检查更新…' }));
     await waitFor(() => expect(mocks.invoke).toHaveBeenCalledWith('check_for_updates'));
-    expect(await screen.findByText('OpenQuota 0.1.0 is up to date.')).toBeInTheDocument();
+    expect(await screen.findByText('OpenQuota 0.1.0 已是最新版本。')).toBeInTheDocument();
     expect(document.querySelector('.settings-update-status')).toBeNull();
     expect(mocks.invoke).toHaveBeenCalledWith(
       'save_app_settings',
@@ -85,8 +85,8 @@ describe('OpenQuota update lifecycle', () => {
         settings: expect.objectContaining({ lastUpdateCheckAt: expect.any(String) }),
       }),
     );
-    await fireEvent.click(screen.getByRole('combobox', { name: 'Icon Style' }));
-    await fireEvent.click(screen.getByRole('option', { name: 'Bars' }));
+    await fireEvent.click(screen.getByRole('combobox', { name: '图标样式' }));
+    await fireEvent.click(screen.getByRole('option', { name: '进度条' }));
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith(
         'save_app_settings',
@@ -101,9 +101,9 @@ describe('OpenQuota update lifecycle', () => {
     );
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    expect(screen.queryByRole('combobox', { name: 'Icon Style' })).not.toBeInTheDocument();
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+    expect(screen.queryByRole('combobox', { name: '图标样式' })).not.toBeInTheDocument();
   });
 
   it('surfaces an available update on the dashboard and allows it to be dismissed', async () => {
@@ -128,14 +128,14 @@ describe('OpenQuota update lifecycle', () => {
     });
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Check for Updates…' }));
-    expect(await screen.findByRole('region', { name: 'Update Available' })).toHaveTextContent(
-      'OpenQuota 0.2.0 is ready to download.',
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '检查更新…' }));
+    expect(await screen.findByRole('region', { name: '有可用更新' })).toHaveTextContent(
+      'OpenQuota 0.2.0 已可下载。',
     );
     expect(screen.getByText('New release')).toBeInTheDocument();
-    await fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
-    expect(screen.queryByRole('region', { name: 'Update Available' })).not.toBeInTheDocument();
+    await fireEvent.click(screen.getByRole('button', { name: '忽略' }));
+    expect(screen.queryByRole('region', { name: '有可用更新' })).not.toBeInTheDocument();
     expect(mocks.invoke).toHaveBeenCalledWith(
       'save_app_settings',
       expect.objectContaining({
@@ -163,9 +163,9 @@ describe('OpenQuota update lifecycle', () => {
     });
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Check for Updates…' }));
-    await fireEvent.click(await screen.findByRole('button', { name: 'Download from GitHub' }));
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '检查更新…' }));
+    await fireEvent.click(await screen.findByRole('button', { name: '从 GitHub 下载' }));
     expect(mocks.invoke).toHaveBeenCalledWith('open_update_page');
   });
 
@@ -196,16 +196,16 @@ describe('OpenQuota update lifecycle', () => {
 
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Check for Updates…' }));
-    await fireEvent.click(await screen.findByRole('button', { name: 'Install Update' }));
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '检查更新…' }));
+    await fireEvent.click(await screen.findByRole('button', { name: '安装更新' }));
     expect(mocks.invoke).toHaveBeenCalledWith('install_update');
 
     progressListener?.({
       payload: { phase: 'downloading', downloaded: 42, total: 100, percent: 42 },
     });
-    expect(await screen.findByText('Downloading update… 42%')).toBeInTheDocument();
-    expect(screen.getByRole('progressbar', { name: 'Update download' })).toHaveAttribute(
+    expect(await screen.findByText('正在下载更新… 42%')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar', { name: '下载更新' })).toHaveAttribute(
       'aria-valuenow',
       '42',
     );
@@ -213,12 +213,12 @@ describe('OpenQuota update lifecycle', () => {
     progressListener?.({
       payload: { phase: 'retrying', downloaded: 42, total: 100, percent: 42 },
     });
-    expect(await screen.findByText('Download interrupted. Retrying…')).toBeInTheDocument();
+    expect(await screen.findByText('下载中断，正在重试…')).toBeInTheDocument();
 
     progressListener?.({
       payload: { phase: 'installing', downloaded: 100, total: 100, percent: 100 },
     });
-    expect(await screen.findByText('Installing update…')).toBeInTheDocument();
+    expect(await screen.findByText('正在安装更新…')).toBeInTheDocument();
   });
 
   it('explains recoverable update failures and offers safe fallback actions', async () => {
@@ -238,7 +238,7 @@ describe('OpenQuota update lifecycle', () => {
       if (command === 'install_update')
         return Promise.reject({
           code: 'download_forbidden',
-          message: 'GitHub refused the update download.',
+          message: 'GitHub 拒绝了更新下载请求。',
           action: 'Try again or download it from the release page.',
           retryable: true,
         });
@@ -248,18 +248,16 @@ describe('OpenQuota update lifecycle', () => {
 
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Check for Updates…' }));
-    await fireEvent.click(await screen.findByRole('button', { name: 'Install Update' }));
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '检查更新…' }));
+    await fireEvent.click(await screen.findByRole('button', { name: '安装更新' }));
 
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      'GitHub refused the update download.',
-    );
+    expect(await screen.findByRole('alert')).toHaveTextContent('GitHub 拒绝了更新下载请求。');
     expect(screen.getByRole('alert')).toHaveTextContent(
       'Try again or download it from the release page.',
     );
-    expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
-    await fireEvent.click(screen.getByRole('button', { name: 'View Release' }));
+    expect(screen.getByRole('button', { name: '重试' })).toBeInTheDocument();
+    await fireEvent.click(screen.getByRole('button', { name: '查看发行说明' }));
     expect(mocks.invoke).toHaveBeenCalledWith('open_update_page');
   });
 });

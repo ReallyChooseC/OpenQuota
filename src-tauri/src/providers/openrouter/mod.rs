@@ -33,7 +33,7 @@ pub(crate) fn definition() -> ProviderDefinition {
         fallback_enabled: false,
         local_usage_source_note: None,
         links: vec![
-            ProviderLink::new("Activity", "https://openrouter.ai/activity"),
+            ProviderLink::new("活动记录", "https://openrouter.ai/activity"),
             ProviderLink::new("Credits", "https://openrouter.ai/settings/credits"),
         ],
         metrics: vec![
@@ -49,7 +49,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "openrouter.balance",
-                "Balance",
+                "余额",
                 "balance",
                 true,
                 MetricSection::AlwaysVisible,
@@ -59,7 +59,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "openrouter.today",
-                "Today",
+                "今天",
                 "today",
                 true,
                 MetricSection::OnDemand,
@@ -69,7 +69,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "openrouter.week",
-                "This Week",
+                "本周",
                 "week",
                 true,
                 MetricSection::OnDemand,
@@ -79,7 +79,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "openrouter.month",
-                "This Month",
+                "本月",
                 "month",
                 true,
                 MetricSection::OnDemand,
@@ -89,7 +89,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "openrouter.keyLimit",
-                "Key Limit",
+                "密钥额度",
                 "keyLimit",
                 false,
                 true,
@@ -103,17 +103,17 @@ pub(crate) fn definition() -> ProviderDefinition {
 
 #[derive(Debug, Error)]
 enum OpenRouterError {
-    #[error("Add an OpenRouter API key in Customize to view usage.")]
+    #[error("请在自定义中添加 OpenRouter API 密钥以查看用量。")]
     MissingKey,
-    #[error("The OpenRouter API key is invalid. Check it at openrouter.ai/keys.")]
+    #[error("OpenRouter API 密钥无效，请在 openrouter.ai/keys 检查。")]
     InvalidKey,
-    #[error("Could not reach OpenRouter. Check your internet connection.")]
+    #[error("无法连接 OpenRouter，请检查网络连接。")]
     ConnectionFailed,
-    #[error("OpenRouter usage data is temporarily unavailable.")]
+    #[error("OpenRouter 用量数据暂时不可用。")]
     InvalidResponse,
-    #[error("OpenRouter request failed (HTTP {0}).")]
+    #[error("OpenRouter 请求失败（HTTP {0}）。")]
     RequestFailed(u16),
-    #[error("The OpenRouter API key could not be read or updated.")]
+    #[error("无法读取或更新 OpenRouter API 密钥。")]
     CredentialStorage,
 }
 
@@ -392,7 +392,7 @@ mod tests {
         )
         .refresh()
         .unwrap();
-        assert_eq!(snapshot.plan.as_deref(), Some("Pay as you go"));
+        assert_eq!(snapshot.plan.as_deref(), Some("按量付费"));
         assert!(snapshot.quotas.iter().any(|quota| quota.id == "credits"));
         assert_eq!(
             snapshot
@@ -433,13 +433,13 @@ mod tests {
             .refresh()
             .unwrap_err();
         assert_eq!(error.kind(), ProviderErrorKind::Authentication);
-        assert!(error.to_string().contains("invalid"));
+        assert!(error.to_string().contains("无效"));
 
         let missing = provider(None, 200, r#"{"data":{}}"#, 200, r#"{"data":{}}"#)
             .refresh()
             .unwrap_err();
         assert_eq!(missing.kind(), ProviderErrorKind::Authentication);
-        assert!(missing.to_string().contains("Add an OpenRouter API key"));
+        assert!(missing.to_string().contains("添加 OpenRouter API 密钥"));
     }
 
     #[test]

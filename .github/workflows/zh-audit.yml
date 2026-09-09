@@ -1,0 +1,40 @@
+name: 中文界面验证
+
+on:
+  push:
+    branches: [zh-CN]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.11.0
+          run_install: false
+      - run: pnpm install --frozen-lockfile
+      - name: 检查代码和类型
+        run: |
+          pnpm lint
+          pnpm check
+      - name: 验证中文界面
+        id: test
+        continue-on-error: true
+        run: pnpm exec vitest run --reporter=json --outputFile=frontend-tests.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-test-results
+          path: frontend-tests.json
+          retention-days: 7
+      - name: 要求所有测试通过
+        if: steps.test.outcome == 'failure'
+        run: exit 1

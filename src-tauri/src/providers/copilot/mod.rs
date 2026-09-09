@@ -37,8 +37,8 @@ pub(crate) fn definition() -> ProviderDefinition {
         fallback_enabled: false,
         local_usage_source_note: None,
         links: vec![
-            ProviderLink::new("Status", "https://www.githubstatus.com/"),
-            ProviderLink::new("Dashboard", "https://github.com/settings/billing"),
+            ProviderLink::new("服务状态", "https://www.githubstatus.com/"),
+            ProviderLink::new("网页面板", "https://github.com/settings/billing"),
         ],
         metrics: vec![
             MetricDefinition::quota(
@@ -53,7 +53,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "copilot.extra",
-                "Extra Usage",
+                "额外用量",
                 "extra",
                 true,
                 MetricSection::AlwaysVisible,
@@ -63,7 +63,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "copilot.orgCredits",
-                "Org Credits",
+                "组织 Credits",
                 "orgCredits",
                 true,
                 MetricSection::OnDemand,
@@ -73,7 +73,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::value(
                 "copilot.orgSpend",
-                "Org Spend",
+                "组织花费",
                 "orgSpend",
                 true,
                 MetricSection::OnDemand,
@@ -83,7 +83,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "copilot.chat",
-                "Chat",
+                "对话",
                 "chat",
                 false,
                 true,
@@ -93,7 +93,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "copilot.completions",
-                "Completions",
+                "补全",
                 "completions",
                 false,
                 true,
@@ -107,17 +107,17 @@ pub(crate) fn definition() -> ProviderDefinition {
 
 #[derive(Debug, Error, PartialEq, Eq)]
 pub(super) enum CopilotError {
-    #[error("Sign in to GitHub Copilot in your editor, or run `gh auth login`, and try again.")]
+    #[error("请在编辑器中登录 GitHub Copilot，或运行 `gh auth login`，然后重试。")]
     NotLoggedIn,
-    #[error("Your GitHub token is invalid or expired. Run `gh auth login` and try again.")]
+    #[error("GitHub 令牌无效或已过期。请运行 `gh auth login`，然后重试。")]
     InvalidToken,
-    #[error("Could not reach GitHub. Check your internet connection.")]
+    #[error("无法连接 GitHub，请检查网络连接。")]
     ConnectionFailed,
-    #[error("Copilot usage data is temporarily unavailable.")]
+    #[error("Copilot 用量数据暂时不可用。")]
     InvalidResponse,
-    #[error("Copilot usage request failed (HTTP {0}).")]
+    #[error("Copilot 用量请求失败（HTTP {0}）。")]
     RequestFailed(u16),
-    #[error("Copilot usage data is unavailable for this account.")]
+    #[error("此账号的 Copilot 用量数据不可用。")]
     QuotaUnavailable,
 }
 
@@ -922,8 +922,8 @@ mod tests {
                 .map(|link| (link.label.as_str(), link.url.as_str()))
                 .collect::<Vec<_>>(),
             [
-                ("Status", "https://www.githubstatus.com/"),
-                ("Dashboard", "https://github.com/settings/billing"),
+                ("服务状态", "https://www.githubstatus.com/"),
+                ("网页面板", "https://github.com/settings/billing"),
             ]
         );
     }

@@ -118,16 +118,16 @@ describe('OpenQuota dashboard', () => {
   it('renders quota, total spend, and the 30-day trend from backend data', async () => {
     const { container } = render(App);
     expect(await screen.findByText('Plus')).toBeInTheDocument();
-    expect(screen.getByRole('progressbar', { name: 'Session used' })).toHaveAttribute(
+    expect(screen.getByRole('progressbar', { name: '当前周期 已用' })).toHaveAttribute(
       'aria-valuenow',
       '32',
     );
-    expect(screen.getByRole('progressbar', { name: 'Weekly used' })).toBeInTheDocument();
-    expect(screen.getByRole('region', { name: 'Total Spend' })).toBeInTheDocument();
-    expect(screen.getByRole('region', { name: 'Usage Trend' })).toBeInTheDocument();
+    expect(screen.getByRole('progressbar', { name: '本周额度 已用' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: '总用量' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: '用量趋势' })).toBeInTheDocument();
     expect(container.querySelector('.spend-ring__label')).toHaveAttribute(
       'data-tooltip',
-      '$3.84 · Estimated locally, so it may be off',
+      '$3.84 · 本地估算，可能存在偏差',
     );
     expect(screen.getByText(`OpenQuota ${import.meta.env.APP_VERSION}`)).toBeInTheDocument();
     expect(container.querySelector('.floating-chrome')).not.toBeInTheDocument();
@@ -137,7 +137,7 @@ describe('OpenQuota dashboard', () => {
     render(App);
     await screen.findByText('Plus');
 
-    const pin = screen.getByRole('button', { name: 'Keep Window Open' });
+    const pin = screen.getByRole('button', { name: '保持窗口打开' });
     expect(pin).toHaveAttribute('aria-pressed', 'false');
     await fireEvent.click(pin);
 
@@ -149,12 +149,12 @@ describe('OpenQuota dashboard', () => {
         }),
       ),
     );
-    expect(screen.getByRole('button', { name: 'Return to Tray Popup' })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: '切换为托盘弹窗' })).toHaveAttribute(
       'aria-pressed',
       'true',
     );
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Return to Tray Popup' }));
+    await fireEvent.click(screen.getByRole('button', { name: '切换为托盘弹窗' }));
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith(
         'save_app_settings',
@@ -191,8 +191,8 @@ describe('OpenQuota dashboard', () => {
       await screen.findByText('Plus');
       const dragSurface = container.querySelector<HTMLElement>('.floating-chrome__drag');
       expect(dragSurface).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Hide OpenQuota' })).toBeInTheDocument();
-      expect(screen.getByRole('separator', { name: 'Resize panel height' })).toHaveClass(
+      expect(screen.getByRole('button', { name: '隐藏 OpenQuota' })).toBeInTheDocument();
+      expect(screen.getByRole('separator', { name: '调整面板高度' })).toHaveClass(
         'panel-resize-dragger--bottom',
       );
 
@@ -237,16 +237,16 @@ describe('OpenQuota dashboard', () => {
     try {
       render(App);
       await screen.findByText('Plus');
-      expect(screen.getByRole('separator', { name: 'Resize panel height' })).toHaveClass(
+      expect(screen.getByRole('separator', { name: '调整面板高度' })).toHaveClass(
         'panel-resize-dragger--bottom',
       );
-      await fireEvent.click(screen.getByLabelText('Open options'));
-      await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-      await fireEvent.click(screen.getByRole('combobox', { name: 'Window Mode' }));
-      await fireEvent.click(screen.getByRole('option', { name: 'Tray Popup' }));
+      await fireEvent.click(screen.getByLabelText('打开选项'));
+      await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+      await fireEvent.click(screen.getByRole('combobox', { name: '窗口模式' }));
+      await fireEvent.click(screen.getByRole('option', { name: '托盘弹窗' }));
 
       await waitFor(() =>
-        expect(screen.getByRole('separator', { name: 'Resize panel height' })).toHaveClass(
+        expect(screen.getByRole('separator', { name: '调整面板高度' })).toHaveClass(
           'panel-resize-dragger--top',
         ),
       );
@@ -327,11 +327,11 @@ describe('OpenQuota dashboard', () => {
     render(App);
     expect(await screen.findByRole('heading', { name: 'Claude' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Antigravity' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '$37.50 left' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '剩余 $37.50' })).toBeInTheDocument();
     expect(screen.getAllByRole('progressbar')).toHaveLength(6);
     expect(
-      within(screen.getByRole('region', { name: 'Total Spend' })).getByRole('img', {
-        name: 'Only includes Claude and Codex',
+      within(screen.getByRole('region', { name: '总用量' })).getByRole('img', {
+        name: '仅包含 Claude、Codex',
       }),
     ).toBeInTheDocument();
   });
@@ -384,13 +384,13 @@ describe('OpenQuota dashboard', () => {
     });
 
     render(App);
-    const provider = await screen.findByRole('group', { name: 'Claude provider' });
+    const provider = await screen.findByRole('group', { name: 'Claude 服务商' });
     await fireEvent.contextMenu(provider);
-    await fireEvent.click(screen.getByRole('menuitem', { name: 'Rename…' }));
-    const dialog = screen.getByRole('dialog', { name: 'Rename Card' });
-    const input = within(dialog).getByRole('textbox', { name: 'Name' });
+    await fireEvent.click(screen.getByRole('menuitem', { name: '重命名…' }));
+    const dialog = screen.getByRole('dialog', { name: '重命名卡片' });
+    const input = within(dialog).getByRole('textbox', { name: '名称' });
     await fireEvent.input(input, { target: { value: 'Personal' } });
-    await fireEvent.click(within(dialog).getByRole('button', { name: 'Rename' }));
+    await fireEvent.click(within(dialog).getByRole('button', { name: '重命名' }));
 
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith('save_app_settings', {
@@ -401,7 +401,7 @@ describe('OpenQuota dashboard', () => {
     );
     expect(await screen.findByRole('heading', { name: 'Personal' })).toBeInTheDocument();
     await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'Move Personal' })).toHaveFocus(),
+      expect(screen.getByRole('button', { name: '移动 Personal' })).toHaveFocus(),
     );
     const savesAfterRename = mocks.invoke.mock.calls.filter(
       ([command]) => command === 'save_app_settings',
@@ -472,14 +472,14 @@ describe('OpenQuota dashboard', () => {
     }, extraCatalog);
 
     render(App);
-    const provider = await screen.findByRole('group', { name: 'Claude — Work provider' });
+    const provider = await screen.findByRole('group', { name: 'Claude — Work 服务商' });
     await fireEvent.contextMenu(provider);
-    await fireEvent.click(screen.getByRole('menuitem', { name: 'Rename…' }));
-    const dialog = screen.getByRole('dialog', { name: 'Rename Card' });
-    await fireEvent.input(within(dialog).getByRole('textbox', { name: 'Name' }), {
+    await fireEvent.click(screen.getByRole('menuitem', { name: '重命名…' }));
+    const dialog = screen.getByRole('dialog', { name: '重命名卡片' });
+    await fireEvent.input(within(dialog).getByRole('textbox', { name: '名称' }), {
       target: { value: 'Client' },
     });
-    await fireEvent.click(within(dialog).getByRole('button', { name: 'Rename' }));
+    await fireEvent.click(within(dialog).getByRole('button', { name: '重命名' }));
 
     expect(await screen.findByRole('heading', { name: 'Client' })).toBeInTheDocument();
     expect(mocks.invoke).toHaveBeenCalledWith('save_app_settings', {
@@ -489,12 +489,12 @@ describe('OpenQuota dashboard', () => {
     });
   });
 
-  it('persists Total Spend metric and period choices', async () => {
+  it('persists 总用量 metric and period choices', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByRole('combobox', { name: 'Total Spend Metric' }));
-    await fireEvent.click(screen.getByRole('option', { name: 'Tokens' }));
-    await fireEvent.click(screen.getByRole('button', { name: '30 Days' }));
+    await fireEvent.click(screen.getByRole('combobox', { name: '总用量统计指标' }));
+    await fireEvent.click(screen.getByRole('option', { name: 'Token' }));
+    await fireEvent.click(screen.getByRole('button', { name: '近 30 天' }));
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith(
         'save_app_settings',
@@ -536,29 +536,29 @@ describe('OpenQuota dashboard', () => {
       return Promise.resolve(liveState);
     });
     render(App);
-    const totalSpend = await screen.findByRole('region', { name: 'Total Spend' });
-    expect(within(totalSpend).getByText('No cost data for this period')).toBeInTheDocument();
-    await fireEvent.click(within(totalSpend).getByRole('combobox', { name: 'Total Spend Metric' }));
-    await fireEvent.click(screen.getByRole('option', { name: 'Tokens' }));
+    const totalSpend = await screen.findByRole('region', { name: '总用量' });
+    expect(within(totalSpend).getByText('此时段暂无费用数据')).toBeInTheDocument();
+    await fireEvent.click(within(totalSpend).getByRole('combobox', { name: '总用量统计指标' }));
+    await fireEvent.click(screen.getByRole('option', { name: 'Token' }));
     expect(within(totalSpend).getByText('Codex')).toBeInTheDocument();
     expect(within(totalSpend).getByText('2.1')).toBeInTheDocument();
-    expect(within(totalSpend).getByText('million')).toBeInTheDocument();
+    expect(within(totalSpend).getByText('百万 Token')).toBeInTheDocument();
     expect(within(totalSpend).getByText('2.1M')).toBeInTheDocument();
-    expect(within(totalSpend).queryByText('No data')).not.toBeInTheDocument();
+    expect(within(totalSpend).queryByText('暂无数据')).not.toBeInTheDocument();
   });
 
-  it('reveals On Demand metrics without losing their saved order', async () => {
+  it('reveals 按需显示的指标 without losing their saved order', async () => {
     render(App);
     await screen.findByText('Plus');
-    expect(screen.queryByText('$3.84 · 2.1M tokens')).not.toBeInTheDocument();
-    await fireEvent.click(screen.getByRole('button', { name: 'Show more' }));
-    expect(screen.getByText('$3.84 · 2.1M tokens')).toBeInTheDocument();
+    expect(screen.queryByText('$3.84 · 2.1M Token')).not.toBeInTheDocument();
+    await fireEvent.click(screen.getByRole('button', { name: '展开' }));
+    expect(screen.getByText('$3.84 · 2.1M Token')).toBeInTheDocument();
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith('save_app_settings', expect.any(Object)),
     );
   });
 
-  it('keeps neighboring provider values mounted while Codex On Demand morphs', async () => {
+  it('keeps neighboring provider values mounted while Codex 按需显示 morphs', async () => {
     const multiUsage: UsageViewState = {
       providers: { claude: claudeState, codex: codexState },
     };
@@ -592,14 +592,14 @@ describe('OpenQuota dashboard', () => {
     });
 
     render(App);
-    const claude = await screen.findByRole('group', { name: 'Claude provider' });
-    const codex = screen.getByRole('group', { name: 'Codex provider' });
-    const claudeReading = within(claude).getByText('80% left');
+    const claude = await screen.findByRole('group', { name: 'Claude 服务商' });
+    const codex = screen.getByRole('group', { name: 'Codex 服务商' });
+    const claudeReading = within(claude).getByText('剩余 80%');
 
-    await fireEvent.click(within(codex).getByRole('button', { name: 'Show more' }));
+    await fireEvent.click(within(codex).getByRole('button', { name: '展开' }));
 
     expect(claudeReading.isConnected).toBe(true);
-    expect(within(claude).getByText('80% left')).toBe(claudeReading);
+    expect(within(claude).getByText('剩余 80%')).toBe(claudeReading);
     expect(claude.closest('.provider-reorder-shell')).toHaveClass(
       'provider-reorder-shell--content-morph',
     );
@@ -611,10 +611,10 @@ describe('OpenQuota dashboard', () => {
     }
   });
 
-  it('uses the compact caret instead of a labeled On Demand divider', async () => {
+  it('uses the compact caret instead of a labeled 按需显示 divider', async () => {
     render(App);
-    const toggle = await screen.findByRole('button', { name: 'Show more' });
-    const providerHeader = screen.getByRole('group', { name: 'Drag Codex to reorder' });
+    const toggle = await screen.findByRole('button', { name: '展开' });
+    const providerHeader = screen.getByRole('group', { name: '拖动 Codex 调整顺序' });
     expect(providerHeader).toHaveAttribute('data-reorder-handle');
     expect(providerHeader.closest('.provider-section')).toHaveAttribute(
       'data-reorder-group',
@@ -622,19 +622,16 @@ describe('OpenQuota dashboard', () => {
     );
     expect(providerHeader).not.toHaveAttribute('draggable');
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    expect(toggle).not.toHaveTextContent('On Demand');
-    expect(screen.queryByRole('button', { name: 'Status, opens in browser' })).toBeNull();
+    expect(toggle).not.toHaveTextContent('按需显示');
+    expect(screen.queryByRole('button', { name: '服务状态，在浏览器中打开' })).toBeNull();
     await fireEvent.click(toggle);
-    expect(screen.getByRole('button', { name: 'Show less' })).toHaveAttribute(
-      'aria-expanded',
-      'true',
-    );
-    await fireEvent.click(screen.getByRole('button', { name: 'Status, opens in browser' }));
+    expect(screen.getByRole('button', { name: '收起' })).toHaveAttribute('aria-expanded', 'true');
+    await fireEvent.click(screen.getByRole('button', { name: '服务状态，在浏览器中打开' }));
     expect(mocks.invoke).toHaveBeenCalledWith('open_provider_link', {
       providerId: 'codex',
       linkIndex: 0,
     });
-    expect(screen.getByRole('button', { name: 'Dashboard, opens in browser' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '网页面板，在浏览器中打开' })).toBeInTheDocument();
   });
 
   it('keeps the expander for a provider whose only expanded content is quick links', async () => {
@@ -655,18 +652,18 @@ describe('OpenQuota dashboard', () => {
     });
 
     render(App);
-    const toggle = await screen.findByRole('button', { name: 'Show more' });
-    expect(screen.queryByRole('button', { name: 'Status, opens in browser' })).toBeNull();
+    const toggle = await screen.findByRole('button', { name: '展开' });
+    expect(screen.queryByRole('button', { name: '服务状态，在浏览器中打开' })).toBeNull();
 
     await fireEvent.click(toggle);
 
-    expect(screen.getByRole('button', { name: 'Status, opens in browser' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Dashboard, opens in browser' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '服务状态，在浏览器中打开' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '网页面板，在浏览器中打开' })).toBeInTheDocument();
   });
 
-  it('renders the Total Spend ring as separated rounded SVG sectors', async () => {
+  it('renders the 总用量 ring as separated rounded SVG sectors', async () => {
     render(App);
-    expect(await screen.findByRole('region', { name: 'Total Spend' })).toBeInTheDocument();
+    expect(await screen.findByRole('region', { name: '总用量' })).toBeInTheDocument();
     await waitFor(() => expect(document.querySelector('.spend-ring svg')).not.toBeNull());
     const segment = document.querySelector('.spend-ring__segment');
     expect(segment?.tagName).toBe('path');
@@ -678,21 +675,21 @@ describe('OpenQuota dashboard', () => {
   it('opens Customize and exposes the two-section metric layout', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Customize' }));
-    expect(screen.getByRole('heading', { name: 'Customize' })).toBeInTheDocument();
-    await fireEvent.click(screen.getByRole('button', { name: 'Customize codex' }));
-    expect(screen.getByRole('group', { name: 'Always Visible metrics' })).toBeInTheDocument();
-    expect(screen.getByRole('group', { name: 'On Demand metrics' })).toBeInTheDocument();
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '自定义' }));
+    expect(screen.getByRole('heading', { name: '自定义' })).toBeInTheDocument();
+    await fireEvent.click(screen.getByRole('button', { name: '自定义 codex' }));
+    expect(screen.getByRole('group', { name: '始终显示的指标' })).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: '按需显示的指标' })).toBeInTheDocument();
   });
 
   it('resets one provider through the backend metric catalog', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Customize' }));
-    await fireEvent.click(screen.getByRole('button', { name: 'Customize codex' }));
-    await fireEvent.click(screen.getByRole('button', { name: 'Reset Codex' }));
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '自定义' }));
+    await fireEvent.click(screen.getByRole('button', { name: '自定义 codex' }));
+    await fireEvent.click(screen.getByRole('button', { name: '重置Codex' }));
 
     expect(mocks.invoke).toHaveBeenCalledWith('reset_provider_customization', {
       providerId: 'codex',
@@ -704,17 +701,17 @@ describe('OpenQuota dashboard', () => {
   it('enforces the two-pinned-metrics limit in Customize', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Customize' }));
-    await fireEvent.click(screen.getByRole('button', { name: 'Customize codex' }));
-    await fireEvent.click(screen.getByRole('button', { name: 'Pin Today' }));
-    expect(screen.getByText('Up to 2 stars per provider')).toBeInTheDocument();
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '自定义' }));
+    await fireEvent.click(screen.getByRole('button', { name: '自定义 codex' }));
+    await fireEvent.click(screen.getByRole('button', { name: '置顶 今天' }));
+    expect(screen.getByText('每个服务商最多置顶 2 项')).toBeInTheDocument();
   });
 
   it('persists Used/Left changes made directly from a quota row', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByRole('button', { name: '68% left' }));
+    await fireEvent.click(screen.getByRole('button', { name: '剩余 68%' }));
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith(
         'save_app_settings',
@@ -726,12 +723,12 @@ describe('OpenQuota dashboard', () => {
   it('persists compact density from Settings', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    await fireEvent.click(screen.getByRole('combobox', { name: 'Density' }));
-    await fireEvent.click(screen.getByRole('option', { name: 'Compact' }));
-    await fireEvent.click(screen.getByRole('combobox', { name: 'Time Format' }));
-    await fireEvent.click(screen.getByRole('option', { name: '24-hour' }));
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+    await fireEvent.click(screen.getByRole('combobox', { name: '界面密度' }));
+    await fireEvent.click(screen.getByRole('option', { name: '紧凑' }));
+    await fireEvent.click(screen.getByRole('combobox', { name: '时间格式' }));
+    await fireEvent.click(screen.getByRole('option', { name: '24 小时制' }));
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith(
         'save_app_settings',
@@ -756,10 +753,10 @@ describe('OpenQuota dashboard', () => {
     });
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    await fireEvent.click(screen.getByRole('combobox', { name: 'Log Level' }));
-    await fireEvent.click(screen.getByRole('option', { name: 'Debug' }));
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+    await fireEvent.click(screen.getByRole('combobox', { name: '日志级别' }));
+    await fireEvent.click(screen.getByRole('option', { name: '调试' }));
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith(
         'save_app_settings',
@@ -767,23 +764,23 @@ describe('OpenQuota dashboard', () => {
       ),
     );
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Copy Log Path' }));
+    await fireEvent.click(screen.getByRole('button', { name: '复制日志路径' }));
     await waitFor(() =>
       expect(writeText).toHaveBeenCalledWith('C:\\OpenQuota\\logs\\OpenQuota.log'),
     );
     expect(mocks.invoke).toHaveBeenCalledWith('get_log_path');
-    expect(screen.getByRole('status')).toHaveTextContent('Log path copied');
+    expect(screen.getByRole('status')).toHaveTextContent('已复制日志路径');
 
     const headings = screen
       .getAllByRole('heading', { level: 2 })
       .map((heading) => heading.textContent?.trim());
-    expect(headings.indexOf('Advanced')).toBeLessThan(headings.indexOf('Updates'));
+    expect(headings.indexOf('高级')).toBeLessThan(headings.indexOf('更新'));
     expect(headings).not.toContain('Data');
     expect(screen.queryByText('Application Data')).not.toBeInTheDocument();
 
     await fireEvent.click(
       screen.getByRole('button', {
-        name: /Reveal in Finder|Reveal in File Explorer|Open Containing Folder/,
+        name: /在访达中显示|在文件资源管理器中显示|打开所在文件夹/,
       }),
     );
     expect(mocks.invoke).toHaveBeenCalledWith('open_log_folder');
@@ -796,15 +793,13 @@ describe('OpenQuota dashboard', () => {
     });
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
 
     mocks.invoke.mockRejectedValueOnce(new Error('log path unavailable'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Copy Log Path' }));
+    await fireEvent.click(screen.getByRole('button', { name: '复制日志路径' }));
 
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      "Couldn't copy the log path to the clipboard.",
-    );
+    expect(await screen.findByRole('alert')).toHaveTextContent('无法将日志路径复制到剪贴板。');
   });
 
   it('shows the detected Linux fallback mode in Settings', async () => {
@@ -814,7 +809,7 @@ describe('OpenQuota dashboard', () => {
         return Promise.resolve({
           ...settingsState,
           trayAvailable: false,
-          platformSummary: 'GNOME · Wayland · standalone window',
+          platformSummary: 'GNOME · Wayland · 独立窗口',
         });
       if (command === 'check_for_updates')
         return Promise.resolve({
@@ -829,21 +824,21 @@ describe('OpenQuota dashboard', () => {
     });
     render(App);
     await screen.findByText('Plus');
-    expect(screen.getByRole('button', { name: 'Close OpenQuota' })).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Keep Window Open' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Return to Tray Popup' })).not.toBeInTheDocument();
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    expect(screen.getByText('GNOME · Wayland · standalone window')).toBeInTheDocument();
-    expect(screen.queryByRole('combobox', { name: 'Window Mode' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '关闭 OpenQuota' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '保持窗口打开' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '切换为托盘弹窗' })).not.toBeInTheDocument();
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+    expect(screen.getByText('GNOME · Wayland · 独立窗口')).toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: '窗口模式' })).not.toBeInTheDocument();
   });
 
   it('records a global shortcut and requests notification permission', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    const recorder = screen.getByRole('button', { name: 'Record Shortcut' });
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+    const recorder = screen.getByRole('button', { name: '录入快捷键' });
     await fireEvent.click(recorder);
     expect(recorder).toHaveAttribute('aria-pressed', 'true');
     await fireEvent.blur(recorder);
@@ -853,7 +848,7 @@ describe('OpenQuota dashboard', () => {
     expect(recorder).toHaveAttribute('aria-pressed', 'false');
     await fireEvent.click(recorder);
     await fireEvent.keyDown(recorder, { key: 'Q', code: 'KeyQ', ctrlKey: true, shiftKey: true });
-    await fireEvent.click(screen.getByRole('checkbox', { name: /Almost Out/ }));
+    await fireEvent.click(screen.getByRole('checkbox', { name: /额度即将用尽/ }));
     await waitFor(() => {
       expect(mocks.invoke).toHaveBeenCalledWith(
         'save_app_settings',
@@ -863,37 +858,35 @@ describe('OpenQuota dashboard', () => {
       );
       expect(mocks.invoke).toHaveBeenCalledWith('request_notification_permission');
     });
-    expect(screen.getByRole('checkbox', { name: /Almost Out/ })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /额度即将用尽/ })).toBeChecked();
   });
 
   it('confirms a full settings reset without deleting credentials or usage data', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    const trigger = screen.getByRole('button', { name: 'Reset All Settings…' });
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+    const trigger = screen.getByRole('button', { name: '重置所有设置…' });
     trigger.focus();
     await fireEvent.click(trigger);
 
-    const dialog = screen.getByRole('alertdialog', { name: 'Reset All Settings?' });
-    expect(dialog).toHaveTextContent(
-      'Provider sign-ins, API keys, and usage history stay in place.',
-    );
+    const dialog = screen.getByRole('alertdialog', { name: '重置所有设置？' });
+    expect(dialog).toHaveTextContent('登录状态、API 密钥及用量历史将保留。');
     expect(mocks.invoke).not.toHaveBeenCalledWith('reset_all_settings', expect.anything());
-    const cancel = screen.getByRole('button', { name: 'Cancel' });
+    const cancel = screen.getByRole('button', { name: '取消' });
     await waitFor(() => expect(cancel).toHaveFocus());
     await fireEvent.click(cancel);
     await waitFor(() => expect(trigger).toHaveFocus());
 
     await fireEvent.click(trigger);
-    await fireEvent.click(screen.getByRole('button', { name: 'Reset All' }));
+    await fireEvent.click(screen.getByRole('button', { name: '全部重置' }));
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith('reset_all_settings', {
         expectedSettingsRevision: 0,
         expectedAccountRevision: 0,
       }),
     );
-    expect(await screen.findByRole('status')).toHaveTextContent('All settings restored');
+    expect(await screen.findByRole('status')).toHaveTextContent('已恢复所有设置');
   });
 
   it('keeps the reset panel mode when an older mode read finishes late', async () => {
@@ -922,20 +915,20 @@ describe('OpenQuota dashboard', () => {
     try {
       render(App);
       await screen.findByText('Plus');
-      await fireEvent.click(screen.getByLabelText('Open options'));
-      await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-      await fireEvent.click(screen.getByRole('button', { name: 'Reset All Settings…' }));
-      await fireEvent.click(screen.getByRole('button', { name: 'Reset All' }));
+      await fireEvent.click(screen.getByLabelText('打开选项'));
+      await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+      await fireEvent.click(screen.getByRole('button', { name: '重置所有设置…' }));
+      await fireEvent.click(screen.getByRole('button', { name: '全部重置' }));
       await waitFor(() =>
         expect(mocks.invoke).toHaveBeenCalledWith('reset_all_settings', {
           expectedSettingsRevision: 0,
           expectedAccountRevision: 0,
         }),
       );
-      await screen.findByText('All settings restored');
+      await screen.findByText('已恢复所有设置');
       resolvePanelMode?.('manual');
       await Promise.resolve();
-      expect(screen.getByRole('combobox', { name: 'Panel Height' })).toHaveTextContent('Automatic');
+      expect(screen.getByRole('combobox', { name: '面板高度' })).toHaveTextContent('自动');
       await waitFor(() =>
         expect(
           mocks.invoke.mock.calls.filter(([command]) => command === 'get_panel_resize_edge').length,
@@ -970,10 +963,10 @@ describe('OpenQuota dashboard', () => {
 
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    expect(screen.getByText('Notifications are blocked')).toBeInTheDocument();
-    await fireEvent.click(screen.getByRole('button', { name: 'Open Settings' }));
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+    expect(screen.getByText('通知已被禁止')).toBeInTheDocument();
+    await fireEvent.click(screen.getByRole('button', { name: '打开设置' }));
     expect(mocks.invoke).toHaveBeenCalledWith('open_notification_settings');
   });
 
@@ -1000,21 +993,19 @@ describe('OpenQuota dashboard', () => {
     const outdated = screen.getByText((_, element) =>
       Boolean(element?.classList.contains('status-badge')),
     );
-    expect(outdated).toHaveAttribute('data-tooltip', expect.stringMatching(/^Last updated/));
-    expect(outdated).toHaveTextContent(/^Outdated\. Last updated/);
-    const retry = screen.getByRole('button', { name: 'Retry Codex' });
+    expect(outdated).toHaveAttribute('data-tooltip', expect.stringMatching(/更新$/));
+    expect(outdated).toHaveTextContent(/^数据已过期。.*更新$/);
+    const retry = screen.getByRole('button', { name: '重试 Codex' });
     retry.focus();
     await fireEvent.click(retry);
     expect(mocks.invoke).toHaveBeenCalledWith('refresh_provider_usage', { providerId: 'codex' });
-    await waitFor(() =>
-      expect(screen.getByRole('group', { name: 'Codex provider' })).toHaveFocus(),
-    );
+    await waitFor(() => expect(screen.getByRole('group', { name: 'Codex 服务商' })).toHaveFocus());
   });
 
   it('supports manual refresh and popup close shortcuts', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByRole('button', { name: 'Refresh all provider usage' }));
+    await fireEvent.click(screen.getByRole('button', { name: '刷新所有服务商用量' }));
     await waitFor(() => expect(mocks.invoke).toHaveBeenCalledWith('refresh_usage'));
     await fireEvent.keyDown(document, { key: 'Escape' });
     expect(mocks.invoke).toHaveBeenCalledWith('dismiss_main_window');
@@ -1023,25 +1014,23 @@ describe('OpenQuota dashboard', () => {
   it('lets reset details consume Escape before the popup shortcut', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByRole('button', { name: 'Show more' }));
-    await fireEvent.click(screen.getByRole('button', { name: 'Rate Limit Resets: 2 available' }));
-    await fireEvent.click(screen.getAllByRole('button', { name: /Use reset expiring/ })[0]);
+    await fireEvent.click(screen.getByRole('button', { name: '展开' }));
+    await fireEvent.click(screen.getByRole('button', { name: '额度重置次数: 2 可用' }));
+    await fireEvent.click(screen.getAllByRole('button', { name: /使用将于.*到期的重置次数/ })[0]);
 
-    const cancel = screen.getByRole('button', { name: 'Cancel' });
+    const cancel = screen.getByRole('button', { name: '取消' });
     await waitFor(() => expect(cancel).toHaveFocus());
     await fireEvent.keyDown(cancel, { key: 'Escape' });
 
-    expect(screen.queryByText('Use this reset?')).not.toBeInTheDocument();
-    const dialog = screen.getByRole('dialog', { name: 'Rate Limit Resets details' });
+    expect(screen.queryByText('使用这次额度重置？')).not.toBeInTheDocument();
+    const dialog = screen.getByRole('dialog', { name: '额度重置次数 详情' });
     expect(dialog).toBeVisible();
-    const restoredUse = screen.getAllByRole('button', { name: /Use reset expiring/ })[0];
+    const restoredUse = screen.getAllByRole('button', { name: /使用将于.*到期的重置次数/ })[0];
     await waitFor(() => expect(restoredUse).toHaveFocus());
     expect(mocks.invoke).not.toHaveBeenCalledWith('dismiss_main_window');
 
     await fireEvent.keyDown(restoredUse, { key: 'Escape' });
-    expect(
-      screen.queryByRole('dialog', { name: 'Rate Limit Resets details' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog', { name: '额度重置次数 详情' })).not.toBeInTheDocument();
     expect(mocks.invoke).not.toHaveBeenCalledWith('dismiss_main_window');
   });
 
@@ -1084,26 +1073,24 @@ describe('OpenQuota dashboard', () => {
     });
 
     render(App);
-    await screen.findByRole('group', { name: 'Claude provider' });
-    const codex = screen.getByRole('group', { name: 'Codex provider' });
-    const claude = screen.getByRole('group', { name: 'Claude provider' });
-    expect(screen.getByText('Next update in 1m')).toBeInTheDocument();
+    await screen.findByRole('group', { name: 'Claude 服务商' });
+    const codex = screen.getByRole('group', { name: 'Codex 服务商' });
+    const claude = screen.getByRole('group', { name: 'Claude 服务商' });
+    expect(screen.getByText('1 分钟后刷新')).toBeInTheDocument();
     await fireEvent.contextMenu(codex, {
       clientX: 120,
       clientY: 180,
     });
-    await fireEvent.click(await screen.findByRole('menuitem', { name: 'Refresh Codex' }));
+    await fireEvent.click(await screen.findByRole('menuitem', { name: '刷新 Codex' }));
 
     expect(mocks.invoke).toHaveBeenCalledWith('refresh_provider_usage', { providerId: 'codex' });
-    expect(within(codex).getByLabelText('Refreshing')).toBeInTheDocument();
-    expect(within(claude).queryByLabelText('Refreshing')).not.toBeInTheDocument();
-    expect(screen.getByText('Updating…')).toBeInTheDocument();
+    expect(within(codex).getByLabelText('正在刷新')).toBeInTheDocument();
+    expect(within(claude).queryByLabelText('正在刷新')).not.toBeInTheDocument();
+    expect(screen.getByText('正在更新…')).toBeInTheDocument();
 
     finishRefresh?.(multiProviderState);
-    await waitFor(() =>
-      expect(within(codex).queryByLabelText('Refreshing')).not.toBeInTheDocument(),
-    );
-    expect(screen.getByText('Next update in 1m')).toBeInTheDocument();
+    await waitFor(() => expect(within(codex).queryByLabelText('正在刷新')).not.toBeInTheDocument());
+    expect(screen.getByText('1 分钟后刷新')).toBeInTheDocument();
   });
 
   it('keeps the full-refresh schedule when a provider refresh fails to start', async () => {
@@ -1119,14 +1106,14 @@ describe('OpenQuota dashboard', () => {
     });
 
     render(App);
-    const provider = await screen.findByRole('group', { name: 'Codex provider' });
-    expect(screen.getByText('Next update in 1m')).toBeInTheDocument();
+    const provider = await screen.findByRole('group', { name: 'Codex 服务商' });
+    expect(screen.getByText('1 分钟后刷新')).toBeInTheDocument();
     await fireEvent.contextMenu(provider, { clientX: 120, clientY: 180 });
-    await fireEvent.click(await screen.findByRole('menuitem', { name: 'Refresh Codex' }));
+    await fireEvent.click(await screen.findByRole('menuitem', { name: '刷新 Codex' }));
 
-    expect(await screen.findByText('Codex usage could not be refreshed.')).toBeInTheDocument();
-    expect(within(provider).queryByLabelText('Refreshing')).not.toBeInTheDocument();
-    expect(screen.getByText('Next update in 1m')).toBeInTheDocument();
+    expect(await screen.findByText('无法刷新 Codex 的用量。')).toBeInTheDocument();
+    expect(within(provider).queryByLabelText('正在刷新')).not.toBeInTheDocument();
+    expect(screen.getByText('1 分钟后刷新')).toBeInTheDocument();
   });
 
   it('keeps the Claude card structure stable while optional quota data refreshes', async () => {
@@ -1178,28 +1165,28 @@ describe('OpenQuota dashboard', () => {
     });
 
     render(App);
-    const provider = await screen.findByRole('group', { name: 'Claude provider' });
-    const card = within(provider).getByRole('region', { name: 'Claude usage' });
-    const extraRow = within(provider).getByRole('group', { name: 'Extra Usage options' });
-    expect(within(extraRow).getByText('No data')).toBeInTheDocument();
+    const provider = await screen.findByRole('group', { name: 'Claude 服务商' });
+    const card = within(provider).getByRole('region', { name: 'Claude 用量' });
+    const extraRow = within(provider).getByRole('group', { name: '额外用量 选项' });
+    expect(within(extraRow).getByText('暂无数据')).toBeInTheDocument();
     const statusSlot = provider.querySelector('.provider-status-slot');
     expect(statusSlot).toBeInTheDocument();
     expect(statusSlot).not.toHaveClass('active');
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Refresh all provider usage' }));
-    expect(await within(provider).findByLabelText('Refreshing')).toBeInTheDocument();
+    await fireEvent.click(screen.getByRole('button', { name: '刷新所有服务商用量' }));
+    expect(await within(provider).findByLabelText('正在刷新')).toBeInTheDocument();
     expect(statusSlot).toHaveClass('active');
-    expect(within(provider).getByRole('region', { name: 'Claude usage' })).toBe(card);
-    expect(within(provider).getByRole('group', { name: 'Extra Usage options' })).toBe(extraRow);
+    expect(within(provider).getByRole('region', { name: 'Claude 用量' })).toBe(card);
+    expect(within(provider).getByRole('group', { name: '额外用量 选项' })).toBe(extraRow);
 
     finishRefresh?.(refreshedState);
-    await waitFor(() => expect(within(extraRow).queryByText('No data')).not.toBeInTheDocument());
-    expect(within(provider).getByRole('region', { name: 'Claude usage' })).toBe(card);
-    expect(within(provider).getByRole('group', { name: 'Extra Usage options' })).toBe(extraRow);
+    await waitFor(() => expect(within(extraRow).queryByText('暂无数据')).not.toBeInTheDocument());
+    expect(within(provider).getByRole('region', { name: 'Claude 用量' })).toBe(card);
+    expect(within(provider).getByRole('group', { name: '额外用量 选项' })).toBe(extraRow);
     expect(statusSlot).not.toHaveClass('active');
   });
 
-  it('keeps provider chrome and card alignment while initial Claude usage is loading', async () => {
+  it('keeps provider chrome and card alignment while initial Claude 用量 is loading', async () => {
     const pendingClaude: ProviderViewState = {
       source: 'none',
       refreshing: true,
@@ -1246,25 +1233,25 @@ describe('OpenQuota dashboard', () => {
     });
 
     render(App);
-    const provider = await screen.findByRole('group', { name: 'Claude provider' });
-    const card = within(provider).getByRole('region', { name: 'Claude usage' });
+    const provider = await screen.findByRole('group', { name: 'Claude 服务商' });
+    const card = within(provider).getByRole('region', { name: 'Claude 用量' });
 
     expect(within(provider).getByRole('heading', { name: 'Claude' })).toBeInTheDocument();
-    expect(within(provider).getByLabelText('Refreshing')).toBeInTheDocument();
+    expect(within(provider).getByLabelText('正在刷新')).toBeInTheDocument();
     expect(card).toHaveClass('provider-card');
     expect(card).toHaveAttribute('aria-busy', 'true');
-    const session = within(card).getByRole('group', { name: 'Session options' });
-    const weekly = within(card).getByRole('group', { name: 'Weekly options' });
-    expect(within(session).getByText('No data')).toBeInTheDocument();
-    expect(within(weekly).getByText('No data')).toBeInTheDocument();
-    expect(within(card).queryByText('Reading Claude usage…')).toBeNull();
-    const toggle = within(card).getByRole('button', { name: 'Show more' });
-    expect(within(card).queryByRole('button', { name: 'Status, opens in browser' })).toBeNull();
+    const session = within(card).getByRole('group', { name: '当前周期 选项' });
+    const weekly = within(card).getByRole('group', { name: '本周额度 选项' });
+    expect(within(session).getByText('暂无数据')).toBeInTheDocument();
+    expect(within(weekly).getByText('暂无数据')).toBeInTheDocument();
+    expect(within(card).queryByText('Reading Claude 用量…')).toBeNull();
+    const toggle = within(card).getByRole('button', { name: '展开' });
+    expect(within(card).queryByRole('button', { name: '服务状态，在浏览器中打开' })).toBeNull();
 
     await fireEvent.click(toggle);
 
     expect(
-      within(card).getByRole('button', { name: 'Status, opens in browser' }),
+      within(card).getByRole('button', { name: '服务状态，在浏览器中打开' }),
     ).toBeInTheDocument();
   });
 
@@ -1276,16 +1263,16 @@ describe('OpenQuota dashboard', () => {
     });
 
     render(App);
-    const provider = await screen.findByRole('group', { name: 'Codex provider' });
-    const card = within(provider).getByRole('region', { name: 'Codex usage' });
+    const provider = await screen.findByRole('group', { name: 'Codex 服务商' });
+    const card = within(provider).getByRole('region', { name: 'Codex 用量' });
 
-    expect(within(provider).queryByLabelText('Refreshing')).toBeNull();
+    expect(within(provider).queryByLabelText('正在刷新')).toBeNull();
     expect(card).not.toHaveAttribute('aria-busy');
     expect(
-      within(within(card).getByRole('group', { name: 'Session options' })).getByText('No data'),
+      within(within(card).getByRole('group', { name: '当前周期 选项' })).getByText('暂无数据'),
     ).toBeInTheDocument();
     expect(
-      within(within(card).getByRole('group', { name: 'Weekly options' })).getByText('No data'),
+      within(within(card).getByRole('group', { name: '本周额度 选项' })).getByText('暂无数据'),
     ).toBeInTheDocument();
   });
 
@@ -1307,19 +1294,17 @@ describe('OpenQuota dashboard', () => {
     });
 
     render(App);
-    const provider = await screen.findByRole('group', { name: 'Codex provider' });
-    const card = within(provider).getByRole('region', { name: 'Codex usage' });
+    const provider = await screen.findByRole('group', { name: 'Codex 服务商' });
+    const card = within(provider).getByRole('region', { name: 'Codex 用量' });
 
     expect(within(provider).getByRole('alert')).toHaveTextContent(
       'Sign in to Codex to load usage.',
     );
-    expect(
-      within(provider).queryByRole('button', { name: 'Configure Codex' }),
-    ).not.toBeInTheDocument();
-    expect(within(provider).getByRole('button', { name: 'Retry Codex' })).toBeInTheDocument();
+    expect(within(provider).queryByRole('button', { name: '配置 Codex' })).not.toBeInTheDocument();
+    expect(within(provider).getByRole('button', { name: '重试 Codex' })).toBeInTheDocument();
     expect(provider.querySelector('.provider-status-slot')).toHaveClass('active');
     expect(
-      within(within(card).getByRole('group', { name: 'Session options' })).getByText('No data'),
+      within(within(card).getByRole('group', { name: '当前周期 选项' })).getByText('暂无数据'),
     ).toBeInTheDocument();
   });
 
@@ -1329,7 +1314,7 @@ describe('OpenQuota dashboard', () => {
       source: 'none',
       refreshing: false,
       stale: false,
-      error: 'Add an OpenRouter API key in Customize to view usage.',
+      error: '请在自定义中添加 OpenRouter API 密钥以查看用量。',
       errorKind: 'authentication',
       lastAttemptAt: new Date().toISOString(),
       snapshot: null,
@@ -1364,10 +1349,10 @@ describe('OpenQuota dashboard', () => {
     });
 
     render(App);
-    const provider = await screen.findByRole('group', { name: 'OpenRouter provider' });
-    await fireEvent.click(within(provider).getByRole('button', { name: 'Configure OpenRouter' }));
-    expect(await screen.findByRole('region', { name: 'OpenRouter API Key' })).toBeInTheDocument();
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Back' })).toHaveFocus());
+    const provider = await screen.findByRole('group', { name: 'OpenRouter 服务商' });
+    await fireEvent.click(within(provider).getByRole('button', { name: '配置 OpenRouter' }));
+    expect(await screen.findByRole('region', { name: 'OpenRouter API 密钥' })).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole('button', { name: '返回' })).toHaveFocus());
   });
 
   it('restores stable provider chrome when a refresh request fails to start', async () => {
@@ -1382,23 +1367,23 @@ describe('OpenQuota dashboard', () => {
       return Promise.resolve();
     });
     render(App);
-    const provider = await screen.findByRole('group', { name: 'Codex provider' });
-    const card = within(provider).getByRole('region', { name: 'Codex usage' });
-    expect(screen.getByText('Next update in 1m')).toBeInTheDocument();
-    await fireEvent.click(screen.getByRole('button', { name: 'Refresh all provider usage' }));
+    const provider = await screen.findByRole('group', { name: 'Codex 服务商' });
+    const card = within(provider).getByRole('region', { name: 'Codex 用量' });
+    expect(screen.getByText('1 分钟后刷新')).toBeInTheDocument();
+    await fireEvent.click(screen.getByRole('button', { name: '刷新所有服务商用量' }));
     await waitFor(() =>
-      expect(within(provider).queryByLabelText('Refreshing')).not.toBeInTheDocument(),
+      expect(within(provider).queryByLabelText('正在刷新')).not.toBeInTheDocument(),
     );
-    expect(within(provider).getByRole('region', { name: 'Codex usage' })).toBe(card);
+    expect(within(provider).getByRole('region', { name: 'Codex 用量' })).toBe(card);
     expect(provider.querySelector('.provider-status-slot')).not.toHaveClass('active');
-    expect(screen.getByText('OpenQuota could not start a provider refresh.')).toBeInTheDocument();
-    expect(screen.getByText('Next update in 1m')).toBeInTheDocument();
+    expect(screen.getByText('OpenQuota 无法开始刷新服务商用量。')).toBeInTheDocument();
+    expect(screen.getByText('1 分钟后刷新')).toBeInTheDocument();
   });
 
   it('shows platform-correct Ctrl shortcuts and handles Ctrl+Q', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByText('Options').closest('summary')!);
+    await fireEvent.click(screen.getByText('选项').closest('summary')!);
     expect(screen.getByText('Ctrl+,')).toBeInTheDocument();
     expect(screen.getByText('Ctrl+Q')).toBeInTheDocument();
 
@@ -1409,11 +1394,11 @@ describe('OpenQuota dashboard', () => {
   it('closes the custom Options surface after a command like a native menu', async () => {
     render(App);
     await screen.findByText('Plus');
-    const summary = screen.getByText('Options').closest('summary')!;
+    const summary = screen.getByText('选项').closest('summary')!;
     const menu = summary.closest('details')!;
     await fireEvent.click(summary);
     expect(menu).toHaveAttribute('open');
-    await fireEvent.click(screen.getByRole('button', { name: 'Check for Updates…' }));
+    await fireEvent.click(screen.getByRole('button', { name: '检查更新…' }));
     expect(menu).not.toHaveAttribute('open');
   });
 
@@ -1430,10 +1415,10 @@ describe('OpenQuota dashboard', () => {
 
     render(App);
     await screen.findByText('Plus');
-    const optionsSummary = screen.getByLabelText('Open options');
+    const optionsSummary = screen.getByLabelText('打开选项');
     const optionsMenu = optionsSummary.closest('details')!;
     await fireEvent.click(optionsSummary);
-    const shareSummary = screen.getByText('Share Screenshot').closest('summary')!;
+    const shareSummary = screen.getByText('分享截图').closest('summary')!;
     const shareMenu = shareSummary.closest('details')!;
     await fireEvent.click(shareSummary);
     expect(optionsMenu).toHaveAttribute('open');
@@ -1486,14 +1471,14 @@ describe('OpenQuota dashboard', () => {
       render(App);
       await waitFor(() => expect(document.documentElement).toHaveAttribute('data-reduced-motion'));
       await screen.findByText('Plus');
-      await fireEvent.click(screen.getByLabelText('Open options'));
-      await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
+      await fireEvent.click(screen.getByLabelText('打开选项'));
+      await fireEvent.click(screen.getByRole('button', { name: '设置' }));
       await waitFor(() =>
-        expect(screen.getByRole('combobox', { name: 'Panel Height' })).toHaveTextContent('Manual'),
+        expect(screen.getByRole('combobox', { name: '面板高度' })).toHaveTextContent('手动'),
       );
-      await fireEvent.click(screen.getByLabelText('Back'));
+      await fireEvent.click(screen.getByLabelText('返回'));
       mocks.invoke.mockClear();
-      await fireEvent.click(screen.getByRole('button', { name: 'Show more' }));
+      await fireEvent.click(screen.getByRole('button', { name: '展开' }));
       await new Promise((resolve) => setTimeout(resolve, 20));
       expect(mocks.invoke).not.toHaveBeenCalledWith('fit_panel_to_content', expect.anything());
     } finally {
@@ -1536,9 +1521,9 @@ describe('OpenQuota dashboard', () => {
       render(App);
       await waitFor(() => expect(document.documentElement).toHaveAttribute('data-reduced-motion'));
       await screen.findByText('Plus');
-      await fireEvent.click(screen.getByLabelText('Open options'));
-      await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-      const toggle = screen.getByRole('checkbox', { name: 'Reduce Animations' });
+      await fireEvent.click(screen.getByLabelText('打开选项'));
+      await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+      const toggle = screen.getByRole('checkbox', { name: '减少动画' });
       expect(toggle).toBeChecked();
       await fireEvent.click(toggle);
       await waitFor(() =>
@@ -1586,7 +1571,7 @@ describe('OpenQuota dashboard', () => {
     render(App);
     await screen.findByText('Plus');
     const event = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
-    screen.getByLabelText('OpenQuota usage dashboard').dispatchEvent(event);
+    screen.getByLabelText('OpenQuota 用量概览').dispatchEvent(event);
     expect(event.defaultPrevented).toBe(true);
   });
 
@@ -1597,7 +1582,7 @@ describe('OpenQuota dashboard', () => {
     });
     try {
       render(App);
-      const grip = await screen.findByRole('separator', { name: 'Resize panel height' });
+      const grip = await screen.findByRole('separator', { name: '调整面板高度' });
       await waitFor(() => expect(grip).toHaveClass('panel-resize-dragger--bottom'));
 
       await fireEvent.pointerDown(grip, { button: 0 });
@@ -1636,11 +1621,11 @@ describe('OpenQuota dashboard', () => {
     try {
       render(App);
       await screen.findByText('Plus');
-      await fireEvent.click(screen.getByLabelText('Open options'));
-      await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-      const windowMode = screen.getByRole('combobox', { name: 'Window Mode' });
+      await fireEvent.click(screen.getByLabelText('打开选项'));
+      await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+      const windowMode = screen.getByRole('combobox', { name: '窗口模式' });
       await fireEvent.click(windowMode);
-      await fireEvent.click(screen.getByRole('option', { name: 'Floating Window' }));
+      await fireEvent.click(screen.getByRole('option', { name: '悬浮窗口' }));
       await waitFor(() =>
         expect(mocks.invoke).toHaveBeenCalledWith(
           'save_app_settings',
@@ -1650,21 +1635,21 @@ describe('OpenQuota dashboard', () => {
         ),
       );
 
-      const heightMode = screen.getByRole('combobox', { name: 'Panel Height' });
-      await waitFor(() => expect(heightMode).toHaveTextContent('Manual'));
+      const heightMode = screen.getByRole('combobox', { name: '面板高度' });
+      await waitFor(() => expect(heightMode).toHaveTextContent('手动'));
 
       await fireEvent.click(heightMode);
-      await fireEvent.click(screen.getByRole('option', { name: 'Automatic' }));
+      await fireEvent.click(screen.getByRole('option', { name: '自动' }));
       expect(mocks.invoke).toHaveBeenCalledWith('set_panel_height_automatic');
-      await waitFor(() => expect(heightMode).toHaveTextContent('Automatic'));
+      await waitFor(() => expect(heightMode).toHaveTextContent('自动'));
 
       await fireEvent.click(heightMode);
-      await fireEvent.click(screen.getByRole('option', { name: 'Manual' }));
+      await fireEvent.click(screen.getByRole('option', { name: '手动' }));
       expect(mocks.invoke).toHaveBeenCalledWith('set_panel_height_manual');
-      await waitFor(() => expect(heightMode).toHaveTextContent('Manual'));
+      await waitFor(() => expect(heightMode).toHaveTextContent('手动'));
 
-      await fireEvent.click(screen.getByLabelText('Back'));
-      const grip = screen.getByRole('separator', { name: 'Resize panel height' });
+      await fireEvent.click(screen.getByLabelText('返回'));
+      const grip = screen.getByRole('separator', { name: '调整面板高度' });
       await fireEvent.pointerDown(grip, { button: 0, detail: 1 });
       await fireEvent.pointerDown(grip, { button: 0, detail: 2 });
       await waitFor(() =>
@@ -1680,49 +1665,49 @@ describe('OpenQuota dashboard', () => {
   it('opens and dismisses the About panel from Options', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    const trigger = screen.getByRole('button', { name: 'About OpenQuota' });
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    const trigger = screen.getByRole('button', { name: '关于 OpenQuota' });
     await fireEvent.click(trigger);
-    expect(screen.getByRole('dialog', { name: 'About OpenQuota' })).toBeInTheDocument();
-    const close = screen.getByRole('button', { name: 'Close About' });
+    expect(screen.getByRole('dialog', { name: '关于 OpenQuota' })).toBeInTheDocument();
+    const close = screen.getByRole('button', { name: '关闭关于窗口' });
     await waitFor(() => expect(close).toHaveFocus());
     expect(close.querySelector('svg')).not.toBeNull();
     expect(close).not.toHaveTextContent('×');
     await fireEvent.keyDown(close, { key: 'Tab' });
     expect(close).toHaveFocus();
     await fireEvent.keyDown(close, { key: 'Escape' });
-    expect(screen.queryByRole('dialog', { name: 'About OpenQuota' })).not.toBeInTheDocument();
-    await waitFor(() => expect(screen.getByLabelText('Open options')).toHaveFocus());
+    expect(screen.queryByRole('dialog', { name: '关于 OpenQuota' })).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.getByLabelText('打开选项')).toHaveFocus());
   });
 
   it('matches provider context-menu and Customize to Settings navigation behavior', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.contextMenu(screen.getByRole('group', { name: 'Codex provider' }), {
+    await fireEvent.contextMenu(screen.getByRole('group', { name: 'Codex 服务商' }), {
       clientX: 120,
       clientY: 180,
     });
-    expect(screen.getByRole('menuitem', { name: 'Share Screenshot' })).toBeInTheDocument();
-    await fireEvent.click(screen.getByRole('menuitem', { name: 'Customize…' }));
+    expect(screen.getByRole('menuitem', { name: '分享截图' })).toBeInTheDocument();
+    await fireEvent.click(screen.getByRole('menuitem', { name: '自定义…' }));
     expect(screen.getByRole('heading', { name: 'Codex' })).toBeInTheDocument();
-    await fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument();
-    await fireEvent.click(screen.getByRole('button', { name: 'Customize' }));
-    expect(screen.getByRole('heading', { name: 'Customize' })).toBeInTheDocument();
+    await fireEvent.click(screen.getByRole('button', { name: '返回' }));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+    expect(screen.getByRole('heading', { name: '设置' })).toBeInTheDocument();
+    await fireEvent.click(screen.getByRole('button', { name: '自定义' }));
+    expect(screen.getByRole('heading', { name: '自定义' })).toBeInTheDocument();
   });
 
   it('supports native-like keyboard navigation in dashboard context menus', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.contextMenu(screen.getByRole('group', { name: 'Codex provider' }), {
+    await fireEvent.contextMenu(screen.getByRole('group', { name: 'Codex 服务商' }), {
       clientX: 120,
       clientY: 180,
     });
-    const hide = screen.getByRole('menuitem', { name: 'Hide Codex' });
+    const hide = screen.getByRole('menuitem', { name: '隐藏 Codex' });
     await waitFor(() => expect(hide).toHaveFocus());
     await fireEvent.keyDown(hide, { key: 'ArrowDown' });
-    expect(screen.getByRole('menuitem', { name: 'Refresh Codex' })).toHaveFocus();
+    expect(screen.getByRole('menuitem', { name: '刷新 Codex' })).toHaveFocus();
     await fireEvent.keyDown(document.activeElement!, { key: 'Escape' });
     expect(document.querySelector('.context-menu')).toBeNull();
   });
@@ -1730,12 +1715,12 @@ describe('OpenQuota dashboard', () => {
   it('does not preselect a context-menu item after a pointer invocation', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.contextMenu(screen.getByRole('group', { name: 'Codex provider' }), {
+    await fireEvent.contextMenu(screen.getByRole('group', { name: 'Codex 服务商' }), {
       button: 2,
       clientX: 120,
       clientY: 180,
     });
-    const hide = screen.getByRole('menuitem', { name: 'Hide Codex' });
+    const hide = screen.getByRole('menuitem', { name: '隐藏 Codex' });
     const menu = hide.closest<HTMLElement>('[role="menu"]');
     if (!menu) throw new Error('Context menu was not rendered.');
     await waitFor(() => expect(menu).toHaveFocus());
@@ -1748,11 +1733,11 @@ describe('OpenQuota dashboard', () => {
   it('hides a dashboard metric without removing its menu bar star', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.contextMenu(screen.getByRole('group', { name: 'Session options' }), {
+    await fireEvent.contextMenu(screen.getByRole('group', { name: '当前周期 选项' }), {
       clientX: 120,
       clientY: 180,
     });
-    await fireEvent.click(screen.getByRole('menuitem', { name: 'Hide' }));
+    await fireEvent.click(screen.getByRole('menuitem', { name: '隐藏' }));
 
     await waitFor(() => {
       const save = [...mocks.invoke.mock.calls]
@@ -1769,16 +1754,16 @@ describe('OpenQuota dashboard', () => {
   it('lets a dropdown consume Escape without navigating away from Settings', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    const theme = screen.getByRole('combobox', { name: 'Theme' });
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+    const theme = screen.getByRole('combobox', { name: '主题' });
 
     await fireEvent.keyDown(theme, { key: 'ArrowDown' });
-    expect(screen.getByRole('listbox', { name: 'Theme' })).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: '主题' })).toBeInTheDocument();
     await fireEvent.keyDown(document.activeElement!, { key: 'Escape' });
 
-    expect(screen.queryByRole('listbox', { name: 'Theme' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('listbox', { name: '主题' })).not.toBeInTheDocument();
     expect(theme).toHaveFocus();
-    expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '设置' })).toBeInTheDocument();
   });
 });

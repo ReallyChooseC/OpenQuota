@@ -74,19 +74,19 @@
     timeFormat={settings.timeFormat}
   />
 {:else if definition?.source.kind === 'quota' || definition?.source.kind === 'quotaOrValue'}
-  <section class="metric metric--no-data" aria-label={`${definition.label} quota`}>
+  <section class="metric metric--no-data" aria-label={`${definition.label} 额度`}>
     <div class="metric__heading"><h2>{definition.label}</h2></div>
     <div class="meter-shell">
       <div
         class="meter"
         role="progressbar"
-        aria-label={`${definition.label} used`}
+        aria-label={`${definition.label} 已用`}
         aria-valuemin="0"
         aria-valuemax="100"
         aria-valuenow="0"
       ></div>
     </div>
-    <div class="metric__reading"><span>No data</span><span>Reset unavailable</span></div>
+    <div class="metric__reading"><span>暂无数据</span><span>无法获取重置时间</span></div>
   </section>
 {:else if definition?.source.kind === 'trend'}
   <UsageTrend daily={snapshot.usage.daily} sourceNote={resolvedUsageSourceNote} />

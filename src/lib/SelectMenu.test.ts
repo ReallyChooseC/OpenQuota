@@ -3,8 +3,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import SelectMenu from './SelectMenu.svelte';
 
 const options = [
-  { value: 'cost', label: 'Cost' },
-  { value: 'tokens', label: 'Tokens' },
+  { value: 'cost', label: '费用' },
+  { value: 'tokens', label: 'Token' },
 ];
 
 afterEach(() => {
@@ -22,9 +22,9 @@ describe('SelectMenu', () => {
     const listbox = screen.getByRole('listbox', { name: 'Metric' });
     expect(listbox).toBeInTheDocument();
     expect(listbox.parentElement).toBe(document.body);
-    expect(screen.getByRole('option', { name: 'Cost' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('option', { name: '费用' })).toHaveAttribute('aria-selected', 'true');
 
-    await fireEvent.click(screen.getByRole('option', { name: 'Tokens' }));
+    await fireEvent.click(screen.getByRole('option', { name: 'Token' }));
     expect(onChange).toHaveBeenCalledWith('tokens');
     expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
   });
@@ -34,9 +34,9 @@ describe('SelectMenu', () => {
     const trigger = screen.getByRole('combobox', { name: 'Metric' });
 
     await fireEvent.keyDown(trigger, { key: 'ArrowDown' });
-    expect(screen.getByRole('option', { name: 'Cost' })).toHaveFocus();
+    expect(screen.getByRole('option', { name: '费用' })).toHaveFocus();
     await fireEvent.keyDown(document.activeElement!, { key: 'ArrowDown' });
-    expect(screen.getByRole('option', { name: 'Tokens' })).toHaveFocus();
+    expect(screen.getByRole('option', { name: 'Token' })).toHaveFocus();
     await fireEvent.keyDown(document.activeElement!, { key: 'Escape' });
     expect(trigger).toHaveFocus();
     expect(screen.queryByRole('listbox')).not.toBeInTheDocument();

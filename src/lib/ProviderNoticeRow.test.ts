@@ -7,14 +7,14 @@ describe('ProviderNoticeRow', () => {
     render(ProviderNoticeRow, {
       notice: {
         id: 'rateLimited',
-        title: 'Live usage paused',
+        title: '实时用量查询已暂停',
         message: 'Retrying in about 5 minutes',
         tone: 'warning',
       },
     });
 
     expect(screen.getByRole('status')).toHaveTextContent(
-      'Live usage pausedRetrying in about 5 minutes',
+      '实时用量查询已暂停Retrying in about 5 minutes',
     );
   });
 });

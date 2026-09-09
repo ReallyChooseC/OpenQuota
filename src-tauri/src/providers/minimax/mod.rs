@@ -29,13 +29,13 @@ pub(crate) fn definition() -> ProviderDefinition {
         fallback_enabled: false,
         local_usage_source_note: None,
         links: vec![
-            ProviderLink::new("Dashboard", "https://platform.minimax.io/console/plan"),
-            ProviderLink::new("API Keys", "https://platform.minimax.io/console/access"),
+            ProviderLink::new("网页面板", "https://platform.minimax.io/console/plan"),
+            ProviderLink::new("API 密钥", "https://platform.minimax.io/console/access"),
         ],
         metrics: vec![
             MetricDefinition::quota(
                 "minimax.session",
-                "Session",
+                "当前周期",
                 "session",
                 false,
                 true,
@@ -45,7 +45,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "minimax.weekly",
-                "Weekly",
+                "本周额度",
                 "weekly",
                 false,
                 true,
@@ -59,19 +59,19 @@ pub(crate) fn definition() -> ProviderDefinition {
 
 #[derive(Debug, Error, PartialEq, Eq)]
 pub(super) enum MiniMaxError {
-    #[error("Add a MiniMax API key in Customize or set MINIMAX_API_KEY.")]
+    #[error("请在自定义中添加 MiniMax API 密钥，或设置 MINIMAX_API_KEY。")]
     MissingKey,
-    #[error("The MiniMax API key is invalid. Check it at minimax.io.")]
+    #[error("MiniMax API 密钥无效，请在 minimax.io 检查。")]
     InvalidKey,
-    #[error("Could not reach MiniMax. Check your internet connection.")]
+    #[error("无法连接 MiniMax，请检查网络连接。")]
     ConnectionFailed,
-    #[error("MiniMax usage data is temporarily unavailable.")]
+    #[error("MiniMax 用量数据暂时不可用。")]
     InvalidResponse,
-    #[error("MiniMax request failed (HTTP {0}).")]
+    #[error("MiniMax 请求失败（HTTP {0}）。")]
     RequestFailed(u16),
-    #[error("No active MiniMax token plan. Subscribe at minimax.io to view usage.")]
+    #[error("没有有效的 MiniMax Token 套餐。请在 minimax.io 订阅后查看用量。")]
     NoTokenPlan,
-    #[error("The MiniMax API key could not be read or updated.")]
+    #[error("无法读取或更新 MiniMax API 密钥。")]
     CredentialStorage,
 }
 
@@ -262,7 +262,7 @@ mod tests {
 
         let snapshot = provider.refresh().unwrap();
         assert_eq!(snapshot.provider_id, "minimax");
-        assert_eq!(snapshot.plan.as_deref(), Some("Token Plan"));
+        assert_eq!(snapshot.plan.as_deref(), Some("Token 套餐"));
         assert_eq!(
             snapshot
                 .quotas
@@ -271,7 +271,7 @@ mod tests {
                 .collect::<Vec<_>>(),
             ["session", "weekly"]
         );
-        assert_eq!(snapshot.quotas[1].label, "Weekly (Unlimited)");
+        assert_eq!(snapshot.quotas[1].label, "本周额度（不限量）");
     }
 
     #[test]
@@ -339,7 +339,7 @@ mod tests {
                 .iter()
                 .map(|link| link.label.as_str())
                 .collect::<Vec<_>>(),
-            ["Dashboard", "API Keys"]
+            ["网页面板", "API 密钥"]
         );
     }
 }

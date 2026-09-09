@@ -13,11 +13,11 @@ describe('rename provider sheet', () => {
       onCancel: vi.fn(),
     });
 
-    const input = screen.getByRole('textbox', { name: 'Name' });
+    const input = screen.getByRole('textbox', { name: '名称' });
     await waitFor(() => expect(input).toHaveFocus());
     expect(input).toHaveValue('Work');
     await fireEvent.input(input, { target: { value: 'Personal' } });
-    await fireEvent.click(screen.getByRole('button', { name: 'Rename' }));
+    await fireEvent.click(screen.getByRole('button', { name: '重命名' }));
     expect(onRename).toHaveBeenCalledWith('Personal');
   });
 
@@ -26,7 +26,7 @@ describe('rename provider sheet', () => {
     const onCancel = vi.fn();
     render(RenameProviderSheet, { initialValue: '', onRename, onCancel });
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Rename' }));
+    await fireEvent.click(screen.getByRole('button', { name: '重命名' }));
     expect(onRename).toHaveBeenCalledWith('');
     await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
     expect(onCancel).toHaveBeenCalledOnce();

@@ -27,7 +27,7 @@
   const reading = $derived(
     metric?.values
       .map((value) => formatMetricValue(value.number, value.kind, 'row', value.label ?? undefined))
-      .join(' · ') ?? 'No data',
+      .join(' · ') ?? '暂无数据',
   );
   const tooltip = $derived.by(() => {
     if (!metric) return undefined;
@@ -35,17 +35,18 @@
       const sorted = [...metric.expiriesAt].sort();
       const lines = sorted.map((expiry, index) => {
         const formatted = formatReset(expiry, now, resetDisplay, timeFormat).replace(
-          /^Resets(?: in)?\s*/,
+          /(?:后)?重置$/,
           '',
         );
-        return `${index + 1}. ${formatted}`;
+        return `${index + 1}. ${formatted === '即将' ? '即将到期' : formatted}`;
       });
-      return [resetDisplay === 'countdown' ? 'Resets expire in:' : 'Resets expire:', ...lines].join(
-        '\n',
-      );
+      return [
+        resetDisplay === 'countdown' ? '重置次数将在以下时间后到期：' : '重置次数到期时间：',
+        ...lines,
+      ].join('\n');
     }
     const count = metric.values[0]?.number ?? 0;
-    if (metric.id === 'rateLimitResets' && count > 0) return 'Expiry times unavailable';
+    if (metric.id === 'rateLimitResets' && count > 0) return '无法获取到期时间';
     if (metric.values.some((value) => Math.abs(value.number) >= 1000)) {
       return metric.values
         .map((value) =>
@@ -138,8 +139,8 @@
       {#if hasEstimatedValue}
         <span
           class="value-estimate"
-          data-tooltip="Estimated locally, so it may differ from billed usage."
-          aria-label="Estimated value"
+          data-tooltip="本地估算，可能与实际计费用量不同。"
+          aria-label="估算值"
           role="img"><Icon name="about" size={11} strokeWidth={1.9} /></span
         >
       {/if}
@@ -150,8 +151,8 @@
       {#if hasEstimatedValue}
         <span
           class="value-estimate"
-          data-tooltip="Estimated locally, so it may differ from billed usage."
-          aria-label="Estimated value"
+          data-tooltip="本地估算，可能与实际计费用量不同。"
+          aria-label="估算值"
           role="img"><Icon name="about" size={11} strokeWidth={1.9} /></span
         >
       {/if}

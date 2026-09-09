@@ -29,13 +29,13 @@ pub(crate) fn definition() -> ProviderDefinition {
         fallback_enabled: false,
         local_usage_source_note: None,
         links: vec![
-            ProviderLink::new("Dashboard", "https://www.kimi.com/code/console"),
-            ProviderLink::new("API Keys", "https://www.kimi.com/code/console"),
+            ProviderLink::new("网页面板", "https://www.kimi.com/code/console"),
+            ProviderLink::new("API 密钥", "https://www.kimi.com/code/console"),
         ],
         metrics: vec![
             MetricDefinition::quota(
                 "kimi.session",
-                "Session",
+                "当前周期",
                 "session",
                 false,
                 true,
@@ -45,7 +45,7 @@ pub(crate) fn definition() -> ProviderDefinition {
             ),
             MetricDefinition::quota(
                 "kimi.weekly",
-                "Weekly",
+                "本周额度",
                 "weekly",
                 false,
                 true,
@@ -59,17 +59,17 @@ pub(crate) fn definition() -> ProviderDefinition {
 
 #[derive(Debug, Error, PartialEq, Eq)]
 pub(super) enum KimiError {
-    #[error("Add a Kimi API key in Customize or set KIMI_API_KEY.")]
+    #[error("请在自定义中添加 Kimi API 密钥，或设置 KIMI_API_KEY。")]
     MissingKey,
-    #[error("The Kimi API key is invalid. Check it in the Kimi Code console.")]
+    #[error("Kimi API 密钥无效，请在 Kimi Code 控制台检查。")]
     InvalidKey,
-    #[error("Could not reach Kimi. Check your internet connection.")]
+    #[error("无法连接 Kimi，请检查网络连接。")]
     ConnectionFailed,
-    #[error("Kimi usage data is temporarily unavailable.")]
+    #[error("Kimi 用量数据暂时不可用。")]
     InvalidResponse,
-    #[error("Kimi request failed (HTTP {0}).")]
+    #[error("Kimi 请求失败（HTTP {0}）。")]
     RequestFailed(u16),
-    #[error("The Kimi API key could not be read or updated.")]
+    #[error("无法读取或更新 Kimi API 密钥。")]
     CredentialStorage,
 }
 
@@ -321,7 +321,7 @@ mod tests {
                 .iter()
                 .map(|link| link.label.as_str())
                 .collect::<Vec<_>>(),
-            ["Dashboard", "API Keys"]
+            ["网页面板", "API 密钥"]
         );
     }
 }

@@ -79,7 +79,7 @@ impl ModelAccumulator {
                     .then_with(|| left_name.cmp(right_name))
             })
             .map(|(name, _)| name.clone())
-            .unwrap_or_else(|| "Unattributed".to_owned())
+            .unwrap_or_else(|| "未归类".to_owned())
     }
 }
 
@@ -242,7 +242,7 @@ impl DailyUsageAccumulator {
 fn normalized_model_name(model: &str) -> &str {
     let model = model.trim();
     if model.is_empty() {
-        "Unattributed"
+        "未归类"
     } else {
         model
     }
@@ -314,7 +314,7 @@ fn model_breakdown(day: &DayAccumulator, source_note: &str) -> Option<ModelUsage
         } else {
             0.0
         };
-        let unattributed = entry.model.to_lowercase() == "unattributed";
+        let unattributed = entry.model.to_lowercase() == "未归类";
         if unattributed || share < 0.05 || named_count >= 5 {
             other_tokens = other_tokens.saturating_add(entry.total_tokens);
             other_cost += entry.cost_usd.unwrap_or_default();
@@ -331,7 +331,7 @@ fn model_breakdown(day: &DayAccumulator, source_note: &str) -> Option<ModelUsage
     if other_tokens > 0 || other_cost > 0.0 {
         other_variants.sort_by(variant_sort);
         visible.push(ModelUsageEntry {
-            model: "Other".to_owned(),
+            model: "其他".to_owned(),
             total_tokens: other_tokens,
             cost_usd: Some(round_to_cents(other_cost)),
             variants: Some(other_variants),
@@ -518,12 +518,12 @@ mod tests {
                 .iter()
                 .map(|entry| entry.model.as_str())
                 .collect::<Vec<_>>(),
-            ["big", "mid", "Other"]
+            ["big", "mid", "其他"]
         );
         assert_eq!(models.last().unwrap().total_tokens, 430);
         assert_eq!(
             models.last().unwrap().variants.as_ref().unwrap()[0].model,
-            "Unattributed"
+            "未归类"
         );
     }
 

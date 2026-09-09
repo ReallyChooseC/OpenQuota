@@ -500,7 +500,7 @@ impl MetricDefinition {
     pub fn trend(id: &str) -> Self {
         Self::new(
             id,
-            "Usage Trend",
+            "用量趋势",
             MetricSource::Trend,
             false,
             true,
@@ -913,7 +913,7 @@ mod tests {
     #[test]
     fn provider_link_visibility_matches_the_trimmed_http_contract() {
         let links = [
-            ProviderLink::new(" Status ", " https://status.example.com/ "),
+            ProviderLink::new(" 服务状态 ", " https://status.example.com/ "),
             ProviderLink::new("HTTP", "http://example.com/dashboard"),
             ProviderLink::new("", "https://example.com/"),
             ProviderLink::new("No URL", " "),
@@ -929,7 +929,7 @@ mod tests {
                 .filter_map(ProviderLink::visible)
                 .collect::<Vec<_>>(),
             [
-                ProviderLink::new("Status", "https://status.example.com/"),
+                ProviderLink::new("服务状态", "https://status.example.com/"),
                 ProviderLink::new("HTTP", "http://example.com/dashboard"),
             ]
         );

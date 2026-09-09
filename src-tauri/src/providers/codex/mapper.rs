@@ -35,9 +35,9 @@ pub fn map_usage(
         rate_limit,
         WindowMetricLabels {
             session_id: "session",
-            session_label: "Session",
+            session_label: "当前周期",
             weekly_id: "weekly",
-            weekly_label: "Weekly",
+            weekly_label: "本周额度",
         },
         header_number(response, "x-codex-primary-used-percent"),
         header_number(response, "x-codex-secondary-used-percent"),
@@ -75,7 +75,7 @@ fn map_spark_windows(body: &Value, now: DateTime<Utc>) -> Vec<QuotaWindow> {
             session_id: "spark",
             session_label: "Spark",
             weekly_id: "sparkWeekly",
-            weekly_label: "Spark Weekly",
+            weekly_label: "Spark 本周额度",
         },
         None,
         None,
@@ -264,11 +264,11 @@ fn map_reset_credits(body: &Value, dedicated: Option<&UsageResponse>) -> Option<
     expiries_at.sort();
     Some(ValueMetric {
         id: "rateLimitResets".into(),
-        label: "Rate Limit Resets".into(),
+        label: "额度重置次数".into(),
         values: vec![MetricValue {
             number: count.floor(),
             kind: MetricValueKind::Count,
-            label: Some("available".into()),
+            label: Some("可用".into()),
             estimated: false,
         }],
         expiries_at,
@@ -292,7 +292,7 @@ fn credits_metric(remaining: f64) -> ValueMetric {
     let credits = remaining.max(0.0).floor();
     ValueMetric {
         id: "credits".into(),
-        label: "Extra Usage".into(),
+        label: "额外用量".into(),
         values: vec![
             MetricValue {
                 number: credits * CREDIT_USD_RATE,
@@ -544,7 +544,7 @@ mod tests {
             now,
         );
         assert_eq!(alerts.len(), 1);
-        assert_eq!(alerts[0].metric, "Session");
+        assert_eq!(alerts[0].metric, "当前周期");
         assert_eq!(alerts[0].milestone, Milestone::WillRunOut);
     }
 

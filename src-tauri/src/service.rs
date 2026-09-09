@@ -135,7 +135,7 @@ impl ProviderService {
                 "refresh requested for unknown provider {provider_id}"
             );
             return ProviderViewState {
-                error: Some("Unknown provider.".into()),
+                error: Some("未知服务商。".into()),
                 error_kind: Some(ProviderErrorKind::Internal),
                 ..ProviderViewState::default()
             };
@@ -163,7 +163,7 @@ impl ProviderService {
                     "refresh coordination unavailable for {provider_id}"
                 );
                 return ProviderViewState {
-                    error: Some("Provider refresh is temporarily unavailable.".into()),
+                    error: Some("暂时无法刷新服务商用量。".into()),
                     error_kind: Some(ProviderErrorKind::Internal),
                     ..self.provider_state(provider_id)
                 };
@@ -256,7 +256,7 @@ impl ProviderService {
                     crate::app_error!(&tag, "refresh worker stopped unexpectedly");
                     Err(ProviderError::new(
                         ProviderErrorKind::Internal,
-                        "Provider refresh stopped unexpectedly.",
+                        "服务商用量刷新意外中止。",
                     ))
                 }
                 Err(_) => {
@@ -268,7 +268,7 @@ impl ProviderService {
                     late_worker = Some(worker);
                     Err(ProviderError::new(
                         ProviderErrorKind::Network,
-                        "Provider refresh timed out.",
+                        "服务商用量刷新超时。",
                     ))
                 }
             };
@@ -473,7 +473,7 @@ impl ProviderService {
         let result = if account_error {
             Err(ProviderError::new(
                 ProviderErrorKind::Storage,
-                "The refreshed account state could not be saved.",
+                "无法保存刷新后的账号状态。",
             ))
         } else {
             result.map(|refresh| refresh.snapshot)
@@ -481,9 +481,7 @@ impl ProviderService {
         self.update_state(provider_id, |state| {
             merge_refresh_result(state, result);
             if cache_error {
-                state.error = Some(
-                    "Usage refreshed, but the last successful snapshot could not be cached.".into(),
-                );
+                state.error = Some("用量已刷新，但无法缓存最新数据。".into());
                 state.error_kind = Some(ProviderErrorKind::Storage);
             }
         });
@@ -642,7 +640,7 @@ fn has_duplicate_ids<'a>(mut ids: impl Iterator<Item = &'a str>) -> bool {
 fn snapshot_contract_error() -> ProviderError {
     ProviderError::new(
         ProviderErrorKind::Internal,
-        "Provider data does not match its registered metric contract.",
+        "服务商数据与已注册的指标结构不匹配。",
     )
 }
 
@@ -873,7 +871,7 @@ mod tests {
             links: vec![],
             metrics: vec![MetricDefinition::new(
                 format!("{id}.session"),
-                "Session",
+                "当前周期",
                 MetricSource::Quota {
                     source_id: "session".into(),
                     session_window: false,
@@ -1053,7 +1051,7 @@ mod tests {
         let mut unknown_source = snapshot;
         unknown_source.quotas.push(crate::models::QuotaWindow {
             id: "unknown".into(),
-            label: "Unknown".into(),
+            label: "未知".into(),
             used_percent: 0.0,
             resets_at: None,
             period_seconds: 1,
@@ -1079,7 +1077,7 @@ mod tests {
             metrics: vec![
                 MetricDefinition::quota(
                     "dynamic.searches",
-                    "Web Searches",
+                    "联网搜索",
                     "searches",
                     false,
                     true,
@@ -1089,7 +1087,7 @@ mod tests {
                 ),
                 MetricDefinition::status(
                     "dynamic.extra",
-                    "Extra Usage",
+                    "额外用量",
                     "extra",
                     true,
                     MetricSection::OnDemand,
@@ -1102,7 +1100,7 @@ mod tests {
         let mut snapshot = test_snapshot("dynamic");
         snapshot.quotas.push(QuotaWindow {
             id: "searches".into(),
-            label: "Web Searches".into(),
+            label: "联网搜索".into(),
             used_percent: 25.0,
             resets_at: None,
             period_seconds: 86_400,
@@ -1115,7 +1113,7 @@ mod tests {
         });
         snapshot.status_metrics.push(StatusMetric {
             id: "extra".into(),
-            label: "Extra Usage".into(),
+            label: "额外用量".into(),
             text: "2500 cap".into(),
             tone: StatusTone::Positive,
             subtitle: None,
@@ -1244,7 +1242,7 @@ mod tests {
             });
 
         for state in [&timed_out, &queued] {
-            assert_eq!(state.error.as_deref(), Some("Provider refresh timed out."));
+            assert_eq!(state.error.as_deref(), Some("服务商用量刷新超时。"));
             assert_eq!(state.error_kind, Some(ProviderErrorKind::Network));
             assert!(!state.stale);
             assert_eq!(
@@ -1541,7 +1539,7 @@ mod tests {
                 .providers
                 .get("slow")
                 .and_then(|state| state.error.as_deref()),
-            Some("Provider refresh timed out.")
+            Some("服务商用量刷新超时。")
         );
         assert!(storage.load_snapshot("fast").unwrap().is_some());
         assert_eq!(
@@ -1549,7 +1547,7 @@ mod tests {
                 .providers
                 .get("slow")
                 .and_then(|state| state.error.as_deref()),
-            Some("Provider refresh timed out.")
+            Some("服务商用量刷新超时。")
         );
         drop(observations);
 

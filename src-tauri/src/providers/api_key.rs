@@ -198,7 +198,7 @@ impl ApiKeyStore {
     pub fn save(&self, value: &str) -> Result<(), String> {
         let value = value.trim();
         if value.is_empty() {
-            return Err("Enter an API key before saving.".into());
+            return Err("请先输入 API 密钥再保存。".into());
         }
         self.secrets.write(&self.provider_id, value.as_bytes())
     }
@@ -212,7 +212,7 @@ impl ApiKeyStore {
             return Ok(None);
         };
         let value = std::str::from_utf8(value.as_slice())
-            .map_err(|_| "The saved API key has an unsupported encoding.".to_owned())?;
+            .map_err(|_| "已保存的 API 密钥使用了不支持的编码。".to_owned())?;
         Ok(non_empty(value.to_owned()))
     }
 

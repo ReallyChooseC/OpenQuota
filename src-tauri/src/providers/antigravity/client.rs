@@ -79,6 +79,7 @@ impl AntigravityClient {
     ) -> Result<Self, AntigravityError> {
         Ok(Self {
             local: Client::builder()
+                .no_proxy()
                 .danger_accept_invalid_certs(true)
                 .timeout(std::time::Duration::from_secs(5))
                 .build()

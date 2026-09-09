@@ -28,11 +28,11 @@ pub fn map_credits(response: &GrokResponse) -> Result<GrokMetrics, GrokError> {
     let config = decode_credits(&response.body)?;
     let status_metrics = vec![StatusMetric {
         id: "payAsYouGo".into(),
-        label: "Pay as you go".into(),
+        label: "按量付费".into(),
         text: if config.on_demand_cap > 0.0 {
-            format!("{} cap", format_units(config.on_demand_cap))
+            format!("上限 {}", format_units(config.on_demand_cap))
         } else {
-            "Disabled".into()
+            "未启用".into()
         },
         tone: if config.on_demand_cap > 0.0 {
             StatusTone::Positive
@@ -44,7 +44,7 @@ pub fn map_credits(response: &GrokResponse) -> Result<GrokMetrics, GrokError> {
     let quotas = (config.period_type == WEEKLY_PERIOD_TYPE)
         .then(|| QuotaWindow {
             id: "weekly".into(),
-            label: "Weekly".into(),
+            label: "本周额度".into(),
             used_percent: config.used_percent.clamp(0.0, 100.0),
             resets_at: Some(config.period_end),
             period_seconds: config
@@ -205,7 +205,7 @@ mod tests {
             weekly.resets_at.unwrap().to_rfc3339(),
             "2026-07-07T21:36:52.140114+00:00"
         );
-        assert_eq!(mapped.status_metrics[0].text, "Disabled");
+        assert_eq!(mapped.status_metrics[0].text, "未启用");
         assert_eq!(mapped.status_metrics[0].tone, StatusTone::Neutral);
     }
 
@@ -218,7 +218,7 @@ mod tests {
         )))
         .unwrap();
 
-        assert_eq!(mapped.status_metrics[0].text, "2500 cap");
+        assert_eq!(mapped.status_metrics[0].text, "上限 2500");
         assert_eq!(mapped.status_metrics[0].tone, StatusTone::Positive);
     }
 
@@ -232,7 +232,7 @@ mod tests {
         .unwrap();
 
         assert!(mapped.quotas.is_empty());
-        assert_eq!(mapped.status_metrics[0].text, "Disabled");
+        assert_eq!(mapped.status_metrics[0].text, "未启用");
     }
 
     #[test]

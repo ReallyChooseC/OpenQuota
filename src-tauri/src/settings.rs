@@ -352,13 +352,11 @@ impl SettingsService {
         let mut current = self
             .settings
             .write()
-            .map_err(|_| "OpenQuota settings are temporarily unavailable.".to_owned())?;
+            .map_err(|_| "OpenQuota 设置暂时不可用。".to_owned())?;
         if expected_settings_revision
             .is_some_and(|revision| revision != self.settings_revision.load(Ordering::SeqCst))
         {
-            return Err(
-                "Settings changed before they could be saved. Please try again.".to_owned(),
-            );
+            return Err("保存前设置已发生变化，请重试。".to_owned());
         }
         let enabled_before = enabled_provider_set(&current);
         let detected = current
@@ -368,13 +366,13 @@ impl SettingsService {
             .map(|provider| provider.id.clone())
             .collect::<HashSet<_>>();
         let persisted_accounts = persisted_account_provider_ids(&self.storage)
-            .map_err(|_| "OpenQuota account settings could not be loaded.".to_owned())?;
+            .map_err(|_| "无法加载OpenQuota 账号设置。".to_owned())?;
         normalize_with_persisted_accounts(&self.registry, settings, &detected, &persisted_accounts);
         if expected_account_revision != Some(self.account_revision.load(Ordering::SeqCst)) {
             let active_provider_ids = self
                 .active_account_identities
                 .read()
-                .map_err(|_| "OpenQuota account names are temporarily unavailable.".to_owned())?
+                .map_err(|_| "OpenQuota 账号名称暂时不可用。".to_owned())?
                 .keys()
                 .cloned()
                 .collect::<Vec<_>>();
@@ -391,10 +389,10 @@ impl SettingsService {
         } else {
             self.active_account_name_updates(settings)
         }
-        .map_err(|_| "OpenQuota account names could not be saved.".to_owned())?;
+        .map_err(|_| "无法保存OpenQuota 账号名称。".to_owned())?;
         self.storage
             .save_settings_with_account_updates(settings, &account_updates)
-            .map_err(|_| "OpenQuota settings could not be saved.".to_owned())?;
+            .map_err(|_| "无法保存OpenQuota 设置。".to_owned())?;
         let enablement_changed = enabled_provider_set(settings) != enabled_before;
         current.clone_from(settings);
         if enablement_changed {
@@ -448,7 +446,7 @@ impl SettingsService {
         let mut current = self
             .settings
             .write()
-            .map_err(|_| "OpenQuota settings are temporarily unavailable.".to_owned())?;
+            .map_err(|_| "OpenQuota 设置暂时不可用。".to_owned())?;
         let enabled_before = enabled_provider_set(&current);
         let detected_before = detected_provider_set(&current);
         let credential_revision_matches =
@@ -469,7 +467,7 @@ impl SettingsService {
             }
         }
         let persisted_accounts = persisted_account_provider_ids(&self.storage)
-            .map_err(|_| "OpenQuota account settings could not be loaded.".to_owned())?;
+            .map_err(|_| "无法加载OpenQuota 账号设置。".to_owned())?;
         normalize_with_persisted_accounts(
             &self.registry,
             &mut next,
@@ -515,7 +513,7 @@ impl SettingsService {
 
         self.storage
             .save_settings(&next)
-            .map_err(|_| "OpenQuota settings could not be saved.".to_owned())?;
+            .map_err(|_| "无法保存OpenQuota 设置。".to_owned())?;
         let newly_enabled_provider_ids = next
             .providers
             .iter()
@@ -556,12 +554,12 @@ impl SettingsService {
         let definition = self
             .registry
             .definition(provider_id)
-            .ok_or_else(|| "Unknown provider.".to_owned())?;
+            .ok_or_else(|| "未知服务商。".to_owned())?;
         let provider = settings
             .providers
             .iter_mut()
             .find(|provider| provider.id == provider_id)
-            .ok_or_else(|| "Provider settings are unavailable.".to_owned())?;
+            .ok_or_else(|| "服务商设置不可用。".to_owned())?;
         provider.expanded = false;
         provider.metrics = default_provider(definition, provider.detected).metrics;
         self.update_from_view(
@@ -588,21 +586,21 @@ impl SettingsService {
         let mut current = self
             .settings
             .write()
-            .map_err(|_| "OpenQuota settings are temporarily unavailable.".to_owned())?;
+            .map_err(|_| "OpenQuota 设置暂时不可用。".to_owned())?;
         let enabled_before = enabled_provider_set(&current);
         let mut next = current.clone();
         let provider = next
             .providers
             .iter_mut()
             .find(|provider| provider.id == provider_id)
-            .ok_or_else(|| "Provider settings are unavailable.".to_owned())?;
+            .ok_or_else(|| "服务商设置不可用。".to_owned())?;
         provider.detected = detected;
         if enable {
             provider.enabled = true;
         }
         self.storage
             .save_settings(&next)
-            .map_err(|_| "OpenQuota settings could not be saved.".to_owned())?;
+            .map_err(|_| "无法保存OpenQuota 设置。".to_owned())?;
         current.clone_from(&next);
         if enabled_provider_set(&next) != enabled_before {
             self.enablement_revision.fetch_add(1, Ordering::SeqCst);
@@ -1453,7 +1451,7 @@ mod tests {
             .update_from_view(stale, initial_revision, service.account_revision())
             .unwrap_err();
 
-        assert!(error.contains("Settings changed"));
+        assert!(error.contains("设置已发生变化"));
         assert_eq!(service.settings_revision(), revision_after_save);
         assert_eq!(
             service.get().density,

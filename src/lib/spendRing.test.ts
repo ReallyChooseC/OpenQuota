@@ -8,7 +8,7 @@ const geometry: SpendRingGeometry = {
   cornerRadius: 3,
 };
 
-describe('Total Spend ring sectors', () => {
+describe('总用量 ring sectors', () => {
   it('closes the normalized ring and preserves a visible minimum slice', () => {
     const arcs = spendRingArcs([
       { id: 'cursor', value: 7_121.12 },

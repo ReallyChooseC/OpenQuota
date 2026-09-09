@@ -67,28 +67,28 @@ describe('native visual contract', () => {
     expect(account.container.innerHTML).toBe(claude.container.innerHTML);
   });
 
-  it('uses the shared hover dwell and grace timing for Usage Trend details', async () => {
+  it('uses the shared hover dwell and grace timing for 用量趋势 details', async () => {
     vi.useFakeTimers();
     const today = new Date();
     const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     render(UsageTrend, {
       daily: [{ date, tokens: 42_000, estimatedCostUsd: 0.21, estimateComplete: true }],
-      sourceNote: 'From your Codex logs (estimated)',
+      sourceNote: '根据本地 Codex 日志估算',
     });
-    const chart = screen.getByRole('group', { name: 'Usage trend chart details' });
+    const chart = screen.getByRole('group', { name: '用量趋势图详情' });
 
     await fireEvent.mouseEnter(chart);
     await vi.advanceTimersByTimeAsync(399);
-    expect(screen.queryByText('peak 42K tokens')).not.toBeInTheDocument();
+    expect(screen.queryByText('峰值 42K Token')).not.toBeInTheDocument();
     await vi.advanceTimersByTimeAsync(1);
-    expect(screen.getByText('peak 42K tokens')).toBeInTheDocument();
-    expect(screen.getByText('From your Codex logs (estimated)')).toBeInTheDocument();
+    expect(screen.getByText('峰值 42K Token')).toBeInTheDocument();
+    expect(screen.getByText('根据本地 Codex 日志估算')).toBeInTheDocument();
 
     await fireEvent.mouseLeave(chart);
     await vi.advanceTimersByTimeAsync(179);
-    expect(screen.getByText('peak 42K tokens')).toBeInTheDocument();
+    expect(screen.getByText('峰值 42K Token')).toBeInTheDocument();
     await vi.advanceTimersByTimeAsync(1);
-    expect(screen.queryByText('peak 42K tokens')).not.toBeInTheDocument();
+    expect(screen.queryByText('峰值 42K Token')).not.toBeInTheDocument();
   });
 
   it('reveals an exact day value when a detail bar is hovered', async () => {
@@ -97,13 +97,13 @@ describe('native visual contract', () => {
     const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     const { container } = render(UsageTrend, {
       daily: [{ date, tokens: 42_000, estimatedCostUsd: 0.21, estimateComplete: true }],
-      sourceNote: 'From your Codex logs (estimated)',
+      sourceNote: '根据本地 Codex 日志估算',
     });
-    await fireEvent.mouseEnter(screen.getByRole('group', { name: 'Usage trend chart details' }));
+    await fireEvent.mouseEnter(screen.getByRole('group', { name: '用量趋势图详情' }));
     await vi.advanceTimersByTimeAsync(400);
     const bars = container.querySelectorAll<HTMLElement>('.trend-detail__bars i');
     await fireEvent.mouseEnter(bars[bars.length - 1]);
-    expect(screen.getByText(/· 42K tokens$/)).toBeInTheDocument();
+    expect(screen.getByText(/· 42K Token$/)).toBeInTheDocument();
     expect(container.querySelectorAll('.trend-detail__bars i.muted')).toHaveLength(30);
   });
 });

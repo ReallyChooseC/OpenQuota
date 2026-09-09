@@ -31,14 +31,14 @@
 </script>
 
 <section class="provider-name-section" aria-labelledby={`provider-name-title-${provider.id}`}>
-  <h2 id={`provider-name-title-${provider.id}`}>Name</h2>
+  <h2 id={`provider-name-title-${provider.id}`}>名称</h2>
   <div class="provider-name-card">
     <input
       type="text"
       maxlength="48"
       bind:value={draft}
       placeholder={defaultName}
-      aria-label={`Name for ${defaultName}`}
+      aria-label={`${defaultName} 的名称`}
       autocomplete="off"
       onfocus={() => (focused = true)}
       onblur={() => {

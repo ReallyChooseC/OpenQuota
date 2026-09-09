@@ -34,37 +34,37 @@
   }: Props = $props();
   const used = $derived(Math.min(100, Math.max(0, quota.usedPercent)));
   const remaining = $derived(Math.max(0, 100 - used));
-  const countUnit = $derived(quota.unit?.trim() || 'requests');
+  const countUnit = $derived(quota.unit?.trim() || '次请求');
   const estimateNote = $derived(
-    quota.sourceNote?.trim() || 'Estimated from local usage data and may differ from billed usage.',
+    quota.sourceNote?.trim() || '根据本地用量估算，可能与实际计费用量不同。',
   );
   const reading = $derived.by(() => {
     if (quota.format === 'count' && quota.usedValue !== null && quota.limitValue !== null) {
       const value =
         usageDisplay === 'left' ? Math.max(0, quota.limitValue - quota.usedValue) : quota.usedValue;
-      return `${value.toFixed(0)} ${countUnit} ${usageDisplay}`;
+      return `${usageDisplay === 'left' ? '剩余' : '已用'} ${value.toFixed(0)} ${countUnit}`;
     }
     if (quota.format === 'dollars' && quota.usedValue !== null) {
       if (usageDisplay === 'left' && quota.limitValue !== null) {
-        return `$${Math.max(0, quota.limitValue - quota.usedValue).toFixed(2)} left`;
+        return `剩余 $${Math.max(0, quota.limitValue - quota.usedValue).toFixed(2)}`;
       }
-      return `$${quota.usedValue.toFixed(2)} spent`;
+      return `已用 $${quota.usedValue.toFixed(2)}`;
     }
-    return `${(usageDisplay === 'used' ? used : remaining).toFixed(0)}% ${usageDisplay}`;
+    return `${usageDisplay === 'left' ? '剩余' : '已用'} ${(usageDisplay === 'used' ? used : remaining).toFixed(0)}%`;
   });
   const readingTooltip = $derived.by(() => {
     if (quota.format === 'count' && quota.usedValue !== null && quota.limitValue !== null) {
       const opposite =
         usageDisplay === 'left' ? quota.usedValue : Math.max(0, quota.limitValue - quota.usedValue);
-      return `${opposite.toFixed(0)} ${countUnit} ${usageDisplay === 'left' ? 'used' : 'left'}`;
+      return `${usageDisplay === 'left' ? '已用' : '剩余'} ${opposite.toFixed(0)} ${countUnit}`;
     }
     if (quota.format === 'dollars' && quota.usedValue !== null) {
-      if (usageDisplay === 'left') return `$${quota.usedValue.toFixed(2)} spent`;
+      if (usageDisplay === 'left') return `已用 $${quota.usedValue.toFixed(2)}`;
       if (quota.limitValue !== null)
-        return `$${Math.max(0, quota.limitValue - quota.usedValue).toFixed(2)} left`;
+        return `剩余 $${Math.max(0, quota.limitValue - quota.usedValue).toFixed(2)}`;
       return null;
     }
-    return usageDisplay === 'left' ? `${used.toFixed(0)}% used` : `${remaining.toFixed(0)}% left`;
+    return usageDisplay === 'left' ? `已用 ${used.toFixed(0)}%` : `剩余 ${remaining.toFixed(0)}%`;
   });
   const fillPercent = $derived.by(() => {
     if (
@@ -106,14 +106,14 @@
       (alwaysShowPacing && pace.severity === 'healthy'),
   );
   const paceLabel = $derived.by(() => {
-    if (pace.severity === 'spent') return 'Limit reached';
+    if (pace.severity === 'spent') return '额度已用尽';
     if (pace.severity === 'runningOut')
       return pace.runOutAt === null
         ? null
         : formatLimit(pace.runOutAt, now, resetDisplay, timeFormat);
     if (pace.projectedUsedPercent === null) return null;
     const left = Math.max(0, 100 - pace.projectedUsedPercent);
-    return pace.severity === 'close' ? `~${Math.max(1, Math.round(left))}% spare` : paceDetail;
+    return pace.severity === 'close' ? `预计剩余约 ${Math.max(1, Math.round(left))}%` : paceDetail;
   });
   const paceTickPercent = $derived(
     pace.evenPacePercent === null
@@ -134,16 +134,13 @@
   );
 </script>
 
-<section class="metric" aria-label={`${quota.label} quota`}>
+<section class="metric" aria-label={`${quota.label} 额度`}>
   <div class="metric__heading">
     <h2>
       {quota.label}
       {#if quota.estimated}
-        <span
-          class="metric-estimate"
-          data-tooltip={estimateNote}
-          aria-label="Estimated quota"
-          role="img"><Icon name="about" size={11} strokeWidth={1.9} /></span
+        <span class="metric-estimate" data-tooltip={estimateNote} aria-label="估算额度" role="img"
+          ><Icon name="about" size={11} strokeWidth={1.9} /></span
         >
       {/if}
     </h2>
@@ -164,7 +161,7 @@
           <span
             class="pace-warning"
             data-tooltip={paceDetail ?? undefined}
-            aria-label={pace.severity === 'spent' ? 'Limit reached' : 'Will reach limit'}
+            aria-label={pace.severity === 'spent' ? '额度已用尽' : '预计将用尽额度'}
             ><span class="pace-warning__icon"
               ><Icon name="flame-filled" size={11} strokeWidth={1.8} /></span
             >{paceLabel ?? ''}</span
@@ -182,7 +179,7 @@
     <div
       class="meter meter--{severity}"
       role="progressbar"
-      aria-label={`${quota.label} used`}
+      aria-label={`${quota.label} 已用`}
       aria-valuemin="0"
       aria-valuemax="100"
       aria-valuenow={used}
@@ -207,7 +204,7 @@
       {reading}
     </button>
     {#if freshSession}
-      <span data-tooltip="Sessions start after you send your first message.">Not started</span>
+      <span data-tooltip="发送第一条消息后开始计算当前周期。">尚未开始</span>
     {:else}
       <button type="button" data-tooltip={resetTooltip ?? undefined} onclick={onToggleReset}>
         {formatReset(quota.resetsAt, now, resetDisplay, timeFormat)}

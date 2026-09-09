@@ -141,7 +141,7 @@ pub fn scan_or_cached_usage<E>(
                 "local usage history could not be refreshed; keeping live provider data"
             );
             warnings.push(format!(
-                "Local {provider_name} usage history could not be refreshed; cached history is shown when available."
+                "无法刷新本地 {provider_name} 用量历史；如有缓存，将显示缓存数据。"
             ));
             storage
                 .load_snapshot_for_identity(provider_id, identity)

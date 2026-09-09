@@ -21,7 +21,7 @@ use crate::{
 use super::GrokError;
 
 const LOG_CACHE_SCHEMA_VERSION: u8 = 1;
-const SOURCE_NOTE: &str = "From your Grok logs (estimated)";
+const SOURCE_NOTE: &str = "根据本地 Grok 日志估算";
 
 #[derive(Debug, Clone)]
 pub struct GrokLogUsageScanner {

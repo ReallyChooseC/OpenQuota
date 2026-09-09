@@ -74,20 +74,20 @@ describe('OpenQuota customization persistence and reorder', () => {
     const browserConfirm = vi.spyOn(window, 'confirm');
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Customize' }));
-    await fireEvent.click(screen.getByRole('button', { name: 'Reset all customization' }));
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '自定义' }));
+    await fireEvent.click(screen.getByRole('button', { name: '重置所有自定义设置' }));
 
-    const dialog = screen.getByRole('alertdialog', { name: 'Reset All Customization?' });
-    expect(dialog).toHaveTextContent('restores every provider');
+    const dialog = screen.getByRole('alertdialog', { name: '重置所有自定义设置？' });
+    expect(dialog).toHaveTextContent('恢复所有服务商指标');
     expect(browserConfirm).not.toHaveBeenCalled();
     expect(mocks.invoke).not.toHaveBeenCalledWith('reset_customization');
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    await fireEvent.click(screen.getByRole('button', { name: '取消' }));
     await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Reset all customization' }));
-    await fireEvent.click(screen.getByRole('button', { name: 'Reset All' }));
+    await fireEvent.click(screen.getByRole('button', { name: '重置所有自定义设置' }));
+    await fireEvent.click(screen.getByRole('button', { name: '全部重置' }));
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith('reset_customization', {
         expectedSettingsRevision: 0,
@@ -100,9 +100,9 @@ describe('OpenQuota customization persistence and reorder', () => {
   it('undoes the latest customization with Ctrl+Z', async () => {
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Customize' }));
-    const toggle = screen.getByRole('checkbox', { name: 'Enable codex' });
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '自定义' }));
+    const toggle = screen.getByRole('checkbox', { name: '启用 codex' });
     await fireEvent.click(toggle);
     await waitFor(() =>
       expect(mocks.invoke).toHaveBeenCalledWith(
@@ -140,9 +140,9 @@ describe('OpenQuota customization persistence and reorder', () => {
     });
     render(App);
     await screen.findByText('Plus');
-    await fireEvent.click(screen.getByLabelText('Open options'));
-    await fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
-    const launchAtLogin = screen.getByRole('checkbox', { name: 'Launch at Login' });
+    await fireEvent.click(screen.getByLabelText('打开选项'));
+    await fireEvent.click(screen.getByRole('button', { name: '设置' }));
+    const launchAtLogin = screen.getByRole('checkbox', { name: '开机启动' });
 
     await fireEvent.click(launchAtLogin);
 
@@ -154,9 +154,9 @@ describe('OpenQuota customization persistence and reorder', () => {
   it('reorders dashboard metrics directly with a custom drag lift', async () => {
     render(App);
     await screen.findByText('Plus');
-    const session = screen.getByRole('group', { name: 'Session options' });
-    const weekly = screen.getByRole('group', { name: 'Weekly options' });
-    const trend = screen.getByRole('group', { name: 'Usage Trend options' });
+    const session = screen.getByRole('group', { name: '当前周期 选项' });
+    const weekly = screen.getByRole('group', { name: '本周额度 选项' });
+    const trend = screen.getByRole('group', { name: '用量趋势 选项' });
     session.getBoundingClientRect = () =>
       ({ top: 0, right: 280, bottom: 40, left: 0, width: 280, height: 40 }) as DOMRect;
     weekly.getBoundingClientRect = () =>
@@ -254,9 +254,7 @@ describe('OpenQuota customization persistence and reorder', () => {
     render(App);
     await screen.findByText('Plus');
 
-    const instructions = screen.getByText(
-      'Drag to reorder. With a keyboard, use Alt plus Up Arrow or Alt plus Down Arrow.',
-    );
+    const instructions = screen.getByText('拖动可调整顺序；也可按 Alt + 向上或向下方向键调整。');
     expect(instructions).toHaveClass('sr-only');
     expect(instructions).toHaveAttribute('id', 'reorder-instructions');
     const handles = document.querySelectorAll<HTMLElement>('[data-reorder-touch-handle]');
@@ -270,23 +268,23 @@ describe('OpenQuota customization persistence and reorder', () => {
   it('does not let the global Enter shortcut steal an interactive control keypress', async () => {
     render(App);
     await screen.findByText('Plus');
-    const handle = screen.getByRole('button', { name: 'Move Session' });
+    const handle = screen.getByRole('button', { name: '移动 当前周期' });
 
     handle.focus();
     await fireEvent.keyDown(handle, { key: 'Enter' });
-    expect(screen.queryByRole('heading', { name: 'Customize' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: '自定义' })).not.toBeInTheDocument();
     expect(screen.getByText('Plus')).toBeInTheDocument();
 
     handle.blur();
     await fireEvent.keyDown(document, { key: 'Enter' });
-    expect(await screen.findByRole('heading', { name: 'Customize' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: '自定义' })).toBeInTheDocument();
   });
 
   it('restores the pre-drag layout when a reorder is cancelled', async () => {
     render(App);
     await screen.findByText('Plus');
-    const session = screen.getByRole('group', { name: 'Session options' });
-    const weekly = screen.getByRole('group', { name: 'Weekly options' });
+    const session = screen.getByRole('group', { name: '当前周期 选项' });
+    const weekly = screen.getByRole('group', { name: '本周额度 选项' });
     session.getBoundingClientRect = () =>
       ({ top: 0, right: 280, bottom: 40, left: 0, width: 280, height: 40 }) as DOMRect;
     weekly.getBoundingClientRect = () =>
