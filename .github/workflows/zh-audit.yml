@@ -1,0 +1,43 @@
+name: 中文界面验证
+
+on:
+  push:
+    branches: [zh-CN]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.11.0
+          run_install: false
+      - run: pnpm install --frozen-lockfile
+      - name: Save reproducible frontend workspace
+        run: tar --exclude=.git --exclude=frontend-workspace.tgz -czf "$RUNNER_TEMP/frontend-workspace.tgz" .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-workspace
+          path: ${{ runner.temp }}/frontend-workspace.tgz
+          retention-days: 3
+      - name: Test translated UI
+        id: test
+        continue-on-error: true
+        run: pnpm exec vitest run --reporter=json --outputFile=frontend-tests.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-test-results
+          path: frontend-tests.json
+          retention-days: 7
+      - name: Require passing tests
+        if: steps.test.outcome == 'failure'
+        run: exit 1
