@@ -6,15 +6,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   frontend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: zh-CN
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -22,22 +20,7 @@ jobs:
         with:
           version: 11.11.0
           run_install: false
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt
       - run: pnpm install --frozen-lockfile
-      - name: 应用并提交已验证的文案修正
-        if: hashFiles('.github/zh-bootstrap/apply.py') != ''
-        run: |
-          python .github/zh-bootstrap/apply.py
-          pnpm format
-          cargo fmt --manifest-path src-tauri/Cargo.toml --all
-          git rm -r .github/zh-bootstrap
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src src-tauri .github README.zh-CN.md index.html
-          git commit -m 'fix: 补齐中文交互提示并同步回归测试'
-          git push origin HEAD:zh-CN
       - name: 检查代码和类型
         run: |
           pnpm lint
@@ -46,16 +29,11 @@ jobs:
         id: test
         continue-on-error: true
         run: pnpm exec vitest run --reporter=json --outputFile=frontend-tests.json
-      - name: 归档源码
-        if: always()
-        run: git archive --format=zip --output=OpenQuota-zh-CN-source.zip HEAD
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: frontend-test-results
-          path: |
-            frontend-tests.json
-            OpenQuota-zh-CN-source.zip
+          path: frontend-tests.json
           retention-days: 7
       - name: 要求所有测试通过
         if: steps.test.outcome == 'failure'
