@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   group: zh-cn-windows
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   CARGO_BUILD_TARGET: x86_64-pc-windows-msvc
