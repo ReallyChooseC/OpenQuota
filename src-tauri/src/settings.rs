@@ -1451,7 +1451,7 @@ mod tests {
             .update_from_view(stale, initial_revision, service.account_revision())
             .unwrap_err();
 
-        assert!(error.contains("Settings changed"));
+        assert!(error.contains("设置已发生变化"));
         assert_eq!(service.settings_revision(), revision_after_save);
         assert_eq!(
             service.get().density,

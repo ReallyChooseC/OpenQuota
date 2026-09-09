@@ -333,7 +333,7 @@ mod tests {
     fn missing_invalid_and_rate_limited_keys_are_distinct() {
         let missing = provider(None, 200, "{}", 200, "{}").refresh().unwrap_err();
         assert_eq!(missing.kind(), ProviderErrorKind::Authentication);
-        assert!(missing.to_string().contains("Add a Z.ai API key"));
+        assert!(missing.to_string().contains("添加 Z.ai API 密钥"));
 
         for status in [401, 403] {
             let invalid = provider(Some("bad-key"), status, "{}", 200, "{}")
@@ -362,7 +362,7 @@ mod tests {
         .refresh()
         .unwrap_err();
         assert_eq!(no_plan.kind(), ProviderErrorKind::Permission);
-        assert!(no_plan.to_string().contains("GLM Coding Plan"));
+        assert!(no_plan.to_string().contains("GLM 编程套餐"));
 
         let malformed = provider(
             Some("secret"),

@@ -204,7 +204,7 @@ export const codexState: ProviderViewState = {
       {
         id: 'rateLimitResets',
         label: '额度重置次数',
-        values: [{ number: 2, kind: 'count', label: 'available', estimated: false }],
+        values: [{ number: 2, kind: 'count', label: '可用', estimated: false }],
         expiriesAt: ['2099-01-02T00:00:00Z', '2099-01-03T00:00:00Z'],
       },
       {
@@ -212,7 +212,7 @@ export const codexState: ProviderViewState = {
         label: '额外用量',
         values: [
           { number: 32.84, kind: 'dollars', estimated: true },
-          { number: 821, kind: 'count', label: 'credits', estimated: false },
+          { number: 821, kind: 'count', label: '点数', estimated: false },
         ],
         expiriesAt: [],
       },

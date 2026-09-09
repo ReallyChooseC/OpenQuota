@@ -181,7 +181,7 @@ fn web_search_quota(entry: &serde_json::Map<String, Value>) -> Result<QuotaWindo
         format: QuotaFormat::Count,
         used_value: Some(used),
         limit_value: Some(limit),
-        unit: Some("searches".into()),
+        unit: Some("次搜索".into()),
         estimated: false,
         source_note: None,
     })
@@ -253,7 +253,7 @@ mod tests {
         assert_eq!(web.format, QuotaFormat::Count);
         assert_eq!(web.used_value, Some(0.0));
         assert_eq!(web.limit_value, Some(1_000.0));
-        assert_eq!(web.unit.as_deref(), Some("searches"));
+        assert_eq!(web.unit.as_deref(), Some("次搜索"));
         assert_eq!(web.period_seconds, MONTHLY_PERIOD_SECONDS);
         assert!(!web.estimated);
         assert_eq!(web.source_note, None);

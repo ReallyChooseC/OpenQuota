@@ -439,7 +439,7 @@ mod tests {
             .refresh()
             .unwrap_err();
         assert_eq!(missing.kind(), ProviderErrorKind::Authentication);
-        assert!(missing.to_string().contains("Add an OpenRouter API key"));
+        assert!(missing.to_string().contains("添加 OpenRouter API 密钥"));
     }
 
     #[test]

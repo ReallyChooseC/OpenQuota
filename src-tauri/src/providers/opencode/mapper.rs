@@ -146,10 +146,7 @@ mod tests {
         let response = fetch_response(429, r#"{"type":"error"}"#);
 
         let error = map_go_usage(response).unwrap_err();
-        assert_eq!(
-            error.to_string(),
-            "OpenCode Go usage request failed (HTTP 429)."
-        );
+        assert_eq!(error.to_string(), "OpenCode Go 用量请求失败（HTTP 429）。");
     }
 
     #[test]

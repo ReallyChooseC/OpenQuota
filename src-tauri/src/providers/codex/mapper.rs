@@ -303,7 +303,7 @@ fn credits_metric(remaining: f64) -> ValueMetric {
             MetricValue {
                 number: credits,
                 kind: MetricValueKind::Count,
-                label: Some("credits".into()),
+                label: Some("点数".into()),
                 estimated: false,
             },
         ],

@@ -18,7 +18,7 @@ describe('ValueMetric', () => {
         label: '额外用量',
         values: [
           { number: 1200, kind: 'dollars', estimated: false },
-          { number: 30000, kind: 'count', label: 'credits', estimated: false },
+          { number: 30000, kind: 'count', label: '点数', estimated: false },
         ],
         expiriesAt: [],
       },
@@ -27,9 +27,9 @@ describe('ValueMetric', () => {
       timeFormat: 'twentyFourHour',
     });
 
-    expect(screen.getByText('$1.2K · 30K credits')).toHaveAttribute(
+    expect(screen.getByText('$1.2K · 30K 点数')).toHaveAttribute(
       'data-tooltip',
-      '$1,200.00 · 30,000 credits',
+      '$1,200.00 · 30,000 点数',
     );
   });
 
@@ -41,7 +41,7 @@ describe('ValueMetric', () => {
         label: '额外用量',
         values: [
           { number: 4, kind: 'dollars', estimated: true },
-          { number: 100, kind: 'count', label: 'credits', estimated: false },
+          { number: 100, kind: 'count', label: '点数', estimated: false },
         ],
         expiriesAt: [],
       },
@@ -62,7 +62,7 @@ describe('ValueMetric', () => {
       metric: {
         id: 'rateLimitResets',
         label: '额度重置次数',
-        values: [{ number: 2, kind: 'count', label: 'available', estimated: false }],
+        values: [{ number: 2, kind: 'count', label: '可用', estimated: false }],
         expiriesAt: ['2026-02-20T19:00:00Z', '2026-02-20T17:30:00Z'],
       },
       now: Date.parse('2026-02-20T16:00:00Z'),
@@ -70,7 +70,7 @@ describe('ValueMetric', () => {
       timeFormat: 'twentyFourHour',
     });
 
-    const trigger = screen.getByRole('button', { name: '额度重置次数: 2 available' });
+    const trigger = screen.getByRole('button', { name: '额度重置次数: 2 可用' });
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     await fireEvent.click(trigger);
     expect(screen.getByRole('dialog', { name: '额度重置次数 详情' })).toBeVisible();
@@ -82,14 +82,14 @@ describe('ValueMetric', () => {
       metric: {
         id: 'rateLimitResets',
         label: '额度重置次数',
-        values: [{ number: 3, kind: 'count', label: 'available', estimated: false }],
+        values: [{ number: 3, kind: 'count', label: '可用', estimated: false }],
         expiriesAt: [],
       },
       now: Date.parse('2026-02-20T16:00:00Z'),
       resetDisplay: 'countdown',
       timeFormat: 'twentyFourHour',
     });
-    expect(screen.getByText('3 available')).toBeInTheDocument();
+    expect(screen.getByText('3 可用')).toBeInTheDocument();
     expect(screen.getByText('可用 3 次')).toBeInTheDocument();
     expect(screen.getByText('无法获取到期时间')).toBeInTheDocument();
   });
@@ -101,7 +101,7 @@ describe('ValueMetric', () => {
       metric: {
         id: 'rateLimitResets',
         label: '额度重置次数',
-        values: [{ number: 1, kind: 'count', label: 'available', estimated: false }],
+        values: [{ number: 1, kind: 'count', label: '可用', estimated: false }],
         expiriesAt: ['2026-02-20T19:00:00Z'],
       },
       now: Date.parse('2026-02-20T16:00:00Z'),
@@ -109,7 +109,7 @@ describe('ValueMetric', () => {
       timeFormat: 'twentyFourHour',
     });
 
-    await fireEvent.click(screen.getByRole('button', { name: '额度重置次数: 1 available' }));
+    await fireEvent.click(screen.getByRole('button', { name: '额度重置次数: 1 可用' }));
     await fireEvent.click(screen.getByRole('button', { name: /使用将于.*到期的重置次数/ }));
     expect(mocks.invoke).not.toHaveBeenCalled();
     expect(screen.getByRole('group', { name: '使用这次额度重置？' })).toHaveAccessibleDescription(
@@ -136,7 +136,7 @@ describe('ValueMetric', () => {
         metric: {
           id: 'rateLimitResets',
           label: '额度重置次数',
-          values: [{ number: 1, kind: 'count', label: 'available', estimated: false }],
+          values: [{ number: 1, kind: 'count', label: '可用', estimated: false }],
           expiriesAt: ['2026-02-20T19:00:00Z'],
         },
         now: Date.parse('2026-02-20T16:00:00Z'),
@@ -144,7 +144,7 @@ describe('ValueMetric', () => {
         timeFormat: 'twentyFourHour',
       });
 
-      const trigger = screen.getByRole('button', { name: '额度重置次数: 1 available' });
+      const trigger = screen.getByRole('button', { name: '额度重置次数: 1 可用' });
       trigger.focus();
       await fireEvent.click(trigger);
 
@@ -170,7 +170,7 @@ describe('ValueMetric', () => {
         metric: {
           id: 'rateLimitResets',
           label: '额度重置次数',
-          values: [{ number: 1, kind: 'count', label: 'available', estimated: false }],
+          values: [{ number: 1, kind: 'count', label: '可用', estimated: false }],
           expiriesAt: ['2026-02-20T19:00:00Z'],
         },
         now: Date.parse('2026-02-20T16:00:00Z'),
@@ -178,7 +178,7 @@ describe('ValueMetric', () => {
         timeFormat: 'twentyFourHour',
       });
 
-      await fireEvent.click(screen.getByRole('button', { name: '额度重置次数: 1 available' }));
+      await fireEvent.click(screen.getByRole('button', { name: '额度重置次数: 1 可用' }));
       expect(screen.queryByLabelText('Drag 额度重置次数 panel')).not.toBeInTheDocument();
       expect(screen.queryByRole('button', { name: 'Close 额度重置次数' })).not.toBeInTheDocument();
 
@@ -207,7 +207,7 @@ describe('ValueMetric', () => {
       await fireEvent.keyDown(restoredUse, { key: 'Escape' });
       expect(screen.queryByRole('dialog', { name: '额度重置次数 详情' })).not.toBeInTheDocument();
       await vi.waitFor(() =>
-        expect(screen.getByRole('button', { name: '额度重置次数: 1 available' })).toHaveFocus(),
+        expect(screen.getByRole('button', { name: '额度重置次数: 1 可用' })).toHaveFocus(),
       );
       await vi.advanceTimersByTimeAsync(351);
       expect(screen.queryByRole('dialog', { name: '额度重置次数 详情' })).not.toBeInTheDocument();

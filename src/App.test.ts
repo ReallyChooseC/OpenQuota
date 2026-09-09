@@ -1015,7 +1015,7 @@ describe('OpenQuota dashboard', () => {
     render(App);
     await screen.findByText('Plus');
     await fireEvent.click(screen.getByRole('button', { name: '展开' }));
-    await fireEvent.click(screen.getByRole('button', { name: '额度重置次数: 2 available' }));
+    await fireEvent.click(screen.getByRole('button', { name: '额度重置次数: 2 可用' }));
     await fireEvent.click(screen.getAllByRole('button', { name: /使用将于.*到期的重置次数/ })[0]);
 
     const cancel = screen.getByRole('button', { name: '取消' });

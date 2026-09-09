@@ -229,7 +229,7 @@ mod tests {
             super::linux_integration(LinuxSessionType::Wayland, LinuxDesktop::Gnome, false);
         assert_eq!(
             integration.platform_summary().as_deref(),
-            Some("GNOME · Wayland · standalone window")
+            Some("GNOME · Wayland · 独立窗口")
         );
     }
 
@@ -260,7 +260,7 @@ mod tests {
         assert!(integration.exits_on_close());
         assert_eq!(
             integration.platform_summary().as_deref(),
-            Some("KDE Plasma · X11 · standalone window")
+            Some("KDE Plasma · X11 · 独立窗口")
         );
         assert!(!integration.disable_tray());
     }
